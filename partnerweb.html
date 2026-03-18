@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Panel | AK Balkan</title>
+    <style>
+        :root { --akb-blue: #092e54; --akb-red: #a52a2a; --bg: #f4f7f6; --gold: #c5a059; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: #333; }
+        nav { background: var(--akb-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .lang-switch { display: flex; gap: 10px; }
+        .lang-switch button { background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8rem; }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .fleet-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .status-toggle { padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        .status-online { background: #27ae60; color: white; }
+        .status-offline { background: #7f8c8d; color: white; }
+        .status-bar { background: white; padding: 12px 20px; border-radius: 10px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; font-weight: bold; color: #27ae60; }
+        .dot { height: 12px; width: 12px; background: #27ae60; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% {opacity: 1} 50% {opacity: 0.3} 100% {opacity: 1} }
+        .alarm-card { background: var(--akb-red); color: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(165,42,42,0.4); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% {transform: scale(1)} 50% {transform: scale(1.015)} 100% {transform: scale(1)} }
+        .btn-maps { display: inline-flex; align-items: center; justify-content: center; background: #3498db; color: white; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 15px; width: 80%; }
+        .action-group { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-decline { background: #7f8c8d; color: white; border: none; padding: 15px; border-radius: 12px; flex: 1; cursor: pointer; font-weight: bold; }
+        .btn-accept-main { background: white; color: var(--akb-red); border: none; padding: 15px; border-radius: 12px; flex: 2; cursor: pointer; font-weight: bold; }
+        .no-alarm { text-align: center; padding: 80px 20px; color: #95a5a6; border: 3px dashed #bdc3c7; border-radius: 25px; background: white; font-size: 1.2rem; }
+        #clock { font-family: monospace; font-size: 1.2rem; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <span id="nav-title">AK BALKAN | CENTRALNI DISPIČER</span>
+    <div class="lang-switch">
+        <button onclick="changeLang('sr')">SR</button>
+        <button onclick="changeLang('sr_cyr')">СРБ</button>
+        <button onclick="changeLang('de')">DE</button>
+    </div>
+    <span id="clock">00:00:00</span>
+</nav>
+
+<div class="container">
+    <h3 id="t-fleet-title">Vozni Park (Status)</h3>
+    <div class="dashboard-grid">
+        <div class="fleet-card"><span>🚛 Šlep 1</span><button id="truck1" class="status-toggle status-online" onclick="toggleTruck(1)">AKTIVAN</button></div>
+        <div class="fleet-card"><span>🛻 Šlep 2</span><button id="truck2" class="status-toggle status-offline" onclick="toggleTruck(2)">OFFLINE</button></div>
+    </div>
+    <div class="status-bar"><div class="dot"></div> <span id="status-text">SISTEM MONITORING AKTIVAN</span></div>
+    <div id="display"><div class="no-alarm" id="t-scanning">Skeniranje terena za SOS pozive...</div></div>
+</div>
+
+<audio id="alarm-sound" loop><source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg"></audio>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const sound = document.getElementById('alarm-sound');
+    const partnerID = "partner_mladen";
+
+    const i18n = {
+        sr: { nav: "AK BALKAN | CENTRALNI DISPIČER", monitor: "SISTEM MONITORING AKTIVAN", fleet: "Vozni Park (Status)", scanning: "Skeniranje terena za SOS pozive...", hitan: "HITAN POZIV", tip: "TIP", maps: "📍 OTVORI NAVIGACIJU", decline: "ODBIJ", accept: "POTVRDI PRIJEM", confirm: "Šaljete ekipu?" },
+        sr_cyr: { nav: "АК БАЛКАН | ЦЕНТРАЛНИ ДИСПИЧЕР", monitor: "СИСТЕМ МОНИТОРИНГ АКТИВАН", fleet: "Возни Парк (Статус)", scanning: "Скенирање терена за СОС позиве...", hitan: "ХИТАН ПОЗИВ", tip: "ТИП", maps: "📍 ОТВОРИ НАВИГАЦИЈУ", decline: "ОДБИЈ", accept: "ПОТВРДИ ПРИЈЕМ", confirm: "Шаљете екипу?" },
+        de: { nav: "AK BALKAN | ZENTRALE", monitor: "SYSTEM MONITORING AKTIV", fleet: "Fahrzeugpark (Status)", scanning: "Suche nach SOS...", hitan: "NOTRUF", tip: "ART", maps: "📍 NAVIGATION ÖFFNEN", decline: "ABLEHNEN", accept: "BESTÄTIGEN", confirm: "Team senden?" }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'sr';
+
+    window.changeLang = (lang) => {
+        localStorage.setItem('lang', lang);
+        location.reload(); // Wichtig, um die UI mit der neuen Sprache zu laden
+    };
+
+    // UI Texte beim Start setzen
+    const t = i18n[currentLang];
+    document.getElementById('nav-title').innerText = t.nav;
+    document.getElementById('status-text').innerText = t.monitor;
+    document.getElementById('t-fleet-title').innerText = t.fleet;
+
+    const q = query(collection(db, "sos_calls"), where("status", "==", "offen"));
+    onSnapshot(q, (snapshot) => {
+        const display = document.getElementById('display');
+        if (snapshot.empty) {
+            display.innerHTML = `<div class="no-alarm">${t.scanning}</div>`;
+            sound.pause();
+        } else {
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                if (data.rejectedBy && data.rejectedBy[partnerID]) return;
+                
+                display.innerHTML = `
+                    <div class="alarm-card">
+                        <h1>🚨 ${t.hitan}: ${data.name}</h1>
+                        <h2 style="background:rgba(255,255,255,0.2); padding:10px; border-radius:10px;">${t.tip}: ${data.problem}</h2>
+                        ${data.lat ? `<a href="https://www.google.com/maps?q=${data.lat},${data.lng}" target="_blank" class="btn-maps">${t.maps}</a>` : ''}
+                        <div class="action-group">
+                            <button class="btn-decline" onclick="declineCall('${docSnap.id}')">${t.decline}</button>
+                            <button class="btn-accept-main" onclick="acceptCall('${docSnap.id}')">${t.accept}</button>
+                        </div>
+                    </div>`;
+                sound.play().catch(() => {});
+            });
+        }
+    });
+
+    window.acceptCall = async (id) => {
+        if (confirm(t.confirm)) {
+            await updateDoc(doc(db, "sos_calls", id), { status: "završeno", acceptedBy: partnerID });
+        }
+    };
+
+    window.declineCall = async (id) => {
+        await updateDoc(doc(db, "sos_calls", id), { [`rejectedBy.${partnerID}`]: true });
+    };
+
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('sr-RS'); }, 1000);
+</script>
+</body>
+</html>

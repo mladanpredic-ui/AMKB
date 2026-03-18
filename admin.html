@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKB Admin | Control Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --akb-blue: #092e54; --akb-red: #a52a2a; --gold: #c5a059; --bg-light: #f1f5f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); margin: 0; display: flex; }
+        .sidebar { width: 260px; background: var(--akb-blue); color: white; height: 100vh; position: fixed; padding: 20px; z-index: 100; }
+        .sidebar h2 { color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .nav-item { padding: 12px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #cbd5e1; transition: 0.3s; display: flex; align-items: center; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.2); color: white; font-weight: bold; }
+        .nav-group { margin-top: 20px; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 10px; }
+        .main-content { margin-left: 300px; flex: 1; padding: 30px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .data-card { background: #1e293b; color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--akb-red); }
+        .btn-action { background: var(--akb-blue); color: white; padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; background: #f8fafc; border-bottom: 2px solid #eee; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>AKB ADMIN</h2>
+    <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
+    <div class="nav-item" onclick="showPage('members')">👥 Članovi</div>
+    <div class="nav-item" onclick="showPage('history-page')">📜 Istorija Usluga</div>
+    
+    <div class="nav-group">Partneri</div>
+    <div class="nav-item" onclick="showPage('partners-sales')">💼 Prodajna Mreža</div>
+    <div class="nav-item" onclick="showPage('partners-service')">🛠 Servis & Šlep</div>
+</div>
+
+<div class="main-content">
+    
+    <div id="dashboard" class="page active">
+        <div class="card">
+            <h3>🚨 Aktivni SOS Pozivi (Live)</h3>
+            <div id="sos-list">Traženje aktivnih poziva...</div>
+        </div>
+        <div class="card">
+            <h3>Analitika Beneficija</h3>
+            <canvas id="benefitsChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <div id="members" class="page">
+        <div class="card">
+            <h3>👥 Registrovani Članovi</h3>
+            <table>
+                <thead><tr><th>Ime</th><th>Email</th><th>Status</th></tr></thead>
+                <tbody id="member-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="history-page" class="page">
+        <div class="card">
+            <h3>📜 Istorija Korišćenja Usluga</h3>
+            <input type="text" id="histSearch" placeholder="Pretraži člana..." style="width:100%; margin-bottom:15px;">
+            <table>
+                <thead><tr><th>Član</th><th>Usluga</th><th>Datum</th><th>Status</th></tr></thead>
+                <tbody id="history-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="partners-sales" class="page">
+        <div class="card">
+            <h3>💼 Nova Prodajna Tačka</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="salesName" placeholder="Naziv partnera" style="flex:1;">
+                <input type="text" id="salesLoc" placeholder="Lokacija" style="flex:1;">
+                <button class="btn-action" onclick="addPartner('sales')">DODAJ</button>
+            </div>
+            <table>
+                <thead><tr><th>Partner</th><th>Lokacija</th><th>Akcija</th></tr></thead>
+                <tbody id="sales-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="partners-service" class="page">
+        <div class="card">
+            <h3>🛠 Novi Servisni Partner</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="serviceName" placeholder="Naziv servisa" style="flex:1;">
+                <input type="text" id="serviceContact" placeholder="Kontakt telefon" style="flex:1;">
+                <button class="btn-action" onclick="addPartner('service')">DODAJ</button>
+            </div>
+            <table>
+                <thead><tr><th>Servis</th><th>Kontakt</th><th>Akcija</th></tr></thead>
+                <tbody id="service-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Globalne funkcije za navigaciju
+    window.showPage = (pageId) => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    };
+
+    // SOS i ISTORIJA LOGIKA
+    onSnapshot(query(collection(db, "sos_calls"), orderBy("timestamp", "desc")), (snapshot) => {
+        const sosList = document.getElementById('sos-list');
+        const historyBody = document.getElementById('history-table-body');
+        sosList.innerHTML = "";
+        historyBody.innerHTML = "";
+
+        snapshot.forEach(docSnap => {
+            const d = docSnap.data();
+            const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('sr-RS') : "...";
+            
+            if(d.status !== "završeno") {
+                sosList.innerHTML += `
+                <div class="data-card">
+                    <div><b>${d.name}</b> <span class="badge" style="background:var(--akb-red);">${d.problem}</span></div>
+                    <button class="btn-action" onclick="window.finishCall('${docSnap.id}')">Završi</button>
+                </div>`;
+            }
+
+            historyBody.innerHTML += `
+                <tr>
+                    <td><b>${d.name}</b></td>
+                    <td>${d.problem}</td>
+                    <td>${date}</td>
+                    <td><span class="badge" style="background:#092e54; color:white;">${d.status.toUpperCase()}</span></td>
+                </tr>`;
+        });
+    });
+
+    window.finishCall = async (id) => {
+        if(confirm("Završi intervenciju?")) {
+            await updateDoc(doc(db, "sos_calls", id), { status: "završeno" });
+        }
+    };
+
+    // PARTNER LOGIKA
+    window.addPartner = async (type) => {
+        const name = type === 'sales' ? document.getElementById('salesName').value : document.getElementById('serviceName').value;
+        const info = type === 'sales' ? document.getElementById('salesLoc').value : document.getElementById('serviceContact').value;
+
+        if (!name || !info) return alert("Popunite sva polja!");
+
+        await addDoc(collection(db, "partners"), { name, info, type, status: 'Aktivan' });
+        
+        document.getElementById('salesName').value = ""; document.getElementById('salesLoc').value = "";
+        document.getElementById('serviceName').value = ""; document.getElementById('serviceContact').value = "";
+    };
+
+    onSnapshot(collection(db, "partners"), (snapshot) => {
+        const salesBody = document.getElementById('sales-body');
+        const serviceBody = document.getElementById('service-body');
+        salesBody.innerHTML = ""; serviceBody.innerHTML = "";
+
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const row = `<tr><td><b>${p.name}</b></td><td>${p.info}</td><td><button onclick="window.deletePartner('${docSnap.id}')" style="color:red; background:none; border:none; cursor:pointer;">Obriši</button></td></tr>`;
+            if (p.type === 'sales') salesBody.innerHTML += row;
+            else serviceBody.innerHTML += row;
+        });
+    });
+
+    window.deletePartner = async (id) => {
+        if(confirm("Obriši partnera?")) await deleteDoc(doc(db, "partners", id));
+    };
+
+    // ČLANOVI
+    onSnapshot(collection(db, "users"), (snapshot) => {
+        const body = document.getElementById('member-table-body');
+        body.innerHTML = "";
+        snapshot.forEach(doc => {
+            const u = doc.data();
+            body.innerHTML += `<tr><td><b>${u.name}</b></td><td>${u.email || 'Nema emaila'}</td><td><span class="badge" style="background:#10b981; color:white;">AKTIVAN</span></td></tr>`;
+        });
+    });
+
+    // Chart
+    new Chart(document.getElementById('benefitsChart'), {
+        type: 'bar',
+        data: { labels: ['Šlep', 'Guma', 'Gorivo', 'Struja'], datasets: [{ label: 'Broj korišćenja', data: [12, 19, 3, 5], backgroundColor: '#092e54' }] }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ugovor o Članstvu | AutoKlub Balkan</title>
+    <style>
+        :root { --akb-blue: #092e54; --gold: #c5a059; --akb-red: #a52a2a; }
+        body { font-family: 'Times New Roman', serif; background: #525659; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        
+        .paper {
+            background: white; width: 210mm; min-height: 297mm; padding: 20mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); position: relative; box-sizing: border-box;
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--akb-blue); padding-bottom: 10px; margin-bottom: 30px; }
+        .logo-text { font-weight: bold; font-size: 26px; color: var(--akb-blue); letter-spacing: 1px; }
+        
+        .title { text-align: center; text-transform: uppercase; margin-bottom: 40px; }
+        .section { margin-bottom: 18px; line-height: 1.6; text-align: justify; font-size: 14px; }
+        .data-field { font-weight: bold; border-bottom: 1px dotted #000; padding: 0 5px; color: var(--akb-blue); }
+        
+        /* Unterschriften Bereich */
+        .signature-container { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .sig-box { text-align: center; }
+        #signature-pad { border: 1px solid #eee; background: #fdfdfd; width: 250px; height: 100px; touch-action: none; }
+        .sign-line { border-top: 1px solid #000; width: 250px; text-align: center; font-size: 12px; margin-top: 5px; }
+
+        .stamp { 
+            position: absolute; bottom: 120px; right: 50px; width: 130px; height: 130px; 
+            border: 4px solid var(--akb-red); border-radius: 50%; color: var(--akb-red); 
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            transform: rotate(-15deg); font-weight: bold; font-family: sans-serif; opacity: 0.8;
+        }
+
+        .controls { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        .btn { border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; }
+        .btn-print { background: var(--akb-blue); }
+        .btn-clear { background: var(--akb-red); font-size: 10px; padding: 5px; margin-top: 5px; }
+
+        @media print { .controls { display: none; } body { background: white; padding: 0; } .paper { box-shadow: none; border: none; } }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button class="btn btn-print" onclick="window.print()">💾 SAČUVAJ KAO PDF</button>
+        <button class="btn" style="background:#666" onclick="window.location.href='index.html'">ZATVORI</button>
+    </div>
+
+    <div class="paper">
+        <div class="header">
+            <div class="logo-text">AutoKlub BALKAN</div>
+            <div style="text-align: right; font-size: 12px;">
+                Ugovor br: <span id="pdf-id">---</span><br>
+                Datum: <span id="pdf-date">---</span>
+            </div>
+        </div>
+
+        <div class="title">
+            <h2>Ugovor o Članstvu</h2>
+        </div>
+
+        <div class="section">
+            Ovaj ugovor potvrđuje članstvo u <strong>AutoKlubu Balkan</strong>. Član prihvata uslove korišćenja i 
+            izabrani paket usluga koji obezbeđuje sigurnost i asistenciju 24/7.
+        </div>
+
+        <div class="section">
+            <strong>PODACI O ČLANU:</strong><br>
+            Ime i prezime: <span id="pdf-name" class="data-field">---</span><br>
+            JMBG: <span id="pdf-jmbg" class="data-field">---</span><br>
+            Adresa: <span id="pdf-adr" class="data-field">---</span><br>
+            Kontakt: <span id="pdf-contact" class="data-field">---</span>
+        </div>
+
+        <div class="section">
+            <strong>IZABRANI PAKET:</strong><br>
+            Paket: <span id="pdf-package" class="data-field" style="color:var(--akb-blue)">---</span><br>
+            Cena članarine: <span id="pdf-price" class="data-field">---</span>
+        </div>
+
+        <div class="section" style="font-style: italic; margin-top: 30px;">
+            "Više od pomoći na putu – brinemo o Vama i kada sve ide po planu."
+        </div>
+
+        <div class="signature-container">
+            <div class="sig-box">
+                <canvas id="signature-pad"></canvas><br>
+                <button class="btn-clear" onclick="clearPad()">Obriši potpis</button>
+                <div class="sign-line">Potpis člana (S-Pen / Digitalno)</div>
+            </div>
+            <div class="sig-box">
+                <div style="height: 100px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--akb-blue);">
+                    OVLAŠĆENO LICE
+                </div>
+                <div class="sign-line">AutoKlub Balkan M.P.</div>
+            </div>
+        </div>
+
+        <div class="stamp">
+            AUTOKLUB<br>BALKAN<br>VERIFIED
+        </div>
+    </div>
+
+    <script>
+        // Daten laden
+        window.onload = function() {
+            const data = JSON.parse(localStorage.getItem('currentUser'));
+            if(data) {
+                document.getElementById('pdf-name').innerText = data.name || "---";
+                document.getElementById('pdf-jmbg').innerText = data.jmbg || "---";
+                document.getElementById('pdf-adr').innerText = data.adr || "---";
+                document.getElementById('pdf-contact').innerText = (data.mail || "") + " / " + (data.tel || "");
+                document.getElementById('pdf-package').innerText = data.package || "---";
+                document.getElementById('pdf-price').innerText = data.price || "---";
+                document.getElementById('pdf-date').innerText = data.date || new Date().toLocaleDateString('sr-RS');
+                document.getElementById('pdf-id').innerText = "AKB-" + Math.floor(10000 + Math.random() * 90000);
+            }
+            initSignPad();
+        };
+
+        // S-Pen Unterschriften Logik
+        function initSignPad() {
+            const canvas = document.getElementById('signature-pad');
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: (e.clientX || e.touches[0].clientX) - rect.left,
+                    y: (e.clientY || e.touches[0].clientY) - rect.top
+                };
+            }
+
+            function start(e) { drawing = true; ctx.beginPath(); move(e); e.preventDefault(); }
+            function stop() { drawing = false; ctx.beginPath(); }
+            function move(e) {
+                if (!drawing) return;
+                const pos = getPos(e);
+                ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#092e54';
+                ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.moveTo(pos.x, pos.y);
+                e.preventDefault();
+            }
+
+            canvas.addEventListener('mousedown', start);
+            canvas.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', stop);
+            canvas.addEventListener('touchstart', start, {passive: false});
+            canvas.addEventListener('touchmove', move, {passive: false});
+            canvas.addEventListener('touchend', stop);
+        }
+
+        function clearPad() {
+            const canvas = document.getElementById('signature-pad');
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+</body>
+</html>
