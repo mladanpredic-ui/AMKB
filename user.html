@@ -8,75 +8,55 @@
         :root { --akb-blue: #092e54; --gold: #c5a059; --akb-red: #a52a2a; }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 30px; }
         .header { background: var(--akb-blue); color: white; padding: 15px; text-align: center; font-weight: bold; }
-        .lang-bar { background: #061f3a; padding: 5px; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
-        .lang-bar button { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; font-size: 10px; cursor: pointer; padding: 5px 8px; border-radius: 4px; }
         .container { padding: 15px; max-width: 500px; margin: auto; }
         
-        .card { background: linear-gradient(135deg, var(--akb-blue) 0%, #1a4a7a 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 20px; }
-        .card-name { font-size: 1.4rem; text-transform: uppercase; margin-top: 30px; letter-spacing: 1px; }
-        .card-package { color: var(--gold); font-weight: bold; }
+        /* SOS Dugme i Overlay */
+        .sos-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .sos-card { background: white; width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; text-align: center; }
         
-        .sos-btn { background: var(--akb-red); color: white; border: none; width: 100%; padding: 20px; border-radius: 12px; font-size: 1.5rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(165,42,42,0.3); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .sos-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-        .sos-modal { background: white; width: 90%; max-width: 380px; padding: 20px; border-radius: 20px; text-align: center; max-height: 90vh; overflow-y: auto; }
-        .sos-option { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; font-weight: bold; cursor: pointer; background: #f9f9f9; font-size: 1rem; }
+        .sos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .sos-btn { 
+            background: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px 10px; 
+            font-size: 14px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
         
-        .stats { background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-around; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .stat-val { display: block; font-size: 1.2rem; font-weight: bold; color: var(--akb-blue); }
-        .qr-section { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        #qr-img { width: 140px; margin-top: 10px; border: 5px solid #fff; }
+        /* KLASA KOJA JE PRAVILA PROBLEM - SADA JE PRAZNA DOK NE KLIKNEŠ */
+        .sos-btn.active { border-color: var(--akb-blue); background: #eef4ff; box-shadow: 0 0 10px rgba(9,46,84,0.3); }
+
+        .btn-send { background: var(--akb-red); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .btn-close { background: #666; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
+        
+        .main-sos-trigger { background: var(--akb-red); color: white; padding: 20px; border-radius: 50%; width: 80px; height: 80px; border: 5px solid white; font-weight: bold; font-size: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin: 20px auto; display: block; }
     </style>
 </head>
 <body>
 
-<div class="header">AutoKlub Balkan</div>
-<div class="lang-bar">
-    <button onclick="setLang('sr')">SR</button>
-    <button onclick="setLang('sr_cyr')">СРБ</button>
-    <button onclick="setLang('de')">DE</button>
-    <button onclick="setLang('fr')">FR</button>
-    <button onclick="setLang('ru')">RU</button>
-</div>
+<div class="header">AK BALKAN - KORISNIK</div>
 
 <div class="container">
-    <div class="card">
-        <div id="t-active" style="position:absolute; top:20px; right:20px; background:#27ae60; padding:4px 10px; border-radius:10px; font-size:0.7rem;">AKTIVAN</div>
-        <div class="card-name" id="userName">Mladen</div>
-        <div class="card-package" id="userPackage">Standard ČLAN</div>
-    </div>
-
-    <button class="sos-btn" id="t-sos-btn" onclick="openSosMenu()"><span>🆘</span> SOS POMOĆ</button>
-
-    <div class="stats">
-        <div><span class="stat-val">145 €</span><small id="t-savings">Ušteda 2024</small></div>
-        <div><span class="stat-val">2</span><small id="t-assists">Asistencije</small></div>
-    </div>
-
-    <div class="qr-section">
-        <label id="t-qr-label" style="font-weight: bold; color: var(--akb-blue);">Vaš Digitalni ID:</label><br>
-        <img id="qr-img" src="" alt="QR">
-        <p style="font-size: 10px; color: gray; margin-top: 5px;" id="t-qr-sub">Pokažite partneru za popust</p>
-    </div>
+    <button class="main-sos-trigger" onclick="openSosMenu()">SOS</button>
+    <p style="text-align: center;">Pritisnite dugme za hitnu pomoć na putu</p>
 </div>
 
 <div id="sosOverlay" class="sos-overlay">
-    <div class="sos-modal">
-        <h2 id="t-sos-h" style="color:var(--akb-red); margin-top:0;">Vrsta kvara?</h2>
+    <div class="sos-card">
+        <h3 id="t-title">Vrsta kvara? / Pannenart?</h3>
         
-        <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #ddd; text-align: left;">
-            <input type="checkbox" id="acceptTerms"> 
-            <label for="acceptTerms" style="cursor:pointer;" id="t-accept"> 
-                Prihvatam uslove i troškove.
-            </label>
+        <div class="sos-grid">
+            <button class="sos-btn" onclick="selectService(this, 'Slep sluzba')">🚚 <span>Šlep služba</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'E-Auto')">🔋 <span>E-Auto (Blokiran)</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'Starthilfe')">⚡ <span>Starthilfe / Kvar</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'Gorivo')">⛽ <span>Gorivo</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'Guma')">🎡 <span>Guma</span></button>
         </div>
 
-        <button class="sos-option" id="opt-1" onclick="checkAndSend(this.innerText)">🚛 Šlep služba</button>
-        <button class="sos-option" id="opt-2" style="border: 2px solid #3498db;" onclick="checkAndSend(this.innerText)">🔋 E-Auto (Blokiran)</button>
-        <button class="sos-option" id="opt-3" onclick="checkAndSend(this.innerText)">⚡ Starthilfe / Kvar</button>
-        <button class="sos-option" id="opt-4" onclick="checkAndSend(this.innerText)">⛽ Gorivo</button>
-        <button class="sos-option" id="opt-5" onclick="checkAndSend(this.innerText)">🛞 Guma</button>
-        
-        <p onclick="closeSosMenu()" style="cursor:pointer; color:gray; margin-top:15px; font-weight:bold;" id="t-cancel">Odustani</p>
+        <div style="margin-top:15px; text-align: left; font-size: 12px;">
+            <input type="checkbox" id="acceptTerms"> 
+            <label for="acceptTerms">Prihvatam uslove / Ich akzeptiere die AGB</label>
+        </div>
+
+        <button class="btn-send" onclick="checkAndSend()">POŠALJI ZAHTEV / SENDEN</button>
+        <button class="btn-close" onclick="closeSosMenu()">ZATVORI / SCHLIESSEN</button>
     </div>
 </div>
 
@@ -85,96 +65,66 @@
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
+        apiKey: "AIzaSyB...", // TVOJ API KEY KOJI VEĆ IMAŠ
+        authDomain: "amkb-balkan.firebaseapp.com",
+        projectId: "amkb-balkan",
+        storageBucket: "amkb-balkan.appspot.com",
+        messagingSenderId: "305111928091",
+        appId: "1:305111928091:web:2c77dfa811776566050b9a"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const i18n = {
-        sr: { name: "Mladen", package: "Standard", member: "ČLAN", active: "AKTIVAN", sosBtn: "SOS POMOĆ", savings: "Ušteda 2024", assists: "Asistencije", qr: "Vaš Digitalni ID:", qrSub: "Pokažite partneru za popust", sosH: "Vrsta kvara?", accept: "Prihvatam uslove i troškove.", cancel: "Odustani", o1: "🚛 Šlep služba", o2: "🔋 E-Auto (Blokiran)", o3: "⚡ Starthilfe / Kvar", o4: "⛽ Gorivo", o5: "🛞 Guma", alertTerms: "Morate prihvatiti uslove!", alertSent: "✅ SOS POSLAT! Pomoć je obaveštena." },
-        sr_cyr: { name: "Младен", package: "Стандард", member: "ЧЛАН", active: "АКТИВАН", sosBtn: "SOS ПОМОЋ", savings: "Уштеда 2024", assists: "Асистенције", qr: "Ваш Дигитални ИД:", qrSub: "Покажите партнеру за попуст", sosH: "Врста квара?", accept: "Прихватам услове и трошкове.", cancel: "Одустани", o1: "🚛 Шлеп служба", o2: "🔋 Е-Ауто (Блокиран)", o3: "⚡ Помоћ на путу / Квар", o4: "⛽ Гориво", o5: "🛞 Гума", alertTerms: "Морате прихватити услове!", alertSent: "✅ SOS ПОСЛАТ! Помоћ је обавештена." },
-        de: { name: "Mladen", package: "Standard", member: "MITGLIED", active: "AKTIV", sosBtn: "SOS HILFE", savings: "Ersparnis 2024", assists: "Einsätze", qr: "Ihre Digitale ID:", qrSub: "Partnern zeigen", sosH: "Art des Problems?", accept: "Ich akzeptiere die Bedingungen.", cancel: "Abbrechen", o1: "🚛 Abschleppdienst", o2: "🔋 E-Auto (Blockiert)", o3: "⚡ Starthilfe / Panne", o4: "⛽ Kraftstoff", o5: "🛞 Reifen", alertTerms: "Bitte akzeptieren Sie die Bedingungen!", alertSent: "✅ SOS GESENDET! Hilfe wurde benachrichtigt." },
-        fr: { name: "Mladen", package: "Standard", member: "MEMBRE", active: "ACTIF", sosBtn: "AIDE SOS", savings: "Économies 2024", assists: "Assistances", qr: "Votre ID digital:", qrSub: "Montrez au partenaire", sosH: "Type de panne?", accept: "J'accepte les conditions.", cancel: "Annuler", o1: "🚛 Remorquage", o2: "🔋 E-Auto (Bloqué)", o3: "⚡ Démarrage / Panne", o4: "⛽ Carburant", o5: "🛞 Pneu", alertTerms: "Veuillez accepter les conditions!", alertSent: "✅ SOS ENVOYÉ ! L'aide a été notifiée." },
-        ru: { name: "Младен", package: "Стандарт", member: "УЧАСТНИК", active: "АКТИВЕН", sosBtn: "SOS ПОМОЩЬ", savings: "Экономия 2024", assists: "Помощь", qr: "Ваш цифровой ID:", qrSub: "Покажите партнеру", sosH: "Тип поломки?", accept: "Я принимаю условия.", cancel: "Отмена", o1: "🚛 Эвакуатор", o2: "🔋 Э-Авто (Заблокирован)", o3: "⚡ Помощь / Поломка", o4: "⛽ Топливо", o5: "🛞 Шина", alertTerms: "Вы должны принять условия!", alertSent: "✅ SOS ОТПРАВЛЕН! Помощь уведомлена." }
-    };
-
-    window.setLang = function(lang) {
-        const t = i18n[lang] || i18n.sr;
-        
-        // Texte auf der Karte umschalten
-        document.getElementById('userName').innerText = t.name;
-        document.getElementById('userPackage').innerText = t.package + " " + t.member;
-        document.getElementById('t-active').innerText = t.active;
-
-        // UI Texte
-        document.getElementById('t-sos-btn').innerHTML = `<span>🆘</span> ${t.sosBtn}`;
-        document.getElementById('t-savings').innerText = t.savings;
-        document.getElementById('t-assists').innerText = t.assists;
-        document.getElementById('t-qr-label').innerText = t.qr;
-        document.getElementById('t-qr-sub').innerText = t.qrSub;
-        document.getElementById('t-sos-h').innerText = t.sosH;
-        document.getElementById('t-accept').innerText = t.accept;
-        document.getElementById('t-cancel').innerText = t.cancel;
-
-        // SOS Optionen
-        document.getElementById('opt-1').innerText = t.o1;
-        document.getElementById('opt-2').innerText = t.o2;
-        document.getElementById('opt-3').innerText = t.o3;
-        document.getElementById('opt-4').innerText = t.o4;
-        document.getElementById('opt-5').innerText = t.o5;
-
-        window.currentLangData = t;
-    };
-
-    window.onload = function() {
-        const data = JSON.parse(localStorage.getItem('currentUser')) || { name: "Mladen", package: "Standard" };
-        const qrContent = `AKB-ID-${data.name}-${data.package}`;
-        document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrContent)}`;
-        setLang('sr'); 
-    };
+    let odabraniKvar = "";
 
     window.openSosMenu = function() { document.getElementById('sosOverlay').style.display = 'flex'; };
     window.closeSosMenu = function() { document.getElementById('sosOverlay').style.display = 'none'; };
 
-    window.checkAndSend = function(type) {
-        const t = window.currentLangData || i18n.sr;
-        if (!document.getElementById('acceptTerms').checked) {
-            alert(t.alertTerms);
-            return;
-        }
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => { executeSend(type, pos.coords.latitude, pos.coords.longitude); },
-                () => { executeSend(type, null, null); },
-                { timeout: 5000 }
-            );
-        } else { executeSend(type, null, null); }
+    // FUNKCIJA ZA ODABIR KOJA REŠAVA TVOJ PROBLEM
+    window.selectService = function(element, tip) {
+        const buttons = document.querySelectorAll('.sos-btn');
+        buttons.forEach(btn => btn.classList.remove('active')); // Resetuj sve
+        element.classList.add('active'); // Aktiviraj samo kliknuti
+        odabraniKvar = tip;
     };
 
-    async function executeSend(type, lat, lon) {
-        const data = JSON.parse(localStorage.getItem('currentUser')) || { name: "Mladen" };
-        const t = window.currentLangData || i18n.sr;
+    window.checkAndSend = function() {
+        if (!document.getElementById('acceptTerms').checked) {
+            alert("Morate prihvatiti uslove!");
+            return;
+        }
+        if (!odabraniKvar) {
+            alert("Izaberite vrstu kvara!");
+            return;
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => { executeSend(pos.coords.latitude, pos.coords.longitude); },
+                () => { executeSend(null, null); }
+            );
+        } else { executeSend(null, null); }
+    };
+
+    async function executeSend(lat, lon) {
+        const userData = JSON.parse(localStorage.getItem('currentUser')) || { name: "Mladen" };
         try {
             await addDoc(collection(db, "sos_calls"), {
-                name: data.name,
-                problem: type,
+                name: userData.name,
+                problem: odabraniKvar,
                 lat: lat,
                 lng: lon,
                 timestamp: serverTimestamp(),
                 status: "offen"
             });
-            alert(t.alertSent);
+            alert("Zahtev poslat! / Hilfe ist unterwegs!");
             closeSosMenu();
         } catch (e) {
-            alert("Error: " + e.message);
+            alert("Greška: " + e.message);
         }
     }
 </script>
+
 </body>
 </html>
