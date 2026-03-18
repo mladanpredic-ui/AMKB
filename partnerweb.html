@@ -1,123 +1,54 @@
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partner Panel | AK Balkan</title>
-    <style>
-        :root { --akb-blue: #092e54; --akb-red: #a52a2a; --bg: #f4f7f6; --gold: #c5a059; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: #333; }
-        nav { background: var(--akb-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); border-bottom: 3px solid var(--gold); }
-        .container { padding: 20px; max-width: 900px; margin: auto; }
-        
-        /* Fleet Status */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .fleet-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-        .status-toggle { padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-        .status-online { background: #27ae60; color: white; }
-        .status-offline { background: #7f8c8d; color: white; }
-
-        /* Alarm Card */
-        .alarm-card { background: var(--akb-red); color: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(165,42,42,0.4); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% {transform: scale(1)} 50% {transform: scale(1.02)} 100% {transform: scale(1)} }
-        
-        .btn-maps { display: inline-flex; align-items: center; justify-content: center; background: #3498db; color: white; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 15px; width: 90%; border: 2px solid white; }
-        .action-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-decline { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; }
-        .btn-accept-main { background: white; color: var(--akb-red); border: none; padding: 12px; border-radius: 10px; flex: 2; cursor: pointer; font-weight: bold; font-size: 16px; }
-        
-        .no-alarm { text-align: center; padding: 60px 20px; color: #95a5a6; border: 3px dashed #bdc3c7; border-radius: 20px; background: white; }
-        #clock { font-family: monospace; font-size: 1.2rem; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; }
-    </style>
-</head>
-<body>
-
-<nav>
-    <span id="nav-title">AK BALKAN | DISPIČER</span>
-    <span id="clock">00:00:00</span>
-</nav>
-
-<div class="container">
-    <h3 id="t-fleet-title">Status Vozila</h3>
-    <div class="dashboard-grid">
-        <div class="fleet-card"><span>🚛 Šlep 1</span><button class="status-toggle status-online">AKTIVAN</button></div>
-        <div class="fleet-card"><span>🛻 Šlep 2</span><button class="status-toggle status-offline">OFFLINE</button></div>
+<div id="display-area">
     </div>
-
-    <div id="display-area">
-        <div class="no-alarm">Skeniranje terena za SOS pozive...</div>
-    </div>
-</div>
-
-<audio id="alarm-sound" loop><source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg"></audio>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    // ... (Firebase Importe wie gehabt) ...
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const sound = document.getElementById('alarm-sound');
-    const partnerID = "partner_mladen";
-
-    const q = query(collection(db, "sos_calls"), where("status", "==", "offen"));
+    const partnerID = "partner_1"; // Jeder Partner hat eine ID
+    const q = query(collection(db, "sos_calls"), where("status", "==", "searching"));
 
     onSnapshot(q, (snapshot) => {
         const display = document.getElementById('display-area');
-        if (snapshot.empty) {
-            display.innerHTML = `<div class="no-alarm">Skeniranje terena za SOS pozive...</div>`;
-            sound.pause();
-        } else {
-            display.innerHTML = ""; // Očisti prethodne poruke
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                
-                // Preskoči ako je ovaj partner već odbio poziv
-                if (data.rejectedBy && data.rejectedBy[partnerID]) return;
-
+        display.innerHTML = "";
+        
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            
+            // Logik: Bin ich der aktuell angefragte Partner?
+            if (data.currentTargetPartner === partnerID) {
                 const card = document.createElement('div');
                 card.className = 'alarm-card';
                 card.innerHTML = `
-                    <h1>🚨 HITAN POZIV: ${data.name}</h1>
-                    <h2 style="background:rgba(255,255,255,0.2); padding:10px; border-radius:10px;">TIP: ${data.problem}</h2>
-                    ${data.lat ? `<a href="https://www.google.com/maps?q=${data.lat},${data.lng}" target="_blank" class="btn-maps">📍 OTVORI NAVIGACIJU</a>` : ''}
-                    <div class="action-group">
-                        <button class="btn-decline" onclick="declineCall('${docSnap.id}')">ODBIJ</button>
-                        <button class="btn-accept-main" onclick="acceptCall('${docSnap.id}')">POTVRDI PRIJEM</button>
+                    <h2>🚨 NOVI ZADATAK: ${data.name}</h2>
+                    <p>Lokacija: ${data.lat}, ${data.lng}</p>
+                    <div class="time-options">
+                        <button onclick="respond('${docSnap.id}', 30)" style="background:green; color:white;">Stižem za 30 min</button>
+                        <button onclick="respond('${docSnap.id}', 90)" style="background:orange; color:white;">Stižem za 60-90 min</button>
                     </div>
                 `;
                 display.appendChild(card);
-                sound.play().catch(() => {});
-            });
-        }
+            }
+        });
     });
 
-    window.acceptCall = async (id) => {
-        if (confirm("Da li sigurno potvrđujete prijem ovog poziva?")) {
-            await updateDoc(doc(db, "sos_calls", id), { 
-                status: "završeno", 
-                acceptedBy: partnerID 
+    window.respond = async (id, mins) => {
+        const docRef = doc(db, "sos_calls", id);
+        if (mins === 30) {
+            // Sofortiger Zuschlag
+            await updateDoc(docRef, { 
+                status: "assigned", 
+                acceptedBy: partnerID,
+                eta: 30 
             });
+        } else {
+            // 3-Minuten-Warteschleife-Logik
+            await updateDoc(docRef, { 
+                status: "searching",
+                pendingResponse: partnerID,
+                pendingEta: 90,
+                searchTimer: serverTimestamp() // Admin sieht: Wir suchen noch 3 Min weiter
+            });
+            alert("Sistem proverava da li ima bržih partnera (3 min)...");
         }
     };
-
-    window.declineCall = async (id) => {
-        const docRef = doc(db, "sos_calls", id);
-        await updateDoc(docRef, { [`rejectedBy.${partnerID}`]: true });
-    };
-
-    setInterval(() => { 
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('sr-RS'); 
-    }, 1000);
 </script>
-</body>
-</html>
