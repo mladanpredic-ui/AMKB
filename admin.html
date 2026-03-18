@@ -2,155 +2,145 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Founder Control | AK Balkan</title>
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark-bg: #061f3a; }
+        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark-bg: #061f3a; --success: #28a745; }
         
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; }
-        .header { background: var(--akb-blue); padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
-        
-        /* Dashboard Stats */
-        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; max-width: 1200px; margin: auto; }
-        .stat-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; border-left: 4px solid var(--gold); }
-        .stat-card h4 { margin: 0; font-size: 12px; text-transform: uppercase; color: #ccc; }
-        .stat-card p { margin: 5px 0 0; font-size: 22px; font-weight: bold; color: var(--gold); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding-bottom: 50px; }
+        .header { background: var(--akb-blue); padding: 15px; text-align: center; border-bottom: 2px solid var(--gold); }
+        .header h1 { font-size: 1.2rem; margin: 5px 0; }
+        .header p { font-size: 0.8rem; opacity: 0.8; }
 
-        /* Navigation Tabs */
-        .admin-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: transparent; border: 1px solid var(--gold); color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        /* Dashboard Stats - Mobil optimiert */
+        .stats-bar { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* 2 Spalten auf Mobilgeräten */
+            gap: 10px; 
+            padding: 15px; 
+            max-width: 1200px; 
+            margin: auto; 
+        }
+        .stat-card { background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .stat-card h4 { margin: 0; font-size: 9px; text-transform: uppercase; color: #aaa; }
+        .stat-card p { margin: 5px 0 0; font-size: 1.1rem; font-weight: bold; color: var(--gold); }
+
+        /* Navigation */
+        .admin-nav { display: flex; justify-content: center; gap: 5px; margin: 10px 0 20px; padding: 0 10px; }
+        .nav-btn { flex: 1; background: transparent; border: 1px solid var(--gold); color: white; padding: 10px 5px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
         .nav-btn.active { background: var(--gold); color: var(--akb-blue); font-weight: bold; }
 
-        .container { padding: 0 20px 50px; max-width: 1200px; margin: auto; }
-        
-        /* List Cards */
+        .container { padding: 0 15px; max-width: 1200px; margin: auto; }
         .list-section { display: none; }
         .active-section { display: block; }
         
-        .data-card { background: white; color: #333; margin-bottom: 12px; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-        .info h3 { margin: 0; font-size: 16px; color: var(--akb-blue); }
-        .info p { margin: 2px 0; font-size: 13px; color: #666; }
+        /* Karten-Design für Mobile */
+        .data-card { 
+            background: white; color: #333; margin-bottom: 15px; border-radius: 12px; padding: 15px; 
+            display: flex; flex-direction: column; /* Alles untereinander auf Mobil */
+            gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        .info h3 { margin: 0; font-size: 1.1rem; color: var(--akb-blue); }
+        .info p { margin: 4px 0; font-size: 0.9rem; color: #555; line-height: 1.3; }
         
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .badge-premium { background: var(--gold); color: white; }
-        .badge-partner { background: var(--akb-blue); color: white; }
-        .badge-sos { background: var(--red); color: white; animation: blink 1.5s infinite; }
-        
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        /* Badges & Buttons */
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .badge-filter { background: #444; color: white; border: none; padding: 8px 15px; margin-right: 5px; border-radius: 20px; }
+        .badge-filter.active-filter { background: var(--gold); color: var(--akb-blue); }
 
-        .btn-action { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-        .btn-action:hover { background: #ddd; }
+        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; background: #eee; color: #333; }
+        
+        /* Spezieller Style für GRAWE */
+        .type-grawe { border-top: 5px solid var(--success); }
+
+        /* Media Query für größere Bildschirme (Tablets) */
+        @media (min-width: 600px) {
+            .stats-bar { grid-template-columns: repeat(4, 1fr); }
+            .data-card { flex-direction: row; justify-content: space-between; align-items: center; }
+            .btn-action { width: auto; min-width: 120px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>👑 AK BALKAN - FOUNDER PANEL</h1>
-    <p>Upravljanje mrežom, partnerima i prodajom</p>
+    <h1>👑 AK BALKAN FOUNDER</h1>
+    <p>Upravljanje sistemom u realnom vremenu</p>
 </div>
 
 <div class="stats-bar">
-    <div class="stat-card"><h4>Ukupno Članova</h4><p>1,248</p></div>
-    <div class="stat-card"><h4>Aktivni Partneri</h4><p>42</p></div>
-    <div class="stat-card"><h4>Promet (Mesec)</h4><p>18.450 €</p></div>
-    <div class="stat-card"><h4>Otvoreni SOS</h4><p style="color:var(--red)">3</p></div>
+    <div class="stat-card"><h4>Članova</h4><p>1,248</p></div>
+    <div class="stat-card"><h4>Partneri</h4><p>42</p></div>
+    <div class="stat-card"><h4>Promet</h4><p>18.4k €</p></div>
+    <div class="stat-card"><h4>SOS</h4><p style="color:var(--red)">3</p></div>
 </div>
 
 <div class="container">
     <div class="admin-nav">
-        <button class="nav-btn active" onclick="switchTab('sos')">SOS Zahtevi</button>
-        <button class="nav-btn" onclick="switchTab('members')">Članovi</button>
-        <button class="nav-btn" onclick="switchTab('partners')">Partneri</button>
+        <button class="nav-btn active" onclick="switchTab('sos', this)">SOS</button>
+        <button class="nav-btn" onclick="switchTab('members', this)">ČLANOVI</button>
+        <button class="nav-btn" onclick="switchTab('partners', this)">PARTNERI</button>
     </div>
 
     <div id="sos" class="list-section active-section">
         <div class="data-card">
             <div class="info">
-                <span class="badge badge-sos">HITNO</span>
-                <h3>Marko Petrović (Audi A4)</h3>
-                <p>Lokacija: Autokomanda, Beograd</p>
+                <span class="badge" style="background:var(--red); color:white;">HITNO</span>
+                <h3>Marko Petrović</h3>
+                <p>📍 Autokomanda, Beograd<br>🚗 Audi A4 (BG-123-TX)</p>
             </div>
             <button class="btn-action" style="background:var(--red); color:white;">POŠALJI ŠLEP</button>
         </div>
     </div>
 
-    <div id="members" class="list-section">
-        <div class="data-card">
-            <div class="info">
-                <h3>Nikola Jović</h3>
-                <p>ID: AKB-8829 | Paket: <span class="badge badge-premium">PREMIUM</span></p>
-                <p>Ističe: 12.03.2027.</p>
-            </div>
-            <button class="btn-action">DETALJI</button>
-        </div>
-    </div>
-
     <div id="partners" class="list-section">
-        
-        <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px;">
-            <button class="badge" style="background:var(--gold); border:none; cursor:pointer;">Svi</button>
-            <button class="badge" style="background:#444; border:none; cursor:pointer;">Šlep Služba</button>
-            <button class="badge" style="background:#444; border:none; cursor:pointer;">Servis/Radionica</button>
-            <button class="badge" style="background:#444; border:none; cursor:pointer;">Tuning</button>
-            <button class="badge" style="background:var(--akb-blue); border:none; cursor:pointer;">Strateški Partneri</button>
+        <div style="overflow-x: auto; white-space: nowrap; margin-bottom: 15px; padding-bottom: 5px;">
+            <button class="badge-filter active-filter" onclick="filterPartners('all', this)">Svi</button>
+            <button class="badge-filter" onclick="filterPartners('grawe', this)">GRAWE</button>
+            <button class="badge-filter" onclick="filterPartners('slep', this)">Šlep</button>
+            <button class="badge-filter" onclick="filterPartners('tuning', this)">Tuning</button>
         </div>
 
-        <div class="data-card" style="border-left: 6px solid #28a745;">
+        <div class="data-card partner-item type-grawe">
             <div class="info">
-                <span class="badge" style="background:#28a745; color:white;">STRATEŠKI PARTNER</span>
+                <span class="badge" style="background:var(--success); color:white;">Premium Partner</span>
                 <h3>GRAWE Osiguranje</h3>
-                <p><strong>Specijalni popust:</strong> -15% na kasko za AKB članove</p>
-                <p>Status: Aktivna saradnja | Kontakt: B2B Departman</p>
+                <p>Popust: <strong>-15% Kasko</strong></p>
             </div>
-            <button class="btn-action" style="background:var(--akb-blue); color:white;">UGOVOR</button>
+            <button class="btn-action" style="background:var(--akb-blue); color:white;">KONTAKT</button>
         </div>
 
-        <div class="data-card">
+        <div class="data-card partner-item type-tuning">
             <div class="info">
-                <span class="badge" style="background:#555; color:white;">ŠLEP SLUŽBA</span>
-                <h3>Balkan Towing 24/7</h3>
-                <p>Lokacija: Beograd (Gazela) | Flota: 5 kamiona</p>
-                <p>Odziv: <span style="color:var(--success)">Odmah</span></p>
-            </div>
-            <button class="btn-action">POZOVI</button>
-        </div>
-
-        <div class="data-card">
-            <div class="info">
-                <span class="badge" style="background:var(--red); color:white;">TUNING & OPTIMIZATION</span>
+                <span class="badge" style="background:var(--red); color:white;">Tuning</span>
                 <h3>Stage 1 Performance</h3>
-                <p>Chiptuning & Dyno | Popust: -10% za PREMIUM članove</p>
-                <p>Lokacija: Zemun</p>
-            </div>
-            <button class="btn-action">UPRAVLJAJ</button>
-        </div>
-
-        <div class="data-card">
-            <div class="info">
-                <span class="badge" style="background:var(--akb-blue); color:white;">MEHANIČAR</span>
-                <h3>Auto Servis "Mladenovac"</h3>
-                <p>Opšta mehanika & Dijagnostika</p>
-                <p>Specijalnost: Nemačka vozila</p>
+                <p>📍 Zemun | Chip & Dyno</p>
             </div>
             <button class="btn-action">PROFIL</button>
         </div>
-
     </div>
-
 </div>
 
 <script>
-    function switchTab(tabId) {
-        // Hide all sections
+    function switchTab(tabId, btn) {
         document.querySelectorAll('.list-section').forEach(sec => sec.classList.remove('active-section'));
-        // Deactivate all buttons
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        
-        // Show selected
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active-section');
-        event.currentTarget.classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function filterPartners(category, btn) {
+        document.querySelectorAll('.badge-filter').forEach(b => b.classList.remove('active-filter'));
+        btn.classList.add('active-filter');
+        const items = document.querySelectorAll('.partner-item');
+        items.forEach(item => {
+            if (category === 'all' || item.classList.contains('type-' + category)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
     }
 </script>
-
 </body>
 </html>
