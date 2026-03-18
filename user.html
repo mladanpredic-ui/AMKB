@@ -7,56 +7,67 @@
     <style>
         :root { --akb-blue: #092e54; --gold: #c5a059; --akb-red: #a52a2a; }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 30px; }
-        .header { background: var(--akb-blue); color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .header { background: var(--akb-blue); color: white; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px solid var(--gold); }
         .container { padding: 15px; max-width: 500px; margin: auto; }
         
-        /* SOS Dugme i Overlay */
-        .sos-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
-        .sos-card { background: white; width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; text-align: center; }
+        /* Das edle Design der Karten */
+        .card { background: linear-gradient(135deg, var(--akb-blue) 0%, #1a4a7a 100%); border-radius: 15px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .card h2 { margin: 0; font-size: 18px; color: var(--gold); }
         
-        .sos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        /* SOS Bereich */
+        .sos-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .sos-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; text-align: center; border: 4px solid var(--akb-red); }
+        
+        .sos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
         .sos-btn { 
-            background: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px 10px; 
-            font-size: 14px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px;
+            background: #f8f9fa; border: 2px solid #eee; border-radius: 12px; padding: 15px 5px; 
+            font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold;
         }
         
-        /* KLASA KOJA JE PRAVILA PROBLEM - SADA JE PRAZNA DOK NE KLIKNEŠ */
-        .sos-btn.active { border-color: var(--akb-blue); background: #eef4ff; box-shadow: 0 0 10px rgba(9,46,84,0.3); }
+        /* Der Fix für den blauen Rahmen */
+        .sos-btn.active { border-color: var(--akb-blue); background: #eef4ff; color: var(--akb-blue); transform: scale(1.02); }
 
-        .btn-send { background: var(--akb-red); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer; }
-        .btn-close { background: #666; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
+        .btn-send { background: var(--akb-red); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 20px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(165,42,42,0.3); }
+        .btn-close { background: #eee; color: #444; border: none; padding: 10px; width: 100%; border-radius: 10px; margin-top: 10px; cursor: pointer; }
         
-        .main-sos-trigger { background: var(--akb-red); color: white; padding: 20px; border-radius: 50%; width: 80px; height: 80px; border: 5px solid white; font-weight: bold; font-size: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin: 20px auto; display: block; }
+        .main-sos-trigger { background: var(--akb-red); color: white; padding: 25px; border-radius: 50%; width: 100px; height: 100px; border: 6px solid white; font-weight: bold; font-size: 22px; cursor: pointer; box-shadow: 0 0 20px rgba(165,42,42,0.5); margin: 30px auto; display: block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="header">AK BALKAN - KORISNIK</div>
+<div class="header">AUTOKLUB BALKAN</div>
 
 <div class="container">
+    <div class="card">
+        <h2 id="userNameDisplay">Dobrodošli, Mladjan</h2>
+        <p style="font-size: 14px; opacity: 0.8;">Status: Aktivan Član</p>
+    </div>
+
     <button class="main-sos-trigger" onclick="openSosMenu()">SOS</button>
-    <p style="text-align: center;">Pritisnite dugme za hitnu pomoć na putu</p>
+    <p style="text-align: center; font-weight: bold; color: var(--akb-blue);">POTREBNA POMOĆ NA PUTU?</p>
 </div>
 
 <div id="sosOverlay" class="sos-overlay">
     <div class="sos-card">
-        <h3 id="t-title">Vrsta kvara? / Pannenart?</h3>
+        <h3 style="margin-top:0; color: var(--akb-blue);">Vrsta kvara?</h3>
         
         <div class="sos-grid">
             <button class="sos-btn" onclick="selectService(this, 'Slep sluzba')">🚚 <span>Šlep služba</span></button>
             <button class="sos-btn" onclick="selectService(this, 'E-Auto')">🔋 <span>E-Auto (Blokiran)</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'Starthilfe')">⚡ <span>Starthilfe / Kvar</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'Starthilfe')">⚡ <span>Starthilfe</span></button>
             <button class="sos-btn" onclick="selectService(this, 'Gorivo')">⛽ <span>Gorivo</span></button>
             <button class="sos-btn" onclick="selectService(this, 'Guma')">🎡 <span>Guma</span></button>
+            <button class="sos-btn" onclick="selectService(this, 'Drugo')">🛠️ <span>Drugo</span></button>
         </div>
 
-        <div style="margin-top:15px; text-align: left; font-size: 12px;">
+        <div style="margin-top:20px; text-align: left; font-size: 13px;">
             <input type="checkbox" id="acceptTerms"> 
-            <label for="acceptTerms">Prihvatam uslove / Ich akzeptiere die AGB</label>
+            <label for="acceptTerms">Prihvatam uslove pružanja pomoći</label>
         </div>
 
-        <button class="btn-send" onclick="checkAndSend()">POŠALJI ZAHTEV / SENDEN</button>
-        <button class="btn-close" onclick="closeSosMenu()">ZATVORI / SCHLIESSEN</button>
+        <button class="btn-send" onclick="checkAndSend()">POŠALJI LOKACIJU</button>
+        <button class="btn-close" onclick="closeSosMenu()">ODUSTANI</button>
     </div>
 </div>
 
@@ -65,7 +76,7 @@
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyB...", // TVOJ API KEY KOJI VEĆ IMAŠ
+        apiKey: "AIzaSyB...", // HIER DEINEN ECHTEN API KEY EINTRAGEN
         authDomain: "amkb-balkan.firebaseapp.com",
         projectId: "amkb-balkan",
         storageBucket: "amkb-balkan.appspot.com",
@@ -81,11 +92,10 @@
     window.openSosMenu = function() { document.getElementById('sosOverlay').style.display = 'flex'; };
     window.closeSosMenu = function() { document.getElementById('sosOverlay').style.display = 'none'; };
 
-    // FUNKCIJA ZA ODABIR KOJA REŠAVA TVOJ PROBLEM
     window.selectService = function(element, tip) {
         const buttons = document.querySelectorAll('.sos-btn');
-        buttons.forEach(btn => btn.classList.remove('active')); // Resetuj sve
-        element.classList.add('active'); // Aktiviraj samo kliknuti
+        buttons.forEach(btn => btn.classList.remove('active')); 
+        element.classList.add('active'); 
         odabraniKvar = tip;
     };
 
@@ -95,10 +105,10 @@
             return;
         }
         if (!odabraniKvar) {
-            alert("Izaberite vrstu kvara!");
+            alert("Molimo izaberite vrstu kvara!");
             return;
         }
-
+        
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => { executeSend(pos.coords.latitude, pos.coords.longitude); },
@@ -108,23 +118,21 @@
     };
 
     async function executeSend(lat, lon) {
-        const userData = JSON.parse(localStorage.getItem('currentUser')) || { name: "Mladen" };
         try {
             await addDoc(collection(db, "sos_calls"), {
-                name: userData.name,
+                name: "Mladjan",
                 problem: odabraniKvar,
                 lat: lat,
                 lng: lon,
                 timestamp: serverTimestamp(),
                 status: "offen"
             });
-            alert("Zahtev poslat! / Hilfe ist unterwegs!");
+            alert("Zahtev poslat! Pomoć stiže.");
             closeSosMenu();
         } catch (e) {
-            alert("Greška: " + e.message);
+            alert("Greška: Proverite Firebase Rules!");
         }
     }
 </script>
-
 </body>
 </html>
