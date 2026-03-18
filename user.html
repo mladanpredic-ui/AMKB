@@ -2,137 +2,106 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korisnički Panel | AK Balkan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Moj Profil | AK Balkan</title>
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --akb-red: #a52a2a; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 30px; }
-        .header { background: var(--akb-blue); color: white; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px solid var(--gold); }
-        .container { padding: 15px; max-width: 500px; margin: auto; }
+        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark-bg: #061f3a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; text-align: center; }
+        .container { padding: 20px; max-width: 400px; margin: auto; }
         
-        /* Das edle Design der Karten */
-        .card { background: linear-gradient(135deg, var(--akb-blue) 0%, #1a4a7a 100%); border-radius: 15px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .card h2 { margin: 0; font-size: 18px; color: var(--gold); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-gold { background: var(--gold); color: var(--akb-blue); }
+        .btn-sos { background: var(--red); color: white; font-size: 1.5rem; height: 150px; border-radius: 50%; box-shadow: 0 0 20px rgba(165,42,42,0.6); }
         
-        /* SOS Bereich */
-        .sos-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .sos-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; text-align: center; border: 4px solid var(--akb-red); }
-        
-        .sos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .sos-btn { 
-            background: #f8f9fa; border: 2px solid #eee; border-radius: 12px; padding: 15px 5px; 
-            font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold;
-        }
-        
-        /* Der Fix für den blauen Rahmen */
-        .sos-btn.active { border-color: var(--akb-blue); background: #eef4ff; color: var(--akb-blue); transform: scale(1.02); }
-
-        .btn-send { background: var(--akb-red); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 20px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(165,42,42,0.3); }
-        .btn-close { background: #eee; color: #444; border: none; padding: 10px; width: 100%; border-radius: 10px; margin-top: 10px; cursor: pointer; }
-        
-        .main-sos-trigger { background: var(--akb-red); color: white; padding: 25px; border-radius: 50%; width: 100px; height: 100px; border: 6px solid white; font-weight: bold; font-size: 22px; cursor: pointer; box-shadow: 0 0 20px rgba(165,42,42,0.5); margin: 30px auto; display: block; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #profile-section, #login-section { display: none; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="header">AUTOKLUB BALKAN</div>
-
 <div class="container">
-    <div class="card">
-        <h2 id="userNameDisplay">Dobrodošli, Mladjan</h2>
-        <p style="font-size: 14px; opacity: 0.8;">Status: Aktivan Član</p>
+    <h2 id="status-title">AK BALKAN</h2>
+
+    <div id="login-section">
+        <p>Prijavite se na vaš nalog</p>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Lozinka">
+        <button class="btn btn-gold" onclick="login()">PRIJAVA</button>
     </div>
 
-    <button class="main-sos-trigger" onclick="openSosMenu()">SOS</button>
-    <p style="text-align: center; font-weight: bold; color: var(--akb-blue);">POTREBNA POMOĆ NA PUTU?</p>
-</div>
-
-<div id="sosOverlay" class="sos-overlay">
-    <div class="sos-card">
-        <h3 style="margin-top:0; color: var(--akb-blue);">Vrsta kvara?</h3>
-        
-        <div class="sos-grid">
-            <button class="sos-btn" onclick="selectService(this, 'Slep sluzba')">🚚 <span>Šlep služba</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'E-Auto')">🔋 <span>E-Auto (Blokiran)</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'Starthilfe')">⚡ <span>Starthilfe</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'Gorivo')">⛽ <span>Gorivo</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'Guma')">🎡 <span>Guma</span></button>
-            <button class="sos-btn" onclick="selectService(this, 'Drugo')">🛠️ <span>Drugo</span></button>
+    <div id="profile-section">
+        <p>Dobrodošli, <span id="user-display-name">Član</span></p>
+        <div style="margin: 40px 0;">
+            <button class="btn btn-sos" onclick="sendSOS()">SOS</button>
+            <p style="color: var(--red); margin-top: 15px; font-weight: bold;">POŠALJI SIGNAL ZA POMOĆ</p>
         </div>
-
-        <div style="margin-top:20px; text-align: left; font-size: 13px;">
-            <input type="checkbox" id="acceptTerms"> 
-            <label for="acceptTerms">Prihvatam uslove pružanja pomoći</label>
-        </div>
-
-        <button class="btn-send" onclick="checkAndSend()">POŠALJI LOKACIJU</button>
-        <button class="btn-close" onclick="closeSosMenu()">ODUSTANI</button>
+        <button class="btn" style="background:transparent; color:white; border:1px solid white;" onclick="logout()">Odjavi se</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyB...", // HIER DEINEN ECHTEN API KEY EINTRAGEN
-        authDomain: "amkb-balkan.firebaseapp.com",
-        projectId: "amkb-balkan",
-        storageBucket: "amkb-balkan.appspot.com",
-        messagingSenderId: "305111928091",
-        appId: "1:305111928091:web:2c77dfa811776566050b9a"
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let odabraniKvar = "";
-
-    window.openSosMenu = function() { document.getElementById('sosOverlay').style.display = 'flex'; };
-    window.closeSosMenu = function() { document.getElementById('sosOverlay').style.display = 'none'; };
-
-    window.selectService = function(element, tip) {
-        const buttons = document.querySelectorAll('.sos-btn');
-        buttons.forEach(btn => btn.classList.remove('active')); 
-        element.classList.add('active'); 
-        odabraniKvar = tip;
+    // 1. LOGIN FUNKTION
+    window.login = () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        signInWithEmailAndPassword(auth, email, pass)
+            .catch(error => alert("Greška: " + error.message));
     };
 
-    window.checkAndSend = function() {
-        if (!document.getElementById('acceptTerms').checked) {
-            alert("Morate prihvatiti uslove!");
-            return;
-        }
-        if (!odabraniKvar) {
-            alert("Molimo izaberite vrstu kvara!");
-            return;
-        }
+    // 2. LOGOUT FUNKTION
+    window.logout = () => signOut(auth);
+
+    // 3. AUTH STATE CHECK (Prüft ob User eingeloggt ist)
+    onAuthStateChanged(auth, (user) => {
+        const loginSec = document.getElementById('login-section');
+        const profileSec = document.getElementById('profile-section');
         
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => { executeSend(pos.coords.latitude, pos.coords.longitude); },
-                () => { executeSend(null, null); }
-            );
-        } else { executeSend(null, null); }
-    };
+        if (user) {
+            loginSec.style.display = 'none';
+            profileSec.style.display = 'block';
+            document.getElementById('user-display-name').innerText = user.email;
+        } else {
+            loginSec.style.display = 'block';
+            profileSec.style.display = 'none';
+        }
+    });
 
-    async function executeSend(lat, lon) {
+    // 4. SOS SIGNAL SENDEN
+    window.sendSOS = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+
         try {
             await addDoc(collection(db, "sos_calls"), {
-                name: "Mladjan",
-                problem: odabraniKvar,
-                lat: lat,
-                lng: lon,
-                timestamp: serverTimestamp(),
-                status: "offen"
+                uid: user.uid,
+                name: user.email, // Hier könnte man später den echten Namen aus Firestore laden
+                problem: "Guma / Kvar",
+                status: "offen",
+                timestamp: serverTimestamp()
             });
-            alert("Zahtev poslat! Pomoć stiže.");
-            closeSosMenu();
+            alert("Signal poslat! Pomoć stiže.");
         } catch (e) {
-            alert("Greška: Proverite Firebase Rules!");
+            alert("Greška pri slanju: " + e.message);
         }
-    }
+    };
 </script>
 </body>
 </html>
