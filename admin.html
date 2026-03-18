@@ -5,94 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Founder Control | AK Balkan</title>
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; }
-        body { font-family: 'Segoe UI', sans-serif; background: #061f3a; color: white; margin: 0; }
+        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark-bg: #061f3a; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; }
         .header { background: var(--akb-blue); padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .container { padding: 20px; max-width: 1000px; margin: auto; }
-        .call-card { background: white; color: #333; margin-bottom: 15px; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-left: 8px solid var(--gold); }
-        .info h3 { margin: 0; color: var(--akb-blue); }
-        .status-badge { background: #eee; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; }
-        .btn-dispatch { background: var(--red); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-dispatch:hover { background: #800000; }
-        .no-calls { text-align: center; opacity: 0.5; margin-top: 50px; }
+        
+        /* Dashboard Stats */
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; max-width: 1200px; margin: auto; }
+        .stat-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; border-left: 4px solid var(--gold); }
+        .stat-card h4 { margin: 0; font-size: 12px; text-transform: uppercase; color: #ccc; }
+        .stat-card p { margin: 5px 0 0; font-size: 22px; font-weight: bold; color: var(--gold); }
+
+        /* Navigation Tabs */
+        .admin-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--gold); color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .nav-btn.active { background: var(--gold); color: var(--akb-blue); font-weight: bold; }
+
+        .container { padding: 0 20px 50px; max-width: 1200px; margin: auto; }
+        
+        /* List Cards */
+        .list-section { display: none; }
+        .active-section { display: block; }
+        
+        .data-card { background: white; color: #333; margin-bottom: 12px; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .info h3 { margin: 0; font-size: 16px; color: var(--akb-blue); }
+        .info p { margin: 2px 0; font-size: 13px; color: #666; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-premium { background: var(--gold); color: white; }
+        .badge-partner { background: var(--akb-blue); color: white; }
+        .badge-sos { background: var(--red); color: white; animation: blink 1.5s infinite; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .btn-action { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+        .btn-action:hover { background: #ddd; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <h1>👑 AK BALKAN - FOUNDER PANEL</h1>
-    <p>Pregled svih SOS zahteva u realnom vremenu</p>
+    <p>Upravljanje mrežom, partnerima i prodajom</p>
+</div>
+
+<div class="stats-bar">
+    <div class="stat-card"><h4>Ukupno Članova</h4><p>1,248</p></div>
+    <div class="stat-card"><h4>Aktivni Partneri</h4><p>42</p></div>
+    <div class="stat-card"><h4>Promet (Mesec)</h4><p>18.450 €</p></div>
+    <div class="stat-card"><h4>Otvoreni SOS</h4><p style="color:var(--red)">3</p></div>
 </div>
 
 <div class="container">
-    <div id="admin-list">
-        <p class="no-calls">Skeniranje baze podataka...</p>
+    <div class="admin-nav">
+        <button class="nav-btn active" onclick="switchTab('sos')">SOS Zahtevi</button>
+        <button class="nav-btn" onclick="switchTab('members')">Članovi</button>
+        <button class="nav-btn" onclick="switchTab('partners')">Partneri</button>
+    </div>
+
+    <div id="sos" class="list-section active-section">
+        <div class="data-card">
+            <div class="info">
+                <span class="badge badge-sos">HITNO</span>
+                <h3>Marko Petrović (Audi A4)</h3>
+                <p>Lokacija: Autokomanda, Beograd</p>
+            </div>
+            <button class="btn-action" style="background:var(--red); color:white;">POŠALJI ŠLEP</button>
+        </div>
+    </div>
+
+    <div id="members" class="list-section">
+        <div class="data-card">
+            <div class="info">
+                <h3>Nikola Jović</h3>
+                <p>ID: AKB-8829 | Paket: <span class="badge badge-premium">PREMIUM</span></p>
+                <p>Ističe: 12.03.2027.</p>
+            </div>
+            <button class="btn-action">DETALJI</button>
+        </div>
+    </div>
+
+    <div id="partners" class="list-section">
+        <div class="data-card">
+            <div class="info">
+                <span class="badge badge-partner">SERVIS</span>
+                <h3>Auto Centar "Brzi"</h3>
+                <p>Lokacija: Mladenovac | Provizija: 10%</p>
+            </div>
+            <button class="btn-action">UPRAVLJAJ</button>
+        </div>
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, onSnapshot, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Slušamo SVE pozive
-    onSnapshot(collection(db, "sos_calls"), (snapshot) => {
-        const list = document.getElementById('admin-list');
-        if (snapshot.empty) {
-            list.innerHTML = '<p class="no-calls">Trenutno nema aktivnih zahteva.</p>';
-            return;
-        }
-
-        list.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const card = document.createElement('div');
-            card.className = 'call-card';
-            
-            // Boja badge-a u zavisnosti od statusa
-            let statusColor = data.status === 'offen' ? '#a52a2a' : '#27ae60';
-            let statusText = data.status === 'offen' ? 'NOVO / NEPOSLATO' : 'PROSLEĐENO PARTNERIMA';
-
-            card.innerHTML = `
-                <div class="info">
-                    <h3>👤 ${data.name || 'Nepoznato'}</h3>
-                    <p>🛠 Kvar: <strong>${data.problem}</strong></p>
-                    <span class="status-badge" style="color: white; background: ${statusColor}">${statusText}</span>
-                </div>
-                <div>
-                    ${data.status === 'offen' ? 
-                        `<button class="btn-dispatch" onclick="sendToPartners('${docSnap.id}')">POŠALJI PARTNERIMA 📡</button>` : 
-                        `<button class="btn-dispatch" style="background:#666" disabled>POSLATO</button>`
-                    }
-                </div>
-            `;
-            list.appendChild(card);
-        });
-    });
-
-    window.sendToPartners = async (id) => {
-        const docRef = doc(db, "sos_calls", id);
-        try {
-            await updateDoc(docRef, { 
-                status: "searching", // Ovo aktivira alarm kod partnera
-                dispatchedAt: serverTimestamp() 
-            });
-            alert("Poziv je uspešno prosleđen svim partnerima!");
-        } catch (e) {
-            alert("Greška: " + e.message);
-        }
-    };
+<script>
+    function switchTab(tabId) {
+        // Hide all sections
+        document.querySelectorAll('.list-section').forEach(sec => sec.classList.remove('active-section'));
+        // Deactivate all buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Show selected
+        document.getElementById(tabId).classList.add('active-section');
+        event.currentTarget.classList.add('active');
+    }
 </script>
 
 </body>
