@@ -2,117 +2,111 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AutoKlub Balkan | Oficijalna Stranica</title>
     <style>
-        :root {
-            --akb-blue: #092e54;
-            --akb-red: #a52a2a;
-            --gold: #c5a059;
-            --light: #f4f7f6;
-            --footer-bg: #1a1a1a;
+        :root { 
+            --akb-blue: #092e54; --akb-red: #a52a2a; --gold: #c5a059; --dark: #1a1a1a; --light: #f4f4f4;
         }
-        
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: #333; display: flex; flex-direction: column; min-height: 100vh; }
-        
-        nav { background: var(--akb-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { color: white; font-weight: bold; font-size: 1.5rem; cursor: pointer; text-decoration: none; }
-        
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: var(--dark); line-height: 1.6; }
+
+        /* HEADER & NAV */
+        nav { 
+            background: var(--akb-blue); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--gold);
+        }
+        .logo-area { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .lang-switch { color: white; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--gold); padding: 2px 8px; border-radius: 4px; }
+
+        /* HERO SECTION */
         .hero { 
-            background: linear-gradient(rgba(9, 46, 84, 0.7), rgba(9, 46, 84, 0.7)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80'); 
-            background-size: cover; background-position: center; height: 50vh; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px; 
+            background: linear-gradient(rgba(9,46,84,0.8), rgba(9,46,84,0.8)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=1470');
+            background-size: cover; background-position: center; color: white; padding: 60px 10%; text-align: center;
         }
+        .btn-main { background: var(--akb-red); color: white; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; width: 100%; max-width: 280px; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-        .btn-sos { background: var(--akb-red); color: white; border: none; padding: 20px 45px; font-size: 1.6rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px rgba(165,42,42,0.5); margin: 20px 0; transition: 0.3s; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        /* LOGIN AREA (ERWEITERT) */
+        .login-section { background: white; padding: 20px; margin: -30px 5% 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; justify-content: space-around; }
+        .login-link { text-decoration: none; color: var(--akb-blue); font-size: 0.85rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
 
-        .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 40px 5%; max-width: 1200px; margin: auto; }
-        .package { background: white; padding: 30px; border-radius: 15px; border-top: 5px solid var(--gold); text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .price { font-size: 1.8rem; font-weight: bold; margin: 15px 0; color: var(--akb-blue); }
-        .btn-main { background: var(--akb-blue); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* PARTNER & CONTENT */
+        .container { padding: 20px 5%; }
+        .partner-highlight { background: #e8f4fd; border-left: 5px solid #28a745; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
 
-        footer { background: var(--footer-bg); color: white; padding: 40px 5%; margin-top: auto; border-top: 4px solid var(--gold); }
-        .disclaimer-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; font-size: 11px; color: #888; text-align: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        
-        #admin-login-area { display: none; margin-top: 15px; max-width: 250px; margin-left: auto; margin-right: auto; background: #222; padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+        /* FOOTER (Gesetzeskonform) */
+        footer { background: var(--dark); color: white; padding: 40px 5% 20px; font-size: 0.85rem; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .footer-bottom { border-top: 1px solid #333; margin-top: 30px; padding-top: 20px; text-align: center; opacity: 0.6; font-size: 0.75rem; }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+            .hero { padding: 100px 20%; }
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">AK BALKAN</div>
+<nav>
+    <a href="#" class="logo-area">
+        <span style="font-size: 1.5rem;">👑</span>
+        <span style="font-weight: bold; letter-spacing: 1px;">AK BALKAN</span>
+    </a>
+    <div class="lang-switch">SRB | DE</div>
+</nav>
+
+<section class="hero">
+    <h1 id="hero-title">Sigurnost na putu širom Balkana</h1>
+    <p>Vaš partner za asistenciju, tuning i osiguranje.</p>
+    <button class="btn-main" onclick="location.href='vertrag.html'">POSTANI ČLAN (UGOVOR)</button>
+</section>
+
+<div class="login-section">
+    <a href="admin.html" class="login-link"><span>🔑</span> FOUNDER</a>
+    <a href="partnerweb.html" class="login-link"><span>🤝</span> PARTNER</a>
+    <a href="user.html" class="login-link"><span>👤</span> MOJ PROFIL</a>
+</div>
+
+<div class="container">
+    <div class="partner-highlight">
+        <h4 style="margin:0; color:#28a745;">OFFICIAL B2B PARTNER: GRAWE</h4>
+        <p style="margin:5px 0; font-size:0.9rem;">Popust od <strong>-15%</strong> na kasko polise za sve aktivne članove kluba.</p>
+    </div>
+
+    <h2 style="text-align:center; color:var(--akb-blue);">Naši Paketi</h2>
+    <div style="background:white; padding:20px; border-radius:10px; margin-bottom:15px; border-top: 4px solid var(--gold);">
+        <h3 style="margin:0;">PREMIUM EUROPA</h3>
+        <p style="color:#a52a2a; font-weight:bold; font-size:1.4rem;">159€ <span style="font-size:0.8rem; color:#666;">/ god</span></p>
+        <ul style="padding-left:20px; font-size:0.9rem;">
+            <li>Neograničen šlep u SRB & EU</li>
+            <li>Popusti u Tuning shopovima</li>
+            <li>GRAWE Kasko Benefit</li>
+        </ul>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
         <div>
-            <button onclick="window.location.href='user.html'" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 15px; border-radius:5px; cursor:pointer;">PROFIL</button>
+            <h4 style="color:var(--gold);">AutoKlub Balkan d.o.o.</h4>
+            <p>Bulevar Mihajla Pupina 10<br>11000 Beograd, Srbija</p>
         </div>
-    </nav>
-
-    <div class="hero">
-        <h1>AutoKlub Balkan</h1>
-        <p>"Više od pomoći na putu."</p>
-        <button class="btn-sos" onclick="sendSOS()">SOS</button>
+        <div>
+            <h4 style="color:var(--gold);">Pravne informacije</h4>
+            <a href="#" style="color:#ccc; text-decoration:none;">Impressum</a><br>
+            <a href="#" style="color:#ccc; text-decoration:none;">Politika privatnosti</a><br>
+            <a href="#" style="color:#ccc; text-decoration:none;">Uslovi korišćenja</a>
+        </div>
+        <div>
+            <h4 style="color:var(--gold);">Kontakt</h4>
+            <p>Email: info@autoklubbalkan.rs<br>Tel: +381 11 123 456</p>
+        </div>
     </div>
-
-    <div class="pricing">
-        <div class="package"><h3>MOTO</h3><p class="price">3.500 RSD</p><button class="btn-main">ODABERI</button></div>
-        <div class="package" style="border-color: var(--akb-blue);"><h3>BAZA</h3><p class="price">5.900 RSD</p><button class="btn-main">ODABERI</button></div>
-        <div class="package"><h3>EVROPA VIP</h3><p class="price">11.800 RSD</p><button class="btn-main">ODABERI</button></div>
+    <div class="footer-bottom">
+        &copy; 2026 AutoKlub Balkan. Sva prava zadržana.<br>
+        PIB: 102345678 | Matični broj: 12345678 | Registrovano kod APR
     </div>
+</footer>
 
-    <footer>
-        <div class="disclaimer-box">
-            <strong>NAPOMENA:</strong> Svi podaci su zaštićeni. Sistem koristi <strong>Mladjan Cloud Control</strong> v2.0. 
-            SOS pozivi se automatski prosleđuju dežurnom dispičeru.
-        </div>
-
-        <div style="text-align: center;">
-            <button onclick="document.getElementById('admin-login-area').style.display='block'" style="background: none; border: none; color: #444; font-size: 10px; cursor: pointer;">Partner Login</button>
-            
-            <div id="admin-login-area">
-                <input type="password" id="internal-pass" placeholder="Lozinka (000000)" style="width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px; color: black; text-align: center;">
-                <button id="login-btn" style="background: var(--akb-red); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold;">ULAZ</button>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #555;">
-            &copy; 2026 AutoKlub Balkan | <span style="color: var(--gold);">DISPIČER: MLADJAN</span>
-        </div>
-    </footer>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-            authDomain: "autoklub-balkan.firebaseapp.com",
-            projectId: "autoklub-balkan",
-            storageBucket: "autoklub-balkan.firebasestorage.app",
-            messagingSenderId: "499546593125",
-            appId: "1:499546593125:web:7823602797b37e8338b38c"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Login Funktion
-        document.getElementById('login-btn').addEventListener('click', async () => {
-            const pass = document.getElementById('internal-pass').value;
-            try {
-                const docRef = doc(db, "internal_accounts", "admin_mladjan");
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists() && docSnap.data().password === pass) {
-                    window.location.href = 'admin.html';
-                } else {
-                    alert("Pogrešna lozinka!");
-                }
-            } catch (e) {
-                alert("Greška: Proverite Firebase Rules!");
-            }
-        });
-
-        window.sendSOS = function() { alert("SOS Signal poslat Mladjanu!"); };
-    </script>
 </body>
 </html>
