@@ -2,35 +2,59 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Partner Panel | AK Balkan</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; margin: 0; text-align: center; }
-        nav { background: #092e54; color: white; padding: 15px; font-weight: bold; border-bottom: 3px solid #c5a059; }
-        .container { padding: 20px; }
-        .alarm-card { background: #a52a2a; color: white; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% {transform: scale(1)} 50% {transform: scale(1.02)} 100% {transform: scale(1)} }
-        .btn { background: white; color: #a52a2a; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin: 5px; }
-        .no-call { color: #999; margin-top: 50px; }
+        :root { --akb-blue: #092e54; --akb-red: #a52a2a; --gold: #c5a059; }
+        body { font-family: 'Segoe UI', sans-serif; background: #061f3a; margin: 0; text-align: center; color: white; }
+        
+        nav { background: var(--akb-blue); padding: 15px; font-weight: bold; border-bottom: 3px solid var(--gold); letter-spacing: 1px; }
+        
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+        
+        .status-radar { margin: 30px 0; opacity: 0.6; font-size: 0.9rem; }
+        
+        /* SOS Karte */
+        .alarm-card { 
+            background: var(--akb-red); color: white; padding: 25px; border-radius: 20px; 
+            margin-top: 20px; box-shadow: 0 0 30px rgba(165, 42, 42, 0.5); 
+            animation: pulse 1.5s infinite; border: 2px solid white;
+        }
+        
+        @keyframes pulse { 
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(165, 42, 42, 0.5); } 
+            50% { transform: scale(1.03); box-shadow: 0 0 40px rgba(165, 42, 42, 0.8); } 
+            100% { transform: scale(1); box-shadow: 0 0 10px rgba(165, 42, 42, 0.5); } 
+        }
+
+        .btn-accept { 
+            background: white; color: var(--akb-red); border: none; padding: 15px 25px; 
+            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; 
+            width: 100%; font-size: 1.1rem; text-transform: uppercase;
+        }
+
+        .no-call-icon { font-size: 3rem; display: block; margin-bottom: 10px; opacity: 0.3; }
     </style>
 </head>
-<body>
-
-<nav>AK BALKAN - PARTNER PANEL</nav>
+<body onclick="enableAudio()"> <nav>AK BALKAN - PARTNER PANEL</nav>
 
 <div class="container">
     <div id="display-area">
-        <p class="no-call">Skeniranje terena... Nema aktivnih SOS poziva.</p>
+        <div class="status-radar">
+            <span class="no-call-icon">📡</span>
+            <p>Skeniranje terena... Nema aktivnih SOS poziva.</p>
+        </div>
     </div>
 </div>
 
-<audio id="alarm-sound" loop><source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg"></audio>
+<audio id="alarm-sound" loop>
+    <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
+</audio>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // DEINE ECHTEN DATEN (AUTOMATISCH EINGEFÜGT)
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
         authDomain: "autoklub-balkan.firebaseapp.com",
@@ -43,14 +67,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const sound = document.getElementById('alarm-sound');
+    let audioEnabled = false;
 
-    // Wir suchen nach allen "offen" Rufen
+    // Audio-Aktivierung beim ersten Klick auf die Seite
+    window.enableAudio = () => {
+        audioEnabled = true;
+        console.log("Audio ready");
+    };
+
     const q = query(collection(db, "sos_calls"), where("status", "==", "offen"));
 
     onSnapshot(q, (snapshot) => {
         const display = document.getElementById('display-area');
         if (snapshot.empty) {
-            display.innerHTML = '<p class="no-call">Skeniranje terena... Nema aktivnih SOS poziva.</p>';
+            display.innerHTML = '<div class="status-radar"><span class="no-call-icon">📡</span><p>Skeniranje terena... Nema aktivnih SOS poziva.</p></div>';
             sound.pause();
         } else {
             display.innerHTML = ""; 
@@ -58,18 +88,34 @@
                 const data = docSnap.data();
                 display.innerHTML += `
                     <div class="alarm-card">
-                        <h1>🚨 SOS: ${data.name}</h1>
-                        <p>Kvar: ${data.problem}</p>
-                        <button class="btn" onclick="acceptCall('${docSnap.id}')">PRIHVATI (30 min)</button>
+                        <h2 style="margin:0">🚨 SOS POZIV</h2>
+                        <h1 style="font-size:1.8rem; margin:10px 0;">${data.name}</h1>
+                        <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:5px;">
+                            <strong>KVAR:</strong> ${data.problem}
+                        </p>
+                        <button class="btn-accept" onclick="acceptCall('${docSnap.id}')">PRIHVATI (30 min)</button>
                     </div>`;
-                sound.play().catch(() => {});
+                
+                if(audioEnabled) {
+                    sound.play().catch(e => console.log("Sound error:", e));
+                }
             });
         }
     });
 
+    // WICHTIG: Funktion an window binden, damit onclick im HTML sie findet!
     window.acceptCall = async (id) => {
-        await updateDoc(doc(db, "sos_calls", id), { status: "u_radu" });
-        alert("Preuzeto!");
+        try {
+            const docRef = doc(db, "sos_calls", id);
+            await updateDoc(docRef, { 
+                status: "u_radu",
+                acceptedAt: new Date().toISOString()
+            });
+            alert("Uspešno! Krenite na lokaciju.");
+        } catch (error) {
+            console.error("Error updating document: ", error);
+            alert("Greška prilikom preuzimanja.");
+        }
     };
 </script>
 </body>
