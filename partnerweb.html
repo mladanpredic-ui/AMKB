@@ -1,54 +1,76 @@
-<div id="display-area">
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Panel | AK Balkan</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; text-align: center; }
+        nav { background: #092e54; color: white; padding: 15px; font-weight: bold; border-bottom: 3px solid #c5a059; }
+        .container { padding: 20px; }
+        .alarm-card { background: #a52a2a; color: white; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% {transform: scale(1)} 50% {transform: scale(1.02)} 100% {transform: scale(1)} }
+        .btn { background: white; color: #a52a2a; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin: 5px; }
+        .no-call { color: #999; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<nav>AK BALKAN - PARTNER PANEL</nav>
+
+<div class="container">
+    <div id="display-area">
+        <p class="no-call">Skeniranje terena... Nema aktivnih SOS poziva.</p>
     </div>
+</div>
+
+<audio id="alarm-sound" loop><source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg"></audio>
 
 <script type="module">
-    // ... (Firebase Importe wie gehabt) ...
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const partnerID = "partner_1"; // Jeder Partner hat eine ID
-    const q = query(collection(db, "sos_calls"), where("status", "==", "searching"));
+    // DEINE ECHTEN DATEN (AUTOMATISCH EINGEFÜGT)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const sound = document.getElementById('alarm-sound');
+
+    // Wir suchen nach allen "offen" Rufen
+    const q = query(collection(db, "sos_calls"), where("status", "==", "offen"));
 
     onSnapshot(q, (snapshot) => {
         const display = document.getElementById('display-area');
-        display.innerHTML = "";
-        
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            
-            // Logik: Bin ich der aktuell angefragte Partner?
-            if (data.currentTargetPartner === partnerID) {
-                const card = document.createElement('div');
-                card.className = 'alarm-card';
-                card.innerHTML = `
-                    <h2>🚨 NOVI ZADATAK: ${data.name}</h2>
-                    <p>Lokacija: ${data.lat}, ${data.lng}</p>
-                    <div class="time-options">
-                        <button onclick="respond('${docSnap.id}', 30)" style="background:green; color:white;">Stižem za 30 min</button>
-                        <button onclick="respond('${docSnap.id}', 90)" style="background:orange; color:white;">Stižem za 60-90 min</button>
-                    </div>
-                `;
-                display.appendChild(card);
-            }
-        });
+        if (snapshot.empty) {
+            display.innerHTML = '<p class="no-call">Skeniranje terena... Nema aktivnih SOS poziva.</p>';
+            sound.pause();
+        } else {
+            display.innerHTML = ""; 
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                display.innerHTML += `
+                    <div class="alarm-card">
+                        <h1>🚨 SOS: ${data.name}</h1>
+                        <p>Kvar: ${data.problem}</p>
+                        <button class="btn" onclick="acceptCall('${docSnap.id}')">PRIHVATI (30 min)</button>
+                    </div>`;
+                sound.play().catch(() => {});
+            });
+        }
     });
 
-    window.respond = async (id, mins) => {
-        const docRef = doc(db, "sos_calls", id);
-        if (mins === 30) {
-            // Sofortiger Zuschlag
-            await updateDoc(docRef, { 
-                status: "assigned", 
-                acceptedBy: partnerID,
-                eta: 30 
-            });
-        } else {
-            // 3-Minuten-Warteschleife-Logik
-            await updateDoc(docRef, { 
-                status: "searching",
-                pendingResponse: partnerID,
-                pendingEta: 90,
-                searchTimer: serverTimestamp() // Admin sieht: Wir suchen noch 3 Min weiter
-            });
-            alert("Sistem proverava da li ima bržih partnera (3 min)...");
-        }
+    window.acceptCall = async (id) => {
+        await updateDoc(doc(db, "sos_calls", id), { status: "u_radu" });
+        alert("Preuzeto!");
     };
 </script>
+</body>
+</html>
