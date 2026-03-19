@@ -72,7 +72,7 @@
 
             <div class="full-width">
                 <label id="lbl-email">E-Mail adresa</label>
-                <input type="email" id="reg-email" required placeholder="example@mail.com">
+                <input type="email" id="reg-email" required placeholder="primer@mail.com">
             </div>
 
             <div>
@@ -116,7 +116,7 @@
         de: { sub: "Mitglied werden", fname: "Vorname", lname: "Nachname", addr: "Adresse", ph: "Telefon", email: "E-Mail Adresse", pw: "Passwort", pw2: "Passwort bestätigen", btn: "Jetzt registrieren", foot: "Schon Mitglied?", login: "Login", errAll: "Alle Felder sind Pflichtfelder!", errMatch: "Passwörter stimmen nicht überein!" },
         en: { sub: "Member Registration", fname: "First Name", lname: "Last Name", addr: "Address", ph: "Phone", email: "Email Address", pw: "Password", pw2: "Confirm Password", btn: "Join Now", foot: "Already a member?", login: "Sign in", errAll: "All fields are required!", errMatch: "Passwords do not match!" },
         fr: { sub: "Inscription", fname: "Prénom", lname: "Nom", addr: "Adresse", ph: "Téléphone", email: "Adresse e-mail", pw: "Mot de passe", pw2: "Confirmer le mot de passe", btn: "S'inscrire", foot: "Déjà membre?", login: "Connexion", errAll: "Tous les champs sont obligatoires!", errMatch: "Les mots de passe ne correspondent pas!" },
-        ru: { sub: "Регистрация", fname: "Имя", lname: "Фамилия", addr: "Адрес", ph: "Телефон", email: "E-Mail адрес", pw: "Пароль", pw2: "Подтвердите пароль", btn: "Стать членом", foot: "Уже есть аккаунт?", login: "Вход", errAll: "Все поля обязательны!", errMatch: "Пароли не совпадают!" }
+        ru: { sub: "Регистрация", fname: "Имя", lname: "Фамилия", addr: "Адрес", ph: "Telefon", email: "E-Mail адрес", pw: "Пароль", pw2: "Подтвердите пароль", btn: "Стать членом", foot: "Уже есть аккаунт?", login: "Вход", errAll: "Все поля обязательны!", errMatch: "Пароли не совпадают!" }
     };
 
     let currentLang = 'sr';
@@ -165,11 +165,9 @@
                 return newNum;
             });
 
-            // Login erfolgt über die Kundennummer als Pseudonym-Email
             const authEmail = `${customerNumber}@ak-balkan.com`;
             const userCred = await createUserWithEmailAndPassword(auth, authEmail, pw);
             
-            // Vollständiges Profil in Firestore speichern
             await setDoc(doc(db, "users", userCred.user.uid), {
                 customerNumber, 
                 firstName: fn, 
@@ -181,7 +179,7 @@
                 role: "member"
             });
 
-            alert(`Dobrodošli! Vaš članski broj je: ${customerNumber} | Vaš broj je Vaš LOGIN.`);
+            alert(`Dobrodošli! Vaš članski broj (LOGIN ID) je: ${customerNumber}`);
             window.location.href = "login.html";
         } catch (e) { 
             alert("Greška: " + e.message); 
