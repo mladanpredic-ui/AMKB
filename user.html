@@ -108,6 +108,36 @@
     window.handleLogout = () => {
         signOut(auth).then(() => { window.location.href = "login.html"; });
     };
+    document.getElementById('sos-trigger').onclick = async () => {
+    if (!currentUserData) return;
+
+    // Standort abfragen
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            try {
+                await addDoc(collection(db, "sos_calls"), {
+                    name: currentUserData.firstName + " " + currentUserData.lastName,
+                    phone: currentUserData.phone,
+                    customerNumber: currentUserData.customerNumber,
+                    lat: lat,
+                    lng: lng,
+                    googleMapsUrl: `https://www.google.com/maps?q=${lat},${lng}`,
+                    status: "offen",
+                    timestamp: serverTimestamp()
+                });
+                alert("SOS poslat sa vašom lokacijom!");
+            } catch (e) {
+                alert("Greška: " + e.message);
+            }
+        }, () => {
+            alert("Molimo uključite lokaciju (GPS) da bismo vas pronašli!");
+        });
+    }
+};
+
 </script>
 </body>
 </html>
