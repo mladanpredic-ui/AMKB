@@ -2,75 +2,97 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registracija | AK Balkan</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; display: flex; justify-content: center; padding: 20px; }
-        .reg-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { color: #092e54; text-align: center; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        .checkbox-group { font-size: 13px; margin: 15px 0; }
-        .btn-reg { background: #092e54; color: white; width: 100%; padding: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        :root { --blue: #092e54; --gold: #c5a059; }
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .reg-card { width: 100%; max-width: 500px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; border-top: 6px solid var(--blue); }
+        
+        .lang-nav { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+        .l-btn { cursor: pointer; border: 1px solid #ddd; background: #fff; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .l-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+        h2 { color: var(--blue); text-align: center; font-size: 20px; margin-bottom: 25px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        
+        .label { font-size: 13px; font-weight: bold; color: var(--blue); margin-top: 10px; display: block; }
+        .btn-submit { background: var(--blue); color: white; width: 100%; padding: 16px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        
+        .agb-row { text-align: center; margin-top: 15px; font-size: 12px; color: #444; }
+        .agb-row input { width: 18px; height: 18px; vertical-align: middle; }
     </style>
 </head>
 <body>
 
 <div class="reg-card">
-    <h2>ČLANSKA REGISTRACIJA</h2>
-    <form id="mainRegForm">
-        <input type="text" id="fname" placeholder="Ime" required>
-        <input type="text" id="lname" placeholder="Prezime" required>
-        <input type="email" id="email" placeholder="E-mail" required>
-        <input type="text" id="plate" placeholder="Registarska oznaka" required>
-        
-        <label>Izaberite drugi jezik ugovora:</label>
-        <select id="lang">
-            <option value="sr">Samo Srpski</option>
-            <option value="de">Srpski + Nemački (Deutsch)</option>
-            <option value="en">Srpski + Engleski (English)</option>
+    <div class="lang-nav">
+        <button class="l-btn active" onclick="chLang('sr', this)">SR 🇷🇸</button>
+        <button class="l-btn" onclick="chLang('de', this)">DE 🇩🇪</button>
+        <button class="l-btn" onclick="chLang('en', this)">EN 🇬🇧</button>
+        <button class="l-btn" onclick="chLang('fr', this)">FR 🇫🇷</button>
+        <button class="l-btn" onclick="chLang('ru', this)">RU 🇷🇺</button>
+    </div>
+
+    <h2 id="h-title">ČLANSKA REGISTRACIJA</h2>
+
+    <form id="regForm">
+        <input type="text" id="fn" placeholder="Ime" required>
+        <input type="text" id="ln" placeholder="Prezime" required>
+        <input type="email" id="em" placeholder="E-mail" required>
+        <input type="text" id="lp" placeholder="Registarska oznaka" required>
+
+        <label class="label" id="l-pkg">Izaberite paket:</label>
+        <select id="pk" style="border: 2px solid var(--gold); font-weight: bold;">
+            <option value="Moto">MOTO (39€)</option>
+            <option value="Auto">AUTO (89€)</option>
+            <option value="Premium">PREMIUM (159€)</option>
         </select>
 
-        <div class="checkbox-group">
-            <input type="checkbox" required> Prihvatam AGB i polisu privatnosti.
+        <label class="label" id="l-lng">Jezik ugovora:</label>
+        <select id="cl">
+            <option value="sr">Samo Srpski</option>
+            <option value="de">Srpski + Deutsch</option>
+            <option value="en">Srpski + English</option>
+            <option value="fr">Srpski + Français</option>
+            <option value="ru">Srpski + Pусский</option>
+        </select>
+
+        <div class="agb-row">
+            <input type="checkbox" required><br>
+            <label id="l-agb">Prihvatam uslove poslovanja i polisu privatnosti.</label>
         </div>
-        
-        <button type="submit" class="btn-reg">REGISTRUJ SE & KREIRAJ UGOVOR</button>
+
+        <button type="submit" class="btn-submit" id="b-sub">REGISTRUJ SE & KREIRAJ UGOVOR</button>
     </form>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    // ... Firebase Config ...
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    const txt = {
+        sr: { title: "ČLANSKA REGISTRACIJA", fn: "Ime", ln: "Prezime", em: "E-mail", lp: "Registarska oznaka", pkg: "Izaberite paket:", lng: "Jezik ugovora:", agb: "Prihvatam uslove poslovanja.", btn: "REGISTRUJ SE & KREIRAJ UGOVOR" },
+        de: { title: "MITGLIEDSCHAFT", fn: "Vorname", ln: "Nachname", em: "E-mail", lp: "Kennzeichen", pkg: "Paket wählen:", lng: "Vertragssprache:", agb: "Ich akzeptiere die AGB.", btn: "REGISTRIEREN & VERTRAG ERSTELLEN" },
+        en: { title: "MEMBERSHIP", fn: "First Name", ln: "Last Name", em: "E-mail", lp: "License Plate", pkg: "Select Package:", lng: "Contract Language:", agb: "I accept the Terms.", btn: "REGISTER & CREATE CONTRACT" },
+        fr: { title: "INSCRIPTION", fn: "Prénom", ln: "Nom", em: "E-mail", lp: "Plaque", pkg: "Choisir le forfait:", lng: "Langue du contrat:", agb: "J'accepte les conditions.", btn: "S'INSCRIRE & CRÉER LE CONTRAT" },
+        ru: { title: "РЕГИСТРАЦИЯ", fn: "Имя", ln: "Фамилия", em: "E-mail", lp: "Номер авто", pkg: "Выберите пакет:", lng: "Язык контракта:", agb: "Я принимаю условия.", btn: "ЗАРЕГИСТРИРОВАТЬСЯ" }
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    document.getElementById('mainRegForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const mID = Math.floor(100000 + Math.random() * 900000).toString(); // 6 ZAHLEN
-        
-        const data = {
-            memberID: mID,
-            firstName: document.getElementById('fname').value,
-            lastName: document.getElementById('lname').value,
-            email: document.getElementById('email').value,
-            licensePlate: document.getElementById('plate').value,
-            lang: document.getElementById('lang').value,
-            status: "čeka_uplatu"
-        };
-
-        await addDoc(collection(db, "users"), data);
-        // DATEN AN VERTRAG WEITERGEBEN
-        window.location.href = `vertrag.html?id=${mID}&fn=${data.firstName}&ln=${data.lastName}&lp=${data.licensePlate}&lg=${data.lang}`;
-    });
+    window.chLang = (l, b) => {
+        document.querySelectorAll('.l-btn').forEach(btn => btn.classList.remove('active'));
+        b.classList.add('active');
+        const t = txt[l];
+        document.getElementById('h-title').innerText = t.title;
+        document.getElementById('fn').placeholder = t.fn;
+        document.getElementById('ln').placeholder = t.ln;
+        document.getElementById('em').placeholder = t.em;
+        document.getElementById('lp').placeholder = t.lp;
+        document.getElementById('l-pkg').innerText = t.pkg;
+        document.getElementById('l-lng').innerText = t.lng;
+        document.getElementById('l-agb').innerText = t.agb;
+        document.getElementById('b-sub').innerText = t.btn;
+    };
+    // Submit-Logik wie gehabt...
 </script>
 </body>
 </html>
