@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Partner Login | AK Balkan</title>
+    <style>
+        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark: #061f3a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* LOGIN BOX */
+        .login-box { width: 90%; max-width: 400px; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; }
+        .logo-title { color: var(--gold); font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 5px; }
+        .sub-title { font-size: 0.9rem; opacity: 0.7; margin-bottom: 25px; }
+        
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #1a2a3a; color: white; box-sizing: border-box; font-size: 1rem; }
+        .btn-login { width: 100%; padding: 15px; background: var(--gold); color: var(--akb-blue); border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        
+        /* ALARM PANEL (HIDDEN UNTIL LOGIN) */
+        #partner-panel { display: none; width: 100%; height: 100vh; background: var(--dark); position: fixed; top: 0; left: 0; padding: 20px; box-sizing: border-box; }
+        .alarm-card { background: var(--red); padding: 30px; border-radius: 20px; text-align: center; animation: pulse 1.5s infinite; border: 3px solid white; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
+        .btn-maps { background: #2980b9; color: white; text-decoration: none; display: block; padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold; }
+        .btn-accept { background: #27ae60; color: white; border: none; padding: 20px; width: 100%; border-radius: 10px; font-size: 1.3rem; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="login-area" class="login-box">
+    <div class="logo-title">AK BALKAN</div>
+    <div class="sub-title">PARTNER INTERFEJS</div>
+    
+    <div id="lang-btns" style="margin-bottom: 15px;">
+        <button onclick="setLang('sr')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:4px 8px; border-radius:4px; cursor:pointer;">SRB</button>
+        <button onclick="setLang('de')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">DE</button>
+        <button onclick="setLang('en')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">EN</button>
+    </div>
+
+    <input type="email" id="email" placeholder="E-mail adresa">
+    <input type="password" id="pass" placeholder="Lozinka">
+    <button class="btn-login" id="login-btn" onclick="handleLogin()">PRIJAVI SE</button>
+    <p style="font-size: 0.7rem; color: #777; margin-top: 15px;">Pristup dozvoljen samo autorizovanim partnerima.</p>
+</div>
+
+<div id="partner-panel">
+    <div style="display:flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); padding-bottom: 10px;">
+        <span id="partner-name-display" style="color:var(--gold); font-weight:bold;">AK BALKAN PARTNER</span>
+        <button onclick="location.reload()" style="background:none; color:white; border:1px solid white; padding:5px 10px; border-radius:5px; cursor:pointer;">Logout</button>
+    </div>
+
+    <div id="waiting-msg" style="text-align:center; margin-top: 100px; opacity:0.5;">
+        <h2 id="txt-wait">Tražim aktivne pozive...</h2>
+        <p>Sistem je aktivan. Zvuk je uključen.</p>
+    </div>
+
+    <div id="alarm-box" style="display:none; margin-top: 30px;">
+        <div class="alarm-card">
+            <h1 id="txt-hitan">🚨 HITAN POZIV 🚨</h1>
+            <div id="call-info" style="background:white; color:#333; padding:20px; border-radius:15px; text-align:left; margin-top:15px;">
+                </div>
+        </div>
+    </div>
+</div>
+
+<audio id="alarmSound" loop><source src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3" type="audio/mpeg"></audio>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const sound = document.getElementById('alarmSound');
+
+    const t = {
+        sr: { wait: "Tražim nove SOS pozive...", hitan: "HITAN POZIV", maps: "📍 OTVORI NAVIGACIJU", accept: "PRIHVATI EKSPEIDICIJU", err: "Greška pri prijavi!" },
+        de: { wait: "Suche nach SOS-Rufen...", hitan: "NOTRUF EINGEGANGEN", maps: "📍 NAVIGATION ÖFFNEN", accept: "EINSATZ ÜBERNEHMEN", err: "Login fehlgeschlagen!" },
+        en: { wait: "Searching for calls...", hitan: "EMERGENCY CALL", maps: "📍 OPEN NAVIGATION", accept: "ACCEPT MISSION", err: "Login failed!" }
+    };
+    let cur = 'sr';
+    window.setLang = (l) => { cur = l; document.getElementById('txt-wait').innerText = t[l].wait; };
+
+    // LOGIN LOGIK
+    window.handleLogin = async () => {
+        const em = document.getElementById('email').value;
+        const pw = document.getElementById('pass').value;
+        try {
+            await signInWithEmailAndPassword(auth, em, pw);
+        } catch (e) { alert(t[cur].err); }
+    };
+
+    // UI WECHSEL BEI LOGIN
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('partner-panel').style.display = 'block';
+            startLiveMonitor();
+        }
+    });
+
+    function startLiveMonitor() {
+        const q = query(collection(db, "sos_calls"), where("status", "==", "searching"));
+        onSnapshot(q, (snapshot) => {
+            const box = document.getElementById('alarm-box');
+            const info = document.getElementById('call-info');
+            const wait = document.getElementById('waiting-msg');
+
+            if (!snapshot.empty) {
+                wait.style.display = 'none';
+                box.style.display = 'block';
+                sound.play().catch(() => {});
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.id;
+                    const val = docSnap.data();
+                    info.innerHTML = `
+                        <h2 style="margin-top:0;">👤 ${val.name}</h2>
+                        <p><strong>🛠 Kvar:</strong> ${val.problem}</p>
+                        <p><strong>📞 Tel:</strong> ${val.phone || 'N/A'}</p>
+                        <a href="https://www.google.com/maps?q=${val.lat},${val.lng}" target="_blank" class="btn-maps">${t[cur].maps}</a>
+                        <button class="btn-accept" onclick="acceptCall('${docSnap.id}')">${t[cur].accept}</button>
+                    `;
+                });
+            } else {
+                box.style.display = 'none';
+                wait.style.display = 'block';
+                sound.pause();
+            }
+        });
+    }
+
+    window.acceptCall = async (id) => {
+        await updateDoc(doc(db, "sos_calls", id), { status: "accepted", partner: auth.currentUser.email });
+        alert("Intervencija prihvaćena!");
+    };
+</script>
+</body>
+</html>
