@@ -52,35 +52,20 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, runTransaction, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
+      apiKey: "AIzaSyCMsL8TmGrCda-Btnpn0u8mUpWLo6q_aMY", // Korrigierter Key
+      authDomain: "autoklub-balkan.firebaseapp.com",
+      projectId: "autoklub-balkan",
+      storageBucket: "autoklub-balkan.firebasestorage.app",
+      messagingSenderId: "499546593125",
+      appId: "1:499546593125:web:7823602797b37e8338b38c"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    const trans = {
-        sr: { sub: "Registracija člana", fname: "Ime", lname: "Prezime", btn: "Postani član", login: "Prijava" },
-        de: { sub: "Mitglied werden", fname: "Vorname", lname: "Nachname", btn: "Jetzt registrieren", login: "Login" }
-        // ... (weitere Sprachen wie oben)
-    };
-
-    window.setLanguage = (l) => {
-        const t = trans[l] || trans.sr;
-        document.getElementById('sub-title').innerText = t.sub;
-        document.getElementById('lbl-fname').innerText = t.fname;
-        document.getElementById('lbl-lname').innerText = t.lname;
-        document.getElementById('btn-register').innerText = t.btn;
-        document.getElementById('link-login').innerText = t.login;
-    };
 
     window.handleRegister = async () => {
         const fn = document.getElementById('reg-fname').value;
@@ -89,6 +74,7 @@
         const pw = document.getElementById('reg-pw').value;
 
         try {
+            // Kundennummer automatisch erhöhen
             const customerNumber = await runTransaction(db, async (transaction) => {
                 const cRef = doc(db, "config", "customerCounter");
                 const cSnap = await transaction.get(cRef);
@@ -99,15 +85,15 @@
 
             const authEmail = `${customerNumber}@ak-balkan.com`;
             const userCred = await createUserWithEmailAndPassword(auth, authEmail, pw);
-            
+
             await setDoc(doc(db, "users", userCred.user.uid), {
                 customerNumber, firstName: fn, lastName: ln, realEmail: em, role: "member"
             });
 
             alert(`Dobrodošli! Vaš broj je: ${customerNumber}`);
             window.location.href = "login.html";
-        } catch (e) { alert("Greška: " + e.message); }
+        } catch (e) {
+            alert("Greška: " + e.message);
+        }
     };
 </script>
-</body>
-</html>
