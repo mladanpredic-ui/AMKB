@@ -2,121 +2,99 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <title>Ugovor i Uplatnica | AK Balkan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ugovor o Članstvu | AK Balkan</title>
     <style>
-        body { background: #555; padding: 20px; font-family: "Times New Roman", serif; }
-        .paper { background: white; width: 210mm; min-height: 297mm; margin: auto; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); position: relative; }
-        
-        /* Vertrag Styling */
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        .content { margin-top: 20px; font-size: 14px; min-height: 180mm; }
-        .dual-lang { display: flex; gap: 20px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .sr { flex: 1; font-weight: bold; }
-        .sec { flex: 1; font-style: italic; color: #444; border-left: 1px solid #ddd; padding-left: 10px; }
-
-        /* Uplatnica Styling (Serbisches Standard-Format) */
-        .uplatnica-container { margin-top: 20px; border: 2px dashed #000; padding: 10px; background: #fff; font-family: Arial, sans-serif; font-size: 11px; }
-        .uplatnica-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .box { border: 1px solid #000; padding: 5px; margin-bottom: 5px; min-height: 35px; }
-        .label { display: block; font-weight: bold; font-size: 9px; text-transform: uppercase; margin-bottom: 2px; }
-        .input-line { font-size: 13px; font-weight: bold; }
-        .small-box { display: inline-block; border: 1px solid #000; width: 30px; text-align: center; margin-right: 5px; padding: 2px; }
-
-        .no-print { position: fixed; top: 20px; right: 20px; background: #c5a059; padding: 15px; border: none; cursor: pointer; font-weight: bold; z-index: 100; color: #092e54; border-radius: 5px; }
-        
-        @media print { 
-            .no-print { display: none; } 
-            body { background: none; padding: 0; } 
-            .paper { box-shadow: none; margin: 0; border: none; } 
-        }
+        body { font-family: 'DejaVu Sans', sans-serif, Arial; line-height: 1.6; color: #333; padding: 20px; background: #f0f0f0; }
+        .paper { background: white; max-width: 800px; margin: auto; padding: 50px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #092e54; padding-bottom: 10px; margin-bottom: 30px; }
+        .logo-text { color: #092e54; font-weight: bold; font-size: 24px; }
+        .contract-body { display: flex; gap: 30px; }
+        .col { flex: 1; font-size: 13px; text-align: justify; }
+        .col h3 { color: #092e54; font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .member-info { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }
+        .footer-btns { text-align: center; margin-top: 30px; }
+        .btn { padding: 12px 25px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; margin: 5px; }
+        .btn-print { background: #092e54; color: white; }
+        @media print { .footer-btns { display: none; } body { background: white; padding: 0; } .paper { box-shadow: none; width: 100%; } }
     </style>
 </head>
 <body>
 
-<button class="no-print" onclick="window.print()">🖨️ ŠTAMPAJ SVE (Ugovor + Uplatnica)</button>
-
-<div class="paper">
+<div class="paper" id="printArea">
     <div class="header">
-        <div><strong>AUTOKLUB BALKAN</strong><br>Beograd, Srbija</div>
-        <div id="mID-display" style="font-size: 22px; color: #a52a2a; font-weight: bold;"></div>
+        <div class="logo-text">👑 AK BALKAN</div>
+        <div id="contract-id" style="font-weight: bold;"></div>
     </div>
 
-    <div class="content">
-        <h2 style="text-align:center">UGOVOR O ČLANSTVU / MEMBERSHIP AGREEMENT</h2>
-        <p><strong>Član / Member:</strong> <span id="name-display"></span></p>
-        <p><strong>Vozilo / Vehicle:</strong> <span id="plate-display"></span></p>
-        <hr>
-        <div id="legal-text"></div>
-        <div style="margin-top: 40px; display: flex; justify-content: space-between;">
-            <div style="text-align:center">__________________________<br>Potpis člana (Kunde)</div>
-            <div style="text-align:center">__________________________<br>Za AK Balkan (M. Mitrović)</div>
+    <div class="member-info">
+        <p><strong>Član / Участник:</strong> <span id="m-name"></span></p>
+        <p><strong>Tablice / Номер:</strong> <span id="m-plate"></span></p>
+        <p><strong>Paket / Пакет:</strong> <span id="m-package" style="color: #c5a059; font-weight: bold;"></span></p>
+    </div>
+
+    <div class="contract-body">
+        <div class="col">
+            <h3>USLOVI ČLANSTVA</h3>
+            <p>1. Članstvo aktivira pravo na pomoć na putu u skladu sa izabranim paketom.</p>
+            <p>2. Usluge uključuju šlepanje, popravku na licu mesta i asistenciju u Srbiji i inostranstvu.</p>
+            <p>3. Članstvo važi 12 meseci od dana uplate.</p>
+            <p>4. Potpisom ovog ugovora, član potvrđuje da je upoznat sa opštim uslovima poslovanja Auto Kluba Balkan.</p>
         </div>
-    </div>
 
-    <div class="uplatnica-container">
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">NALOG ZA UPLATU (UPLATNICA)</div>
-        <div class="uplatnica-grid">
-            <div>
-                <div class="box"><span class="label">Platilac:</span> <span id="u-name" class="input-line"></span></div>
-                <div class="box"><span class="label">Svrha uplate:</span> <span class="input-line">Članarina AK Balkan - ID: <span id="u-id"></span></span></div>
-                <div class="box"><span class="label">Primalac:</span> <span class="input-line">AUTOKLUB BALKAN, BEOGRAD</span></div>
-            </div>
-            <div>
-                <div style="display:flex; gap:10px;">
-                    <div class="box" style="width:40px;"><span class="label">Šifra:</span> <span class="input-line">189</span></div>
-                    <div class="box" style="width:40px;"><span class="label">Valuta:</span> <span class="input-line">RSD</span></div>
-                    <div class="box" style="flex-grow:1;"><span class="label">Iznos:</span> <span class="input-line">5.000,00</span></div>
-                </div>
-                <div class="box"><span class="label">Račun primaoca:</span> <span class="input-line">160-000000XXXXXXX-YY (Tvoj Račun)</span></div>
-                <div class="box"><span class="label">Model i poziv na broj:</span> <span class="input-line">97 <span id="u-id2"></span></span></div>
-            </div>
+        <div class="col" id="translated-col">
+            <h3 id="t-title">CONTRACT TERMS</h3>
+            <div id="t-content"></div>
         </div>
     </div>
 </div>
 
+<div class="footer-btns">
+    <button class="btn btn-print" onclick="window.print()">ŠTAMPAJ / PRINT / ПЕЧАТЬ</button>
+</div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const mID = urlParams.get('id') || "000000";
-    const fName = urlParams.get('fn') || "";
-    const lName = urlParams.get('ln') || "";
-    const full = fName + " " + lName;
+    const lang = urlParams.get('lg') || 'sr';
+    const name = `${urlParams.get('fn') || ''} ${urlParams.get('ln') || ''}`;
+    const plate = urlParams.get('lp') || '/';
+    const pkg = urlParams.get('pk') || '/';
+    const id = urlParams.get('id') || '---';
 
-    // Anzeige befüllen
-    document.getElementById('mID-display').innerText = "ID: " + mID;
-    document.getElementById('name-display').innerText = full;
-    document.getElementById('plate-display').innerText = urlParams.get('lp') || "";
-    
-    // Uplatnica befüllen
-    document.getElementById('u-name').innerText = full;
-    document.getElementById('u-id').innerText = mID;
-    document.getElementById('u-id2').innerText = mID;
+    // Daten einfüllen
+    document.getElementById('m-name').innerText = name;
+    document.getElementById('m-plate').innerText = plate;
+    document.getElementById('m-package').innerText = pkg;
+    document.getElementById('contract-id').innerText = "ID: " + id;
 
-    const lang = urlParams.get('lg');
-    const legalDiv = document.getElementById('legal-text');
-
-    // Rechtstexte
-    const texts = {
-        de: [
-            { sr: "Članstvo traje 12 meseci od dana uplate.", sec: "Die Mitgliedschaft dauert 12 Monate ab dem Tag der Einzahlung." },
-            { sr: "Besplatno šlepanje u slučaju kvara do 100km.", sec: "Kostenloses Abschleppen bei Panne bis zu 100km." },
-            { sr: "Ovaj dokument služi kao dokaz o prijavi dok se uplata ne proknjiži.", sec: "Dieses Dokument dient als Nachweis der Anmeldung, bis die Zahlung verbucht ist." }
-        ],
-        en: [
-            { sr: "Članstvo traje 12 meseci od dana uplate.", sec: "Membership lasts 12 months from the day of payment." },
-            { sr: "Besplatno šlepanje u slučaju kvara do 100km.", sec: "Free towing in case of breakdown up to 100km." },
-            { sr: "Ovaj dokument služi kao dokaz o prijavi dok se uplata ne proknjiži.", sec: "This document serves as proof of registration until payment is processed." }
-        ]
+    // Übersetzungen für die rechte Spalte
+    const translations = {
+        de: {
+            title: "MITGLIEDSCHAFTSBEDINGUNGEN",
+            text: "<p>1. Die Mitgliedschaft aktiviert den Anspruch auf Pannenhilfe gemäß dem gewählten Paket.</p><p>2. Die Leistungen umfassen Abschleppen und Pannenhilfe vor Ort.</p><p>3. Die Mitgliedschaft ist 12 Monate gültig.</p><p>4. Mit der Unterschrift akzeptiert das Mitglied die AGB von Auto Klub Balkan.</p>"
+        },
+        en: {
+            title: "MEMBERSHIP TERMS",
+            text: "<p>1. Membership activates the right to roadside assistance according to the selected package.</p><p>2. Services include towing and on-site repair assistance.</p><p>3. Membership is valid for 12 months from the date of payment.</p><p>4. By signing, the member confirms acceptance of the terms of Auto Klub Balkan.</p>"
+        },
+        fr: {
+            title: "CONDITIONS D'ADHÉSION",
+            text: "<p>1. L'adhésion active le droit à l'assistance routière selon le forfait choisi.</p><p>2. Les services comprennent le remorquage et le dépannage sur place.</p><p>3. L'adhésion est valable 12 mois.</p><p>4. Par sa signature, le membre accepte les conditions d'Auto Klub Balkan.</p>"
+        },
+        ru: {
+            title: "УСЛОВИЯ ЧЛЕНСТВА",
+            text: "<p>1. Членство дает право на помощь на дороге в соответствии с выбранным пакетом.</p><p>2. Услуги включают эвакуацию и ремонт на месте.</p><p>3. Членство действительно в течение 12 месяцев с даты оплаты.</p><p>4. Подписывая данный договор, участник подтверждает согласие с правилами Авто Клуба Балкан.</p>"
+        }
     };
 
-    if(lang !== 'sr' && texts[lang]) {
-        let html = "";
-        texts[lang].forEach(t => {
-            html += `<div class="dual-lang"><div class="sr">${t.sr}</div><div class="sec">${t.sec}</div></div>`;
-        });
-        legalDiv.innerHTML = html;
+    if (lang !== 'sr' && translations[lang]) {
+        document.getElementById('t-title').innerText = translations[lang].title;
+        document.getElementById('t-content').innerHTML = translations[lang].text;
     } else {
-        legalDiv.innerHTML = `<ul><li>Članstvo traje 12 meseci od dana uplate.</li><li>Besplatno šlepanje u slučaju kvara do 100km.</li><li>Ovaj dokument služi kao dokaz o prijavi.</li></ul>`;
+        // Falls nur Serbisch gewählt wurde, Spalte ausblenden oder mit englisch füllen
+        document.getElementById('translated-col').style.display = 'none';
     }
 </script>
+
 </body>
 </html>
