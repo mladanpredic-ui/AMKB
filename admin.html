@@ -84,69 +84,51 @@
         </div>
     </div>
 </div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
+      apiKey: "AIzaSyCMsL8TmGrCda-Btnpn0u8mUpWLo6q_aMY", // Korrigierter Key
+      authDomain: "autoklub-balkan.firebaseapp.com",
+      projectId: "autoklub-balkan",
+      storageBucket: "autoklub-balkan.firebasestorage.app",
+      messagingSenderId: "499546593125",
+      appId: "1:499546593125:web:7823602797b37e8338b38c",
+      measurementId: "G-KW7WZJSY5D"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Tab Navigation
-    window.showTab = (id) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-    };
-
-    // --- PARTNER REGISTRATION (The logic you asked for) ---
+    // PARTNER REGISTRIERUNG
     window.registerPartner = async () => {
         const name = document.getElementById('p-name').value;
         const email = document.getElementById('p-email').value;
         const city = document.getElementById('p-city').value;
         const pass = document.getElementById('p-pass').value;
 
-        if(!name || !email || !pass) { alert("Molimo popunite sva polja!"); return; }
+        if(!name || !email || !pass) { alert("Popunite sva polja!"); return; }
 
         try {
-            // 1. Erstellt Login in Authentication
+            // Erstellt Login in Authentication
             const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-            const uid = userCred.user.uid;
-
-            // 2. Speichert Details in Firestore
-            await setDoc(doc(db, "partners", uid), {
-                name: name,
-                email: email,
-                city: city,
-                role: "partner",
-                active: true,
-                createdAt: serverTimestamp()
+            
+            // Speichert Daten in Firestore 'partners'
+            await setDoc(doc(db, "partners", userCred.user.uid), {
+                name, email, city, role: "partner", active: true, createdAt: serverTimestamp()
             });
 
-            alert("Partner uspešno registrovan! Može se odmah prijaviti na pomocnaputu.html");
-            document.getElementById('p-name').value = "";
-            document.getElementById('p-email').value = "";
-            document.getElementById('p-pass').value = "";
-            document.getElementById('p-city').value = "";
-
+            alert("Partner uspešno registrovan!");
+            location.reload(); 
         } catch (e) {
             alert("Greška: " + e.message);
         }
     };
 
-    // --- SOS MONITOR LIVE FEED ---
+    // SOS MONITOR & TABELLEN
     onSnapshot(collection(db, "sos_calls"), (snap) => {
         const list = document.getElementById('sos-list');
         list.innerHTML = "";
@@ -155,16 +137,8 @@
             if(call.status !== 'završeno') {
                 const div = document.createElement('div');
                 div.className = 'sos-card';
-                div.innerHTML = `
-                    <div>
-                        <strong>👤 ${call.name}</strong> - <span style="color:var(--red)">${call.problem}</span><br>
-                        <small>Status: ${call.status}</small>
-                    </div>
-                    ${call.status === 'offen' ? 
-                        `<button class="btn-dispatch" onclick="dispatchCall('${d.id}')">PROSLEDI PARTNERIMA 📡</button>` : 
-                        `<span class="status-badge" style="background:#27ae60; color:white;">POSLATO</span>`
-                    }
-                `;
+                div.innerHTML = `<div><strong>${call.name}</strong> - ${call.problem}</div>
+                                 <button onclick="dispatchCall('${d.id}')">PROSLEDI PARTNERIMA</button>`;
                 list.appendChild(div);
             }
         });
@@ -175,25 +149,13 @@
         alert("Poziv poslat partnerima!");
     };
 
-    // --- DATA TABLES LOADERS ---
+    // Tabellen für Partner und Mitglieder
     onSnapshot(collection(db, "partners"), (snap) => {
         const body = document.getElementById('partner-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const p = d.data();
-            body.innerHTML += `<tr><td>${p.name}</td><td>${p.email}</td><td>${p.city}</td><td><b style="color:green">Aktivno</b></td></tr>`;
+            body.innerHTML += `<tr><td>${p.name}</td><td>${p.email}</td><td>${p.city}</td></tr>`;
         });
     });
-
-    onSnapshot(collection(db, "users"), (snap) => {
-        const body = document.getElementById('member-table-body');
-        body.innerHTML = "";
-        snap.forEach(d => {
-            const m = d.data();
-            body.innerHTML += `<tr><td>${m.customerNumber}</td><td>${m.firstName} ${m.lastName}</td><td>${m.phone}</td><td>${m.realEmail}</td></tr>`;
-        });
-    });
-
 </script>
-</body>
-</html>
