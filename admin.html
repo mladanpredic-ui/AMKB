@@ -2,64 +2,56 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Founder Control | AK Balkan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin | AK Balkan</title>
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark-bg: #061f3a; --success: #28a745; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding-bottom: 50px; }
-        .header { background: var(--akb-blue); padding: 15px; text-align: center; border-bottom: 2px solid var(--gold); }
-        .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; max-width: 1200px; margin: auto; }
-        .stat-card { background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .stat-card h4 { margin: 0; font-size: 9px; text-transform: uppercase; color: #aaa; }
-        .stat-card p { margin: 5px 0 0; font-size: 1.1rem; font-weight: bold; color: var(--gold); }
-        .admin-nav { display: flex; justify-content: center; gap: 5px; margin: 10px 0 20px; padding: 0 10px; }
-        .nav-btn { flex: 1; background: transparent; border: 1px solid var(--gold); color: white; padding: 10px 5px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
-        .nav-btn.active { background: var(--gold); color: var(--akb-blue); font-weight: bold; }
-        .container { padding: 0 15px; max-width: 1200px; margin: auto; }
-        .list-section { display: none; }
-        .active-section { display: block; }
-        .data-card { background: white; color: #333; margin-bottom: 15px; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .info h3 { margin: 0; font-size: 1.1rem; color: var(--akb-blue); }
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; background: var(--akb-blue); color: white; }
-        @media (min-width: 600px) { .stats-bar { grid-template-columns: repeat(4, 1fr); } .data-card { flex-direction: row; justify-content: space-between; align-items: center; } .btn-action { width: auto; min-width: 150px; } }
+        :root { --akb-blue: #092e54; --gold: #c5a059; --red: #a52a2a; --dark: #061f3a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; }
+        .header { background: var(--akb-blue); padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .container { padding: 20px; max-width: 1100px; margin: auto; }
+        
+        .section-title { color: var(--gold); border-bottom: 1px solid rgba(197, 160, 89, 0.3); padding-bottom: 10px; margin-top: 40px; }
+        
+        /* Partner Management Form */
+        .admin-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        input { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a2a3a; color: white; }
+        .btn-gold { background: var(--gold); color: var(--akb-blue); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* SOS Monitor */
+        .call-card { background: white; color: #333; margin-bottom: 15px; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-left: 8px solid var(--gold); }
+        .info h3 { margin: 0; color: var(--akb-blue); }
+        .btn-dispatch { background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-maps { background: #27ae60; color: white; text-decoration: none; padding: 10px 15px; border-radius: 8px; font-size: 0.9rem; display: inline-block; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>👑 AK BALKAN FOUNDER</h1>
-    <p>Upravljanje sistemom u realnom vremenu</p>
-</div>
-
-<div class="stats-bar">
-    <div class="stat-card"><h4>Članova</h4><p id="stat-members">1,248</p></div>
-    <div class="stat-card"><h4>Partneri</h4><p>42</p></div>
-    <div class="stat-card"><h4>Promet</h4><p>18.4k €</p></div>
-    <div class="stat-card"><h4>SOS</h4><p id="stat-sos" style="color:var(--red)">0</p></div>
+    <h1>AK BALKAN - MASTER ADMIN</h1>
 </div>
 
 <div class="container">
-    <div class="admin-nav">
-        <button class="nav-btn active" id="btn-sos" onclick="switchTab('sos-list', this)">SOS</button>
-        <button class="nav-btn" onclick="switchTab('partners', this)">PARTNERI</button>
-    </div>
-
-    <div id="sos-list" class="list-section active-section">
-        <p style="text-align:center; opacity:0.5;" id="loading-msg">Tražim aktivne pozive...</p>
-    </div>
-
-    <div id="partners" class="list-section">
-        <div class="data-card">
-            <div class="info"><h3>GRAWE Osiguranje</h3><p>-15% Kasko</p></div>
-            <button class="btn-action">KONTAKT</button>
+    <h2 class="section-title">Upravljanje Partnerima (Šlep Službe)</h2>
+    <div class="admin-card">
+        <p>Kreiraj novi nalog za partnera:</p>
+        <div class="form-grid">
+            <input type="text" id="p-name" placeholder="Naziv Službe (npr. Šlep Brzi)">
+            <input type="text" id="p-city" placeholder="Grad / Region">
+            <input type="text" id="p-pass" placeholder="Lozinka za partnera">
         </div>
+        <button class="btn-gold" style="margin-top: 15px; width: 200px;" onclick="createNewPartner()">KREIRAJ PARTNERA</button>
+    </div>
+
+    <h2 class="section-title">Live SOS Monitor</h2>
+    <div id="sos-list">
+        <p>Tražim aktivne pozive...</p>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
@@ -73,48 +65,64 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // LIVE SOS UPDATE
-    const q = query(collection(db, "sos_calls"), where("status", "==", "offen"));
-
-    onSnapshot(q, (snapshot) => {
-        const container = document.getElementById('sos-list');
-        const sosStat = document.getElementById('stat-sos');
-        document.getElementById('loading-msg').style.display = 'none';
+    // 1. PARTNER KREIEREN
+    window.createNewPartner = async () => {
+        const name = document.getElementById('p-name').value;
+        const city = document.getElementById('p-city').value;
+        const pass = document.getElementById('p-pass').value;
         
-        sosStat.innerText = snapshot.size;
-        container.innerHTML = "";
+        if(!name || !pass) { alert("Popunite naziv i lozinku!"); return; }
 
-        if (snapshot.empty) {
-            container.innerHTML = '<p style="text-align:center; opacity:0.5;">Trenutno nema aktivnih SOS poziva.</p>';
-        }
+        const pID = "P-" + Math.floor(1000 + Math.random() * 9000);
 
+        try {
+            await setDoc(doc(db, "partners", pID), {
+                partnerName: name,
+                city: city,
+                password: pass,
+                active: true,
+                createdAt: serverTimestamp()
+            });
+            alert("Partner kreiran! ID za prijavu: " + pID);
+            document.getElementById('p-name').value = "";
+            document.getElementById('p-pass').value = "";
+        } catch (e) { alert("Greška: " + e.message); }
+    };
+
+    // 2. SOS CALLS LIVE MONITOR
+    onSnapshot(collection(db, "sos_calls"), (snapshot) => {
+        const list = document.getElementById('sos-list');
+        list.innerHTML = "";
+        
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
-            container.innerHTML += `
-                <div class="data-card">
-                    <div class="info">
-                        <span class="badge" style="background:var(--red); color:white;">HITNO</span>
-                        <h3>${data.name}</h3>
-                        <p>📍 Problem: ${data.problem}</p>
-                    </div>
-                    <button class="btn-action" style="background:var(--red);" onclick="closeCall('${docSnap.id}')">ZAVRŠI INTERVENCIJU</button>
-                </div>`;
+            const card = document.createElement('div');
+            card.className = "call-card";
+            
+            let mapsBtn = data.lat ? `<a href="https://www.google.com/maps?q=${data.lat},${data.lng}" target="_blank" class="btn-maps">📍 VIDI NA MAPI</a>` : "";
+
+            card.innerHTML = `
+                <div class="info">
+                    <h3>👤 ${data.name}</h3>
+                    <p>📞 Tel: ${data.phone || 'N/A'} | ID: ${data.customerNumber || 'N/A'}</p>
+                    <p>🛠 Problem: <strong>${data.problem || 'SOS'}</strong></p>
+                    ${mapsBtn}
+                </div>
+                <div>
+                    ${data.status === 'offen' ? 
+                        `<button class="btn-dispatch" onclick="sendToPartners('${docSnap.id}')">PROSLEDI PARTNERIMA 📡</button>` : 
+                        `<span style="color:green; font-weight:bold">U OBRADI ✅</span>`
+                    }
+                </div>
+            `;
+            list.appendChild(card);
         });
     });
 
-    // Funktion zum Abschließen eines Rufs
-    window.closeCall = async (id) => {
-        if(confirm("Da li je intervencija završena?")) {
-            await updateDoc(doc(db, "sos_calls", id), { status: "završeno" });
-        }
-    };
-
-    // Tab Switcher
-    window.switchTab = (tabId, btn) => {
-        document.querySelectorAll('.list-section').forEach(sec => sec.classList.remove('active-section'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active-section');
-        btn.classList.add('active');
+    window.sendToPartners = async (id) => {
+        const docRef = doc(db, "sos_calls", id);
+        await updateDoc(docRef, { status: "searching" });
+        alert("Poziv prosleđen svim partnerima!");
     };
 </script>
 </body>
