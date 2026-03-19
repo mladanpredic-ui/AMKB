@@ -1,176 +1,116 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Admin | AK Balkan</title>
+    <title>AKB FOUNDER | Secure Login</title>
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --dark: #061f3a; --white: #ffffff; --red: #ff4d4d; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--white); margin: 0; padding: 0; }
+        :root { --blue: #092e54; --gold: #c5a059; }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; }
         
-        /* HARDER LOCK: Admin Content ist absolut unsichtbar beim Laden */
-        #admin-content { display: none !important; } 
+        /* Login Maske */
+        #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--blue); }
+        .login-box { background: white; padding: 40px; border-radius: 10px; width: 300px; text-align: center; }
         
-        .header { background: var(--akb-blue); padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
-        .card { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        /* Dashboard (versteckt bis Login) */
+        #dashboard { display: none; }
+        .sidebar { width: 250px; background: var(--blue); color: white; height: 100vh; position: fixed; padding: 20px; }
+        .main { margin-left: 290px; padding: 30px; }
         
-        input { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a2a3a; color: white; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
-        .btn-action { background: var(--gold); color: var(--akb-blue); border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
-        
-        .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: var(--gold); color: var(--akb-blue); }
-        
-        .section { display: none; }
-        .section.active { display: block; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #333; font-size: 0.9rem; }
-        th { color: var(--gold); }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--gold); border: none; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
     </style>
 </head>
 <body>
 
-<div class="header"><h1>AK BALKAN | FOUNDER CONTROL</h1></div>
-
-<div class="container">
-    <div id="login-area" class="card" style="max-width: 400px; margin: 50px auto;">
-        <h2 style="text-align: center; color: var(--gold);">Founder Access</h2>
-        <input type="email" id="admin-email" placeholder="Admin Email">
-        <input type="password" id="admin-password" placeholder="Lozinka">
-        <button class="btn-action" onclick="adminLogin()">PRIJAVI SE</button>
+<div id="login-screen">
+    <div class="login-box">
+        <img src="logo.png" width="100" alt="AK Balkan"><br>
+        <h3>Founder Login</h3>
+        <input type="email" id="admin-email" placeholder="E-Mail">
+        <input type="password" id="admin-password" placeholder="Passwort">
+        <button id="login-btn">EINLOGGEN</button>
     </div>
+</div>
 
-    <div id="admin-content">
-        <div class="tab-bar">
-            <button class="tab-btn active" onclick="showTab('sos')">SOS MONITOR</button>
-            <button class="tab-btn" onclick="showTab('partners')">PARTNERI</button>
-            <button class="tab-btn" onclick="showTab('members')">ČLANOVI</button>
-            <button onclick="adminLogout()" style="margin-left:auto; background:var(--red); color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; font-weight:bold;">LOGOUT</button>
-        </div>
-
-        <div id="sos" class="section active">
-            <h2>Aktivni SOS pozivi</h2>
-            <div id="sos-list" class="card">Učitavanje poziva...</div>
-        </div>
-
-        <div id="partners" class="section">
-            <h2>Registruj novu Šlep Službu</h2>
-            <div class="card">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="p-name" placeholder="Naziv Firme">
-                    <input type="email" id="p-email" placeholder="Partner Email">
-                    <input type="text" id="p-city" placeholder="Grad / Region">
-                    <input type="password" id="p-pass" placeholder="Lozinka">
-                </div>
-                <button class="btn-action" onclick="registerPartner()" style="margin-top:10px;">DODAJ PARTNERA U SISTEM</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Firma</th><th>Email</th><th>Grad</th></tr></thead>
-                    <tbody id="partner-table"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="members" class="section">
-            <h2>Baza Registrovanih Članova</h2>
-            <div class="card">
-                <table>
-                    <thead><tr><th>ID</th><th>Ime i Prezime</th><th>Email</th></tr></thead>
-                    <tbody id="member-table"></tbody>
-                </table>
-            </div>
-        </div>
+<div id="dashboard">
+    <div class="sidebar">
+        <h2>AKB ADMIN</h2>
+        <p id="user-info"></p>
+        <button onclick="logout()" style="background: #a52a2a; color: white;">ABMELDEN</button>
+    </div>
+    <div class="main">
+        <h1>Kundenverwaltung (6-stellige ID)</h1>
+        <table id="user-table">
+            <thead>
+                <tr>
+                    <th>Mitglieds-ID</th>
+                    <th>Name</th>
+                    <th>Kennzeichen</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCMsL8TmGrCda-Btnpn0u8mUpWLo6q_aMY",
-      authDomain: "autoklub-balkan.firebaseapp.com",
-      projectId: "autoklub-balkan",
-      storageBucket: "autoklub-balkan.firebasestorage.app",
-      messagingSenderId: "499546593125",
-      appId: "1:499546593125:web:7823602797b37e8338b38c"
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    const ADMIN_EMAIL = "mladanpredic@gmail.com";
+    // LOGIN FUNKTION
+    document.getElementById('login-btn').addEventListener('click', () => {
+        const email = document.getElementById('admin-email').value;
+        const pass = document.getElementById('admin-password').value;
+        signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Fehler: " + err.message));
+    });
 
-    // LOGIN
-    window.adminLogin = () => {
-        const e = document.getElementById('admin-email').value;
-        const p = document.getElementById('admin-password').value;
-        signInWithEmailAndPassword(auth, e, p).catch(err => alert("Pristup odbijen: " + err.message));
-    };
+    // LOGOUT FUNKTION
+    window.logout = () => signOut(auth);
 
-    window.adminLogout = () => signOut(auth).then(() => location.reload());
-
-    // AUTH OBSERVER: Der einzige Weg den Content freizuschalten
+    // STATUS-PRÜFUNG (Wer ist angemeldet?)
     onAuthStateChanged(auth, (user) => {
-        const adminContent = document.getElementById('admin-content');
-        const loginArea = document.getElementById('login-area');
-
-        if (user && user.email === ADMIN_EMAIL) {
-            loginArea.style.display = 'none';
-            // CSS !important mit JS überschreiben
-            adminContent.style.setProperty('display', 'block', 'important');
-            loadDatabase();
+        if (user) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('user-info').innerText = "Angemeldet als: " + user.email;
+            loadData();
         } else {
-            loginArea.style.display = 'block';
-            adminContent.style.setProperty('display', 'none', 'important');
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
         }
     });
 
-    // PARTNER REGISTRIEREN
-    window.registerPartner = async () => {
-        const name = document.getElementById('p-name').value;
-        const email = document.getElementById('p-email').value;
-        const pass = document.getElementById('p-pass').value;
-        const city = document.getElementById('p-city').value;
-
-        if(!name || !email || !pass) return alert("Popunite sva polja!");
-
-        try {
-            // Legt Account in Auth an
-            const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-            // Speichert in Firestore
-            await setDoc(doc(db, "partners", userCred.user.uid), {
-                name, email, city, role: "partner", active: true, createdAt: serverTimestamp()
-            });
-            alert("Partner uspešno dodat!");
-            document.querySelectorAll('#partners input').forEach(i => i.value = "");
-        } catch (e) {
-            alert("Greška: " + e.message);
-        }
-    };
-
-    window.showTab = (id) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-    };
-
-    function loadDatabase() {
-        // Partners
-        onSnapshot(collection(db, "partners"), (snap) => {
-            const b = document.getElementById('partner-table'); b.innerHTML = "";
-            snap.forEach(d => { const p = d.data(); b.innerHTML += `<tr><td>${p.name}</td><td>${p.email}</td><td>${p.city}</td></tr>`; });
-        });
-        // Members
+    // DATEN LADEN
+    function loadData() {
         onSnapshot(collection(db, "users"), (snap) => {
-            const b = document.getElementById('member-table'); b.innerHTML = "";
-            snap.forEach(d => { const m = d.data(); b.innerHTML += `<tr><td>${m.customerNumber || '---'}</td><td>${m.firstName} ${m.lastName}</td><td>${m.email}</td></tr>`; });
+            const tbody = document.querySelector("#user-table tbody");
+            tbody.innerHTML = "";
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
+                tbody.innerHTML += `<tr>
+                    <td><strong>${d.memberID || '---'}</strong></td>
+                    <td>${d.firstName} ${d.lastName}</td>
+                    <td>${d.licensePlate || '-'}</td>
+                    <td>${d.status}</td>
+                </tr>`;
+            });
         });
     }
 </script>
