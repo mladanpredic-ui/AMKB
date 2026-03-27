@@ -3,14 +3,18 @@
     --gold: #c5a059;
     --white: #ffffff;
     --bg-light: #f4f7f6;
+    --text-dark: #333333;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-light);
+    color: var(--text-dark);
     margin: 0;
+    line-height: 1.6;
 }
 
+/* Header Bereich */
 .site-header {
     background: var(--blue);
     color: var(--white);
@@ -19,22 +23,37 @@ body {
     border-bottom: 5px solid var(--gold);
 }
 
-.site-header h1 { color: var(--gold); font-size: 2.5rem; margin: 10px 0; }
+.site-header h1 { 
+    color: var(--gold); 
+    margin: 10px 0; 
+    font-size: 2.5rem; 
+    letter-spacing: 2px;
+}
 
-.lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+/* Sprachen-Navigation */
+.lang-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
 .l-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--gold);
-    color: white;
+    color: var(--white);
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-.l-btn.active { background: var(--gold); color: var(--blue); }
+.l-btn.active, .l-btn:hover {
+    background: var(--gold);
+    color: var(--blue);
+}
 
-/* DAS REPARIERTE GRID */
+/* PAKET SEKTION & GRID (DIE REPARATUR) */
 .package-section {
     padding: 40px 20px;
     max-width: 1200px;
@@ -46,36 +65,76 @@ body {
     color: var(--blue);
     margin-bottom: 40px;
     font-size: 2rem;
-    display: block !important;
+    font-weight: bold;
+    display: block !important; /* Stellt sicher, dass der Titel sichtbar bleibt */
 }
 
 .package-grid {
     display: grid;
-    /* Dies erzwingt 3 gleich große Spalten nebeneinander */
+    /* Erzwingt 3 Spalten nebeneinander auf PC & Tablet */
     grid-template-columns: repeat(3, 1fr); 
     gap: 25px;
 }
 
 .pkg-card {
-    background: white;
+    background: var(--white);
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border: 1px solid #eee;
-    transition: 0.3s;
+    transition: transform 0.3s, border-color 0.3s;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
+.pkg-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold);
+}
 
-.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; font-size: 1.2rem; }
-.pkg-price { font-size: 3rem; font-weight: bold; color: var(--blue); }
-.pkg-price span { font-size: 1rem; color: #777; }
+.pkg-badge {
+    font-weight: bold;
+    color: var(--blue);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.pkg-price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--blue);
+}
+
+.pkg-price span {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Inhaltslisten innerhalb der Karten */
+.pkg-features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    font-size: 0.95rem;
+    color: #555;
+    flex-grow: 1;
+}
+
+.pkg-features li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pkg-features li:last-child {
+    border-bottom: none;
+}
 
 .btn-select {
     background: var(--blue);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 15px;
     border-radius: 8px;
@@ -83,18 +142,22 @@ body {
     font-weight: bold;
     margin-top: 20px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-.btn-select.gold { background: var(--gold); color: var(--blue); }
+.btn-select.gold {
+    background: var(--gold);
+    color: var(--blue);
+}
 
-/* Formular Design */
+/* Registrierungs-Formular Karte */
 .reg-card {
     max-width: 500px;
     margin: 40px auto;
-    background: white;
+    background: var(--white);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 }
 
 input, select {
@@ -104,13 +167,39 @@ input, select {
     border: 1px solid #ddd;
     border-radius: 6px;
     box-sizing: border-box;
+    font-size: 1rem;
 }
 
-/* RESPONSIVE: Auf dem Handy untereinander */
+.btn-submit {
+    background: var(--blue);
+    color: white;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* RESPONSIVE ANPASSUNGEN */
+
+/* Tablet: 2 Spalten */
 @media (max-width: 992px) {
-    .package-grid { grid-template-columns: repeat(2, 1fr); }
+    .package-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
+/* Handy: 1 Spalte untereinander */
 @media (max-width: 600px) {
-    .package-grid { grid-template-columns: 1fr; }
+    .package-grid {
+        grid-template-columns: 1fr;
+    }
+    .section-title {
+        font-size: 1.5rem;
+    }
+    .site-header h1 {
+        font-size: 1.8rem;
+    }
 }
