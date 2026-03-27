@@ -2,55 +2,135 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <title>SOS Partner | AK Balkan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK Balkan | Partner Panel</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; }
-        .alarm-card { background: #a52a2a; padding: 40px; border-radius: 20px; margin: 50px auto; max-width: 500px; display: none; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .status-tag { padding: 10px; border-radius: 5px; font-weight: bold; }
+        :root { --blue: #092e54; --gold: #c5a059; --green: #27ae60; }
+        body { background: #f0f2f5; color: #333; display: block; padding: 20px; font-family: sans-serif; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--blue); padding-bottom: 10px; }
+        .tab-btn { padding: 10px 20px; border: none; background: #ddd; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .tab-btn.active { background: var(--blue); color: white; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .sale-form input, .sale-form select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>SOS PANEL - ČEKA SE POZIV</h1>
-    <div id="alarm-box" class="alarm-card">
-        <h2 id="caller-name">Novi SOS Poziv!</h2>
-        <p id="caller-problem"></p>
-        <div id="member-check" class="status-tag">Provera članstva...</div>
-        <hr>
-        <button onclick="acceptCall()" style="padding:20px; width:100%; font-size:20px; cursor:pointer;">PRIHVATI INTERVENCIJU</button>
+
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="color: var(--blue);">Partner Dashboard <small id="partner-name" style="font-size: 14px; color: var(--gold);"></small></h1>
+        <button onclick="location.href='login.html'" class="badge" style="background:#555; color:white; border:none; cursor:pointer;">ODJAVI SE</button>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('sos')">🆘 AKTIVNE ASISTENCIJE</button>
+        <button class="tab-btn" onclick="showTab('sale')" style="background: var(--green); color: white;">➕ PRODAJA ČLANSTVA</button>
+    </div>
+
+    <div id="tab-sos" class="tab-content">
+        <div class="dashboard-grid" id="sos-list">
+            </div>
+    </div>
+
+    <div id="tab-sale" class="tab-content" style="display:none;">
+        <div class="card sale-form" style="max-width: 500px; margin: auto;">
+            <h2 style="color: var(--blue); text-align: center;">Učlani novog klijenta</h2>
+            <p style="text-align: center; font-size: 12px; color: #666;">Partner prodaja: Provizija se obračunava automatski.</p>
+            
+            <input type="text" id="s-fn" placeholder="Ime">
+            <input type="text" id="s-ln" placeholder="Prezime">
+            <input type="email" id="s-mail" placeholder="E-mail adresa">
+            <input type="text" id="s-plate" placeholder="Registarska oznaka">
+            
+            <label style="font-size: 12px; font-weight: bold;">Izaberi paket:</label>
+            <select id="s-package">
+                <option value="MOTO">MOTO (39€)</option>
+                <option value="AUTO">AUTO (69€)</option>
+                <option value="PREMIUM">PREMIUM (99€)</option>
+            </select>
+
+            <button class="btn-submit" onclick="processSale()" style="background: var(--green); margin-top: 15px;">AKTIVIRAJ ČLANSTVO ODMAH</button>
+        </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = { /* DEINE CONFIG WIE OBEN */ };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
+        authDomain: "autoklub-balkan.firebaseapp.com",
+        projectId: "autoklub-balkan",
+        storageBucket: "autoklub-balkan.firebasestorage.app",
+        messagingSenderId: "499546593125",
+        appId: "1:499546593125:web:7823602797b37e8338b38c"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    onSnapshot(collection(db, "sos_calls"), (snap) => {
-        snap.forEach(async (docSnap) => {
-            const call = docSnap.data();
-            if(call.status === "open") {
-                // AUTOMATISCHE PRÜFUNG DES MITGLIEDSSTATUS
-                const uQ = query(collection(db, "users"), where("memberID", "==", call.memberID));
-                const uSnap = await getDocs(uQ);
-                let isActive = false;
-                if(!uSnap.empty) isActive = uSnap.docs[0].data().status === "AKTIV";
+    // Navigation
+    window.showTab = (tab) => {
+        document.getElementById('tab-sos').style.display = tab === 'sos' ? 'block' : 'none';
+        document.getElementById('tab-sale').style.display = tab === 'sale' ? 'block' : 'none';
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    };
 
-                document.getElementById('alarm-box').style.display = 'block';
-                document.getElementById('caller-name').innerText = call.name;
-                document.getElementById('caller-problem').innerText = call.problem;
-                
-                const checkDiv = document.getElementById('member-check');
-                checkDiv.innerText = isActive ? "✅ ČLAN JE AKTIVAN" : "❌ NIJE PLAĆENO";
-                checkDiv.style.background = isActive ? "green" : "black";
-                
-                let audio = new Audio('alarm.mp3');
-                audio.play();
-            }
+    // SOS Liste laden
+    const q = query(collection(db, "sos_calls"), orderBy("timestamp", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const list = document.getElementById('sos-list');
+        list.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const sos = doc.data();
+            list.innerHTML += `
+                <div class="card">
+                    <p><b>Član:</b> ${sos.name} | <b>ID:</b> ${sos.memberID}</p>
+                    <p><b>Tablice:</b> ${sos.plate}</p>
+                    <button class="btn-submit" onclick="assignDriver('${doc.id}')">DODELI VOZAČU</button>
+                </div>
+            `;
         });
     });
+
+    // VERKAUF PROZESS
+    window.processSale = async () => {
+        const fn = document.getElementById('s-fn').value;
+        const ln = document.getElementById('s-ln').value;
+        const em = document.getElementById('s-mail').value;
+        const lp = document.getElementById('s-plate').value;
+        const pk = document.getElementById('s-package').value;
+
+        if(!fn || !ln || !em || !lp) return alert("Popunite sva polja!");
+
+        try {
+            const memberID = Math.floor(100000 + Math.random() * 900000).toString();
+            await addDoc(collection(db, "users"), {
+                firstName: fn,
+                lastName: ln,
+                email: em,
+                licensePlate: lp,
+                package: pk,
+                memberID: memberID,
+                status: "zugang_aktiv", // Da der Partner das Geld vor Ort kassiert, ist es sofort AKTIV
+                partnerSale: true,
+                soldBy: "Partner_ID_Placeholder", // Hier kommt später die ID des Partners rein
+                createdAt: serverTimestamp()
+            });
+
+            alert("Članstvo uspešno prodato! Članski broj: " + memberID);
+            // Generiere Vertrag URL
+            const vLink = `vertrag.html?fn=${fn}&ln=${ln}&lp=${lp}&pk=${pk}&id=${memberID}`;
+            window.open(vLink, '_blank');
+            location.reload();
+        } catch (e) {
+            alert("Greška: " + e.message);
+        }
+    };
 </script>
 </body>
 </html>
