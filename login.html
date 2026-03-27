@@ -2,21 +2,20 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Balkan | Prijava</title>
-    <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --dark-bg: #061f3a; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: var(--white); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-container { width: 100%; max-width: 400px; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; border: 1px solid rgba(197, 160, 89, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
-        .logo-area h1 { color: var(--gold); margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
-        .lang-bar { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
-        .lang-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
-        label { display: block; font-size: 0.8rem; text-align: left; margin-bottom: 5px; color: #aaa; margin-top: 15px; }
-        input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #1a2a3a; color: white; box-sizing: border-box; font-size: 1.1rem; }
-        input:focus { border-color: var(--gold); outline: none; }
-        button#btn-login { width: 100%; padding: 15px; background: var(--gold); color: var(--akb-blue); border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        .footer-link { margin-top: 20px; font-size: 0.9rem; color: #aaa; }
-        .footer-link a { color: var(--gold); text-decoration: none; }
+    <link rel="stylesheet" href="style.css"> <style>
+        /* Spezifisches Design für die dunkle Login-Karte */
+        body { background: #061f3a; display: flex; align-items: center; min-height: 100vh; color: white; }
+        .auth-container { 
+            width: 100%; max-width: 400px; margin: auto;
+            background: rgba(255,255,255,0.05); padding: 30px; 
+            border-radius: 15px; border: 1px solid rgba(197, 160, 89, 0.3); 
+            text-align: center; 
+        }
+        h1 { color: #c5a059; letter-spacing: 2px; }
+        input { background: #1a2a3a; color: white; border: 1px solid #333; margin-bottom: 15px; }
+        label { display: block; text-align: left; font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -24,35 +23,36 @@
 <div class="auth-container">
     <div class="logo-area">
         <h1>AK BALKAN</h1>
-        <p id="sub-title">Prijava članova</p>
+        <p id="sub-title" style="color: #c5a059;">Prijava članova</p>
     </div>
 
-    <div class="lang-bar">
-        <button class="lang-btn" onclick="setLanguage('sr')">SRB</button>
-        <button class="lang-btn" onclick="setLanguage('de')">DE</button>
-        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-        <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-        <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
+    <div class="lang-nav">
+        <button class="l-btn active" onclick="setLanguage('sr', this)">SRB</button>
+        <button class="l-btn" onclick="setLanguage('de', this)">DE</button>
+        <button class="l-btn" onclick="setLanguage('en', this)">EN</button>
+        <button class="l-btn" onclick="setLanguage('fr', this)">FR</button>
+        <button class="l-btn" onclick="setLanguage('ru', this)">RU</button>
     </div>
 
-    <div>
-        <label id="lbl-num">Članski broj (Kundennummer)</label>
-        <input type="number" id="login-num" placeholder="100001">
+    <form id="loginForm">
+        <label id="lbl-num">Članski broj / Kundennummer</label>
+        <input type="text" id="login-num" placeholder="123456" required>
         
-        <label id="lbl-pw">Lozinka (Passwort)</label>
-        <input type="password" id="login-pw" placeholder="******">
-    </div>
+        <label id="lbl-pw">Lozinka / Passwort</label>
+        <input type="password" id="login-pw" placeholder="******" required>
 
-    <button id="btn-login" onclick="handleLogin()">Prijavi se</button>
+        <button type="submit" class="btn-submit" id="btn-login" style="background:#c5a059; color:#092e54;">PRIJAVI SE</button>
+    </form>
 
-    <div class="footer-link">
-        <span id="txt-footer">Niste još član?</span> <a href="register.html" id="link-reg">Registracija</a>
+    <div style="margin-top: 20px; font-size: 0.9rem;">
+        <span id="txt-footer" style="color:#aaa;">Niste još član?</span> 
+        <a href="index.html" id="link-reg" style="color:#c5a059; text-decoration:none;">Registracija</a>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
@@ -64,17 +64,17 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     const trans = {
-        sr: { sub: "Prijava članova", num: "Članski broj", pw: "Lozinka", btn: "Prijavi se", foot: "Niste još član?", reg: "Registracija" },
-        de: { sub: "Mitglieder-Login", num: "Kundennummer", pw: "Passwort", btn: "Einloggen", foot: "Noch kein Mitglied?", reg: "Registrierung" },
-        en: { sub: "Member Login", num: "Customer Number", pw: "Password", btn: "Login", foot: "Not a member yet?", reg: "Register" },
-        fr: { sub: "Connexion membre", num: "Numéro de client", pw: "Mot de passe", btn: "Se connecter", foot: "Pas encore membre ?", reg: "Inscription" },
-        ru: { sub: "Вход для членов", num: "Номер клиента", pw: "Пароль", btn: "Войти", foot: "Еще nicht член?", reg: "Регистрация" }
+        sr: { sub: "Prijava članova", num: "Članski broj", pw: "Lozinka", btn: "PRIJAVI SE", foot: "Niste još član?", reg: "Registracija" },
+        de: { sub: "Mitglieder-Login", num: "Kundennummer", pw: "Passwort", btn: "EINLOGGEN", foot: "Noch kein Mitglied?", reg: "Registrierung" },
+        en: { sub: "Member Login", num: "Customer Number", pw: "Password", btn: "LOGIN", foot: "Not a member yet?", reg: "Register" },
+        fr: { sub: "Connexion membre", num: "Numéro de client", pw: "Mot de passe", btn: "SE CONNECTER", foot: "Pas encore membre ?", reg: "Inscription" },
+        ru: { sub: "Вход для членов", num: "Номер клиента", pw: "Пароль", btn: "ВОЙТИ", foot: "Еще не член?", reg: "Регистрация" }
     };
 
-    window.setLanguage = (l) => {
+    window.setLanguage = (l, btn) => {
         const t = trans[l];
         document.getElementById('sub-title').innerText = t.sub;
         document.getElementById('lbl-num').innerText = t.num;
@@ -82,22 +82,38 @@
         document.getElementById('btn-login').innerText = t.btn;
         document.getElementById('txt-footer').innerText = t.foot;
         document.getElementById('link-reg').innerText = t.reg;
+        
+        document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     };
 
-    window.handleLogin = async () => {
+    document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
         const num = document.getElementById('login-num').value;
         const pw = document.getElementById('login-pw').value;
 
-        if(!num || !pw) return alert("Popunite sva polja!");
+        // Suche in Firestore nach dem Dokument mit dieser memberID
+        const q = query(collection(db, "users"), where("memberID", "==", num));
+        const querySnapshot = await getDocs(q);
 
-        // Wir wandeln die Kundennummer intern wieder in die E-Mail um
-        const email = `${num}@ak-balkan.com`;
+        if (querySnapshot.empty) {
+            alert("Članski broj nije pronađen / Nummer nicht gefunden.");
+            return;
+        }
 
-        try {
-            await signInWithEmailAndPassword(auth, email, pw);
-            window.location.href = "user.html"; // Weiterleitung zum Profil
-        } catch (e) {
-            alert("Greška: Proverite broj i lozinku.");
+        let userFound = false;
+        querySnapshot.forEach((doc) => {
+            const userData = doc.data();
+            if (userData.password === pw) {
+                userFound = true;
+                // Speichere ID lokal für das Profil
+                localStorage.setItem('currentUser', doc.id); 
+                window.location.href = "user.html"; 
+            }
+        });
+
+        if (!userFound) {
+            alert("Pogrešna lozinka / Falsches Passwort.");
         }
     };
 </script>
