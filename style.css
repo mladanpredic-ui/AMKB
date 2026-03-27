@@ -6,10 +6,9 @@
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-light);
     margin: 0;
-    line-height: 1.6;
 }
 
 .site-header {
@@ -20,7 +19,7 @@ body {
     border-bottom: 5px solid var(--gold);
 }
 
-.site-header h1 { color: var(--gold); margin: 10px 0; font-size: 2.5rem; }
+.site-header h1 { color: var(--gold); font-size: 2.5rem; margin: 10px 0; }
 
 .lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
 
@@ -35,20 +34,25 @@ body {
 
 .l-btn.active { background: var(--gold); color: var(--blue); }
 
-/* PAKET GRID - KORREKTUR */
-.package-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+/* DAS REPARIERTE GRID */
+.package-section {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
 .section-title {
     text-align: center;
     color: var(--blue);
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     font-size: 2rem;
     display: block !important;
 }
 
 .package-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Spalten nebeneinander */
+    /* Dies erzwingt 3 gleich große Spalten nebeneinander */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 25px;
 }
 
@@ -58,8 +62,8 @@ body {
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: 0.3s;
     border: 1px solid #eee;
+    transition: 0.3s;
     cursor: pointer;
 }
 
@@ -67,6 +71,7 @@ body {
 
 .pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; font-size: 1.2rem; }
 .pkg-price { font-size: 3rem; font-weight: bold; color: var(--blue); }
+.pkg-price span { font-size: 1rem; color: #777; }
 
 .btn-select {
     background: var(--blue);
@@ -82,9 +87,30 @@ body {
 
 .btn-select.gold { background: var(--gold); color: var(--blue); }
 
-/* Formular */
-.reg-card { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+/* Formular Design */
+.reg-card {
+    max-width: 500px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
 
-@media (max-width: 992px) { .package-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 600px) { .package-grid { grid-template-columns: 1fr; } }
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* RESPONSIVE: Auf dem Handy untereinander */
+@media (max-width: 992px) {
+    .package-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .package-grid { grid-template-columns: 1fr; }
+}
