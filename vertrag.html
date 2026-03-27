@@ -3,98 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ugovor o Članstvu | AK Balkan</title>
-    <style>
-        body { font-family: 'DejaVu Sans', sans-serif, Arial; line-height: 1.6; color: #333; padding: 20px; background: #f0f0f0; }
-        .paper { background: white; max-width: 800px; margin: auto; padding: 50px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #092e54; padding-bottom: 10px; margin-bottom: 30px; }
-        .logo-text { color: #092e54; font-weight: bold; font-size: 24px; }
-        .contract-body { display: flex; gap: 30px; }
-        .col { flex: 1; font-size: 13px; text-align: justify; }
-        .col h3 { color: #092e54; font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        .member-info { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }
-        .footer-btns { text-align: center; margin-top: 30px; }
-        .btn { padding: 12px 25px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; margin: 5px; }
-        .btn-print { background: #092e54; color: white; }
-        @media print { .footer-btns { display: none; } body { background: white; padding: 0; } .paper { box-shadow: none; width: 100%; } }
+    <title>Ugovor | AK Balkan</title>
+    <link rel="stylesheet" href="style.css"> <style>
+        .paper { background: white; max-width: 800px; margin: 20px auto; padding: 40px; border: 1px solid #ddd; }
+        .contract-grid { display: flex; gap: 20px; }
+        .col { flex: 1; font-size: 12px; text-align: justify; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="paper" id="printArea">
-    <div class="header">
-        <div class="logo-text">👑 AK BALKAN</div>
-        <div id="contract-id" style="font-weight: bold;"></div>
+<div class="paper" id="pdfContent">
+    <h2 style="text-align:center; color:#092e54;">UGOVOR O ČLANSTVU</h2>
+    
+    <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:20px;">
+        <p><strong>ID:</strong> <span id="v-id"></span></p>
+        <p><strong>Član / Member:</strong> <span id="v-name"></span></p>
+        <p><strong>Tablice / Plate:</strong> <span id="v-lp"></span></p>
+        <p><strong>Paket / Package:</strong> <b id="v-pk" style="color:#c5a059;"></b></p>
     </div>
 
-    <div class="member-info">
-        <p><strong>Član / Участник:</strong> <span id="m-name"></span></p>
-        <p><strong>Tablice / Номер:</strong> <span id="m-plate"></span></p>
-        <p><strong>Paket / Пакет:</strong> <span id="m-package" style="color: #c5a059; font-weight: bold;"></span></p>
-    </div>
-
-    <div class="contract-body">
+    <div class="contract-grid">
         <div class="col">
-            <h3>USLOVI ČLANSTVA</h3>
-            <p>1. Članstvo aktivira pravo na pomoć na putu u skladu sa izabranim paketom.</p>
-            <p>2. Usluge uključuju šlepanje, popravku na licu mesta i asistenciju u Srbiji i inostranstvu.</p>
-            <p>3. Članstvo važi 12 meseci od dana uplate.</p>
-            <p>4. Potpisom ovog ugovora, član potvrđuje da je upoznat sa opštim uslovima poslovanja Auto Kluba Balkan.</p>
+            <h3 style="font-size:14px;">SRPSKI</h3>
+            <p>Ovim ugovorom se potvrđuje članstvo u Auto Klubu Balkan. Član ima pravo na pomoć na putu u skladu sa izabranim paketom u trajanju od 12 meseci...</p>
         </div>
-
-        <div class="col" id="translated-col">
-            <h3 id="t-title">CONTRACT TERMS</h3>
-            <div id="t-content"></div>
-        </div>
+        <div class="col" id="lang-col">
+            </div>
     </div>
 </div>
 
-<div class="footer-btns">
-    <button class="btn btn-print" onclick="window.print()">ŠTAMPAJ / PRINT / ПЕЧАТЬ</button>
+<div style="text-align:center;" class="no-print">
+    <button class="btn-submit" style="width:200px;" onclick="window.print()">ŠTAMPAJ UGOVOR (PDF)</button>
 </div>
 
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const lang = urlParams.get('lg') || 'sr';
-    const name = `${urlParams.get('fn') || ''} ${urlParams.get('ln') || ''}`;
-    const plate = urlParams.get('lp') || '/';
-    const pkg = urlParams.get('pk') || '/';
-    const id = urlParams.get('id') || '---';
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('v-id').innerText = params.get('id');
+    document.getElementById('v-name').innerText = params.get('fn') + " " + params.get('ln');
+    document.getElementById('v-lp').innerText = params.get('lp');
+    document.getElementById('v-pk').innerText = params.get('pk');
 
-    // Daten einfüllen
-    document.getElementById('m-name').innerText = name;
-    document.getElementById('m-plate').innerText = plate;
-    document.getElementById('m-package').innerText = pkg;
-    document.getElementById('contract-id').innerText = "ID: " + id;
+    const lang = params.get('lg');
+    const langCol = document.getElementById('lang-col');
 
-    // Übersetzungen für die rechte Spalte
-    const translations = {
-        de: {
-            title: "MITGLIEDSCHAFTSBEDINGUNGEN",
-            text: "<p>1. Die Mitgliedschaft aktiviert den Anspruch auf Pannenhilfe gemäß dem gewählten Paket.</p><p>2. Die Leistungen umfassen Abschleppen und Pannenhilfe vor Ort.</p><p>3. Die Mitgliedschaft ist 12 Monate gültig.</p><p>4. Mit der Unterschrift akzeptiert das Mitglied die AGB von Auto Klub Balkan.</p>"
-        },
-        en: {
-            title: "MEMBERSHIP TERMS",
-            text: "<p>1. Membership activates the right to roadside assistance according to the selected package.</p><p>2. Services include towing and on-site repair assistance.</p><p>3. Membership is valid for 12 months from the date of payment.</p><p>4. By signing, the member confirms acceptance of the terms of Auto Klub Balkan.</p>"
-        },
-        fr: {
-            title: "CONDITIONS D'ADHÉSION",
-            text: "<p>1. L'adhésion active le droit à l'assistance routière selon le forfait choisi.</p><p>2. Les services comprennent le remorquage et le dépannage sur place.</p><p>3. L'adhésion est valable 12 mois.</p><p>4. Par sa signature, le membre accepte les conditions d'Auto Klub Balkan.</p>"
-        },
-        ru: {
-            title: "УСЛОВИЯ ЧЛЕНСТВА",
-            text: "<p>1. Членство дает право на помощь на дороге в соответствии с выбранным пакетом.</p><p>2. Услуги включают эвакуацию и ремонт на месте.</p><p>3. Членство действительно в течение 12 месяцев с даты оплаты.</p><p>4. Подписывая данный договор, участник подтверждает согласие с правилами Авто Клуба Балкан.</p>"
-        }
+    const trans = {
+        de: "<h3>DEUTSCH</h3><p>Diese Vereinbarung bestätigt die Mitgliedschaft im Auto Klub Balkan. Das Mitglied hat Anspruch auf Pannenhilfe gemäß dem gewählten Paket für 12 Monate...</p>",
+        en: "<h3>ENGLISH</h3><p>This agreement confirms membership in Auto Klub Balkan. The member is entitled to roadside assistance according to the selected package for 12 months...</p>",
+        fr: "<h3>FRANÇAIS</h3><p>Cet accord confirme l'adhésion au Auto Klub Balkan. Le membre a droit à une assistance routière selon le forfait choisi pendant 12 mois...</p>",
+        ru: "<h3>PУССКИЙ</h3><p>Настоящее соглашение подтверждает членство в Авто Клубе Балкан. Участник имеет право на помощь на дороге в соответствии с выбранным пакетом в течение 12 месяцев...</p>"
     };
 
-    if (lang !== 'sr' && translations[lang]) {
-        document.getElementById('t-title').innerText = translations[lang].title;
-        document.getElementById('t-content').innerHTML = translations[lang].text;
+    if(trans[lang]) {
+        langCol.innerHTML = trans[lang];
     } else {
-        // Falls nur Serbisch gewählt wurde, Spalte ausblenden oder mit englisch füllen
-        document.getElementById('translated-col').style.display = 'none';
+        langCol.innerHTML = "<h3>INFO</h3><p>No second language selected.</p>";
     }
 </script>
-
 </body>
 </html>
