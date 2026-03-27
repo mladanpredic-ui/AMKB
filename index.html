@@ -34,6 +34,7 @@
                 </ul>
                 <button class="btn-select">Izaberi</button>
             </div>
+            
             <div class="pkg-card featured" onclick="selectPkg('Auto')">
                 <div class="pkg-tag">Najpopularnije</div>
                 <div class="pkg-badge">AUTO</div>
@@ -45,6 +46,7 @@
                 </ul>
                 <button class="btn-select gold">Izaberi Paket</button>
             </div>
+            
             <div class="pkg-card" onclick="selectPkg('Premium')">
                 <div class="pkg-badge">PREMIUM</div>
                 <div class="pkg-price">159€<span>/god</span></div>
@@ -66,12 +68,10 @@
         <div class="selected-summary">Izabrali ste: <span id="selected-pkg-display"></span></div>
         <form id="regForm">
             <input type="hidden" id="pk">
-            <div class="input-group">
-                <input type="text" id="fn" placeholder="Ime" required>
-                <input type="text" id="ln" placeholder="Prezime" required>
-            </div>
+            <input type="text" id="fn" placeholder="Ime" required>
+            <input type="text" id="ln" placeholder="Prezime" required>
             <input type="email" id="em" placeholder="E-mail adresa" required>
-            <input type="text" id="lp" placeholder="Registarska oznaka (npr. BG-123-XY)" required>
+            <input type="text" id="lp" placeholder="Registarska oznaka" required>
             <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
 
             <label class="label" id="l-lng">Jezik ugovora:</label>
