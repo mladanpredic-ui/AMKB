@@ -27,18 +27,38 @@
             <div class="pkg-card" onclick="selectPkg('Moto')">
                 <div class="pkg-badge">MOTO</div>
                 <div class="pkg-price">39€<span>/god.</span></div>
+                <ul class="pkg-features" id="feat-moto">
+                    <li>Srbija + Evropa</li>
+                    <li>Šlep do 50km</li>
+                    <li>Popravka na licu mesta</li>
+                    <li>Smeštaj (1 noć)</li>
+                </ul>
                 <button class="btn-select">IZABERI</button>
             </div>
 
             <div class="pkg-card" onclick="selectPkg('Auto')">
                 <div class="pkg-badge">AUTO</div>
                 <div class="pkg-price">89€<span>/god.</span></div>
+                <ul class="pkg-features" id="feat-auto">
+                    <li>Srbija + Evropa</li>
+                    <li>Šlep do 200km</li>
+                    <li>Popravka na licu mesta</li>
+                    <li>E zamensko vozilo (2 dana)</li>
+                    <li>Smeštaj (2 noći)</li>
+                </ul>
                 <button class="btn-select">IZABERI</button>
             </div>
 
             <div class="pkg-card" onclick="selectPkg('Premium')">
                 <div class="pkg-badge">PREMIUM</div>
                 <div class="pkg-price">159€<span>/god.</span></div>
+                <ul class="pkg-features" id="feat-premium">
+                    <li><b>Neograničen šlep</b></li>
+                    <li>Srbija + Evropa + Balkan</li>
+                    <li>Zamensko vozilo (5 dana)</li>
+                    <li>Smeštaj (5 noći)</li>
+                    <li>Povratak vozila kući</li>
+                </ul>
                 <button class="btn-select gold">IZABERI</button>
             </div>
         </div>
@@ -50,6 +70,7 @@
 
     <section class="reg-card" id="reg-section" style="display:none;">
         <h2 id="h-reg-title" style="text-align:center; color:var(--blue);">Registracija člana</h2>
+        <p style="text-align:center;">Paket: <b id="selected-pkg-display">-</b></p>
         <form id="regForm">
             <input type="hidden" id="pk">
             <input type="text" id="fn" placeholder="Ime" required>
