@@ -1,130 +1,90 @@
 :root {
     --blue: #092e54;
     --gold: #c5a059;
-    --red: #e63946;
     --white: #ffffff;
     --bg-light: #f4f7f6;
-    --text-dark: #333333;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: var(--bg-light);
     margin: 0;
     line-height: 1.6;
 }
 
-/* Header Bereich */
 .site-header {
     background: var(--blue);
     color: var(--white);
-    padding: 30px 20px 50px 20px;
+    padding: 40px 20px 60px;
     text-align: center;
     border-bottom: 5px solid var(--gold);
 }
 
-.site-header h1 { color: var(--gold); margin: 10px 0; font-size: 2.2rem; letter-spacing: 2px; }
+.site-header h1 { color: var(--gold); margin: 10px 0; font-size: 2.5rem; }
 
-.lang-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
+.lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
 
 .l-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--gold);
     color: white;
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .l-btn.active { background: var(--gold); color: var(--blue); }
 
-/* PAKET GRID - KORRIGIERT */
-.package-section {
-    max-width: 1100px;
-    margin: -30px auto 40px auto; /* Schiebt die Sektion leicht über den Header-Rand */
-    padding: 0 20px;
-    position: relative;
-    z-index: 10;
-}
+/* PAKET GRID - KORREKTUR */
+.package-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
 
 .section-title {
     text-align: center;
     color: var(--blue);
-    background: white;
-    display: inline-block;
-    padding: 10px 25px;
-    border-radius: 50px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    position: relative;
-    font-size: 1.5rem;
+    font-size: 2rem;
+    display: block !important;
 }
 
 .package-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 Spalten nebeneinander */
-    gap: 20px;
+    gap: 25px;
 }
 
 .pkg-card {
     background: white;
-    padding: 25px;
+    padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     transition: 0.3s;
     border: 1px solid #eee;
     cursor: pointer;
 }
 
-.pkg-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
 
-.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; }
-.pkg-price { font-size: 2.5rem; font-weight: bold; color: var(--blue); }
-.pkg-price span { font-size: 0.9rem; color: #777; }
+.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; font-size: 1.2rem; }
+.pkg-price { font-size: 3rem; font-weight: bold; color: var(--blue); }
 
 .btn-select {
     background: var(--blue);
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 15px;
+    border-radius: 8px;
     width: 100%;
-    margin-top: 15px;
     font-weight: bold;
+    margin-top: 20px;
     cursor: pointer;
 }
 
 .btn-select.gold { background: var(--gold); color: var(--blue); }
 
-/* Registrierungs-Karte */
-.reg-card {
-    max-width: 450px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
+/* Formular */
+.reg-card { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-/* Handy & Tablet Anpassung */
-@media (max-width: 900px) {
-    .package-grid { grid-template-columns: repeat(2, 1fr); } /* 2 Karten auf Tablet */
-}
-
-@media (max-width: 600px) {
-    .package-grid { grid-template-columns: 1fr; } /* 1 Karte auf Handy */
-    .section-title { font-size: 1.2rem; width: 90%; }
-}
+@media (max-width: 992px) { .package-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .package-grid { grid-template-columns: 1fr; } }
