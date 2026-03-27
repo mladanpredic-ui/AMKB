@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <header class="site-header">
         <div class="lang-nav">
             <button class="l-btn active" onclick="chLang('sr', this)">SR 🇷🇸</button>
             <button class="l-btn" onclick="chLang('de', this)">DE 🇩🇪</button>
             <button class="l-btn" onclick="chLang('en', this)">EN 🇬🇧</button>
+            <button class="l-btn" onclick="chLang('fr', this)">FR 🇫🇷</button>
+            <button class="l-btn" onclick="chLang('ru', this)">RU 🇷🇺</button>
         </div>
         <h1 id="h-welcome">AK BALKAN</h1>
         <p id="p-desc">Vaš pouzdan partner na putu širom Evrope.</p>
@@ -20,27 +21,23 @@
 
     <section class="package-section" id="welcome-section">
         <h2 class="section-title" id="h-title">Izaberite paket zaštite:</h2>
-        
         <div class="package-grid">
             <div class="pkg-card" onclick="selectPkg('Moto')">
                 <div class="pkg-badge">MOTO</div>
-                <div class="pkg-price">39€<span>/god.</span></div>
+                <div class="pkg-price">39€</div>
                 <button class="btn-select">IZABERI</button>
             </div>
-
             <div class="pkg-card" onclick="selectPkg('Auto')">
                 <div class="pkg-badge">AUTO</div>
-                <div class="pkg-price">89€<span>/god.</span></div>
+                <div class="pkg-price">89€</div>
                 <button class="btn-select">IZABERI</button>
             </div>
-
             <div class="pkg-card" onclick="selectPkg('Premium')">
                 <div class="pkg-badge">PREMIUM</div>
-                <div class="pkg-price">159€<span>/god.</span></div>
+                <div class="pkg-price">159€</div>
                 <button class="btn-select gold">IZABERI</button>
             </div>
         </div>
-        
         <div style="text-align:center; margin-top:30px;">
             <a href="login.html" id="link-login" style="color:var(--blue); font-weight:bold; text-decoration:none;">Već ste član? Prijavite se</a>
         </div>
@@ -48,8 +45,6 @@
 
     <section class="reg-card" id="reg-section" style="display:none;">
         <h2 id="h-reg-title" style="text-align:center; color:var(--blue);">Registracija</h2>
-        <p style="text-align:center;">Paket: <b id="selected-pkg-display">-</b></p>
-        
         <form id="regForm">
             <input type="hidden" id="pk">
             <input type="text" id="fn" placeholder="Ime" required>
@@ -57,20 +52,17 @@
             <input type="email" id="em" placeholder="E-mail" required>
             <input type="text" id="lp" placeholder="Registarska oznaka" required>
             <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
-            
-            <label style="font-size:0.8rem; color:#666;" id="l-lng">Jezik ugovora:</label>
+            <label id="l-lng">Jezik ugovora:</label>
             <select id="cl">
                 <option value="sr">Srpski</option>
                 <option value="de">Srpski + Deutsch</option>
             </select>
-
             <div style="margin:15px 0;">
                 <input type="checkbox" id="agb" required style="width:auto;">
-                <label for="agb" id="l-agb" style="font-size:0.8rem;">Prihvatam uslove poslovanja.</label>
+                <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
             </div>
-
             <button type="submit" id="b-sub" class="btn-select">POTVRDI</button>
-            <button type="button" onclick="showWelcome()" style="background:none; border:none; color:var(--blue); width:100%; margin-top:10px; cursor:pointer;">Nazad</button>
+            <button type="button" id="btn-back" onclick="showWelcome()" style="background:none; border:none; color:var(--blue); width:100%; cursor:pointer; margin-top:10px;">Nazad</button>
         </form>
     </section>
 
