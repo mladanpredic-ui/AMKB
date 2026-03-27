@@ -1,159 +1,95 @@
-/* --- AK BALKAN MASTER STYLE --- */
 :root {
     --blue: #092e54;
     --gold: #c5a059;
-    --dark-bg: #061f3a;
+    --red: #e63946;
+    --light-bg: #f4f7f6;
     --white: #ffffff;
-    --red: #a52a2a;
-    --green: #27ae60;
+    --text-dark: #333;
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--dark-bg);
-    color: var(--white);
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
     margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
-.reg-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 30px;
-    border-radius: 15px;
-    border: 1px solid rgba(197, 160, 89, 0.3);
-    width: 90%;
-    max-width: 500px;
+/* Header Bereich */
+.site-header {
+    background: var(--blue);
+    color: var(--white);
+    padding: 40px 20px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    margin: 20px;
+    border-bottom: 5px solid var(--gold);
 }
 
-h1, h2 { 
-    color: var(--gold); 
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
+.site-header h1 { color: var(--gold); margin: 10px 0; letter-spacing: 2px; }
 
-/* Paket-Grid Design */
-.package-grid {
-    display: flex;
-    gap: 10px;
-    margin: 25px 0;
-    justify-content: center;
+/* Sprach-Buttons */
+.lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+.l-btn { 
+    background: rgba(255,255,255,0.1); border: 1px solid var(--gold); 
+    color: white; padding: 5px 10px; cursor: pointer; border-radius: 4px;
 }
+.l-btn.active { background: var(--gold); color: var(--blue); }
 
-.pkg-box {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--gold);
-    padding: 20px 5px;
-    border-radius: 10px;
-    cursor: pointer;
+/* Paket-Karten */
+.package-section { max-width: 1000px; margin: -30px auto 40px; padding: 0 20px; }
+.section-title { text-align: center; margin-bottom: 30px; }
+
+.package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+.pkg-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     transition: 0.3s;
-}
-
-.pkg-box:hover {
-    background: var(--gold);
-    color: var(--blue);
-    transform: translateY(-5px);
-}
-
-.pkg-box.featured {
-    border-width: 3px;
-    transform: scale(1.05);
-    background: rgba(197, 160, 89, 0.1);
-}
-
-.pkg-price {
-    font-size: 22px;
-    font-weight: bold;
-    color: var(--gold);
-}
-
-.pkg-box:hover .pkg-price {
-    color: var(--blue);
-}
-
-.pkg-name {
-    font-size: 11px;
-    margin-top: 5px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-/* Formular & Inputs */
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    background: #1a2a3a;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: white;
-    box-sizing: border-box;
-}
-
-.label {
-    display: block;
-    text-align: left;
-    font-size: 13px;
-    color: var(--gold);
-    margin-bottom: 5px;
-}
-
-/* Buttons */
-.btn-main, #b-sub {
-    background: var(--gold);
-    color: var(--blue);
-    border: none;
-    padding: 15px;
-    width: 100%;
-    font-weight: bold;
-    font-size: 16px;
-    border-radius: 5px;
+    border: 1px solid #eee;
+    position: relative;
     cursor: pointer;
 }
 
-.btn-back {
-    background: none;
-    border: none;
-    color: #aaa;
-    margin-top: 15px;
-    cursor: pointer;
-    text-decoration: underline;
+.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
+.pkg-card.featured { border: 2px solid var(--gold); transform: scale(1.05); z-index: 2; }
+
+.pkg-tag { 
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--red); color: white; padding: 4px 15px; font-size: 12px; border-radius: 20px;
 }
 
-/* Sprach-Navigation */
-.lang-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    gap: 5px;
+.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; }
+.pkg-price { font-size: 36px; font-weight: bold; color: var(--blue); }
+.pkg-price span { font-size: 16px; color: #777; }
+
+.pkg-features { list-style: none; padding: 0; margin: 20px 0; font-size: 14px; line-height: 2; }
+
+.btn-select {
+    background: var(--blue); color: white; border: none; padding: 12px 25px; 
+    border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%;
+}
+.btn-select.gold { background: var(--gold); color: var(--blue); }
+
+/* Formular Design */
+.form-container { 
+    max-width: 500px; margin: 40px auto; background: white; padding: 30px; 
+    border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
 }
 
-.l-btn {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 5px;
-    font-size: 10px;
-    flex: 1;
-    cursor: pointer;
+.selected-summary { background: var(--light-bg); padding: 10px; margin-bottom: 20px; border-left: 4px solid var(--gold); font-weight: bold; }
+
+input, select { 
+    width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; 
+    border-radius: 5px; box-sizing: border-box; 
 }
 
-.l-btn.active {
-    background: var(--gold);
-    color: var(--blue);
+.btn-submit { 
+    background: var(--red); color: white; border: none; padding: 15px; 
+    width: 100%; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer;
 }
 
-.agb-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    text-align: left;
-}
+.btn-link { background: none; border: none; color: #777; text-decoration: underline; margin-top: 15px; cursor: pointer; width: 100%; }
+
+.login-link-area { text-align: center; margin-top: 30px; }
+.login-link-area a { color: var(--blue); font-weight: bold; }
