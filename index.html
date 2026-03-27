@@ -24,7 +24,6 @@
         <input type="text" id="ln" placeholder="Prezime" required>
         <input type="email" id="em" placeholder="E-mail" required>
         <input type="text" id="lp" placeholder="Registarska oznaka" required>
-        
         <input type="password" id="pw" placeholder="Lozinka (Wunschpasswort)" required minlength="6">
 
         <label class="label" id="l-pkg">Izaberite paket:</label>
@@ -44,15 +43,18 @@
         </select>
 
         <div class="agb-row">
-            <input type="checkbox" id="agb" required><br>
-            <label for="agb" id="l-agb">Prihvatam uslove poslovanja i polisu privatnosti.</label>
+            <input type="checkbox" id="agb" required>
+            <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
         </div>
 
-        <button type="submit" class="btn-submit" id="b-sub">REGISTRUJ SE & KREIRAJ UGOVOR</button>
+        <button type="submit" id="b-sub">REGISTRUJ SE</button>
     </form>
+    
+    <div style="margin-top:20px;">
+        <a href="login.html" style="color:var(--gold); text-decoration:none; font-size:14px;">Već ste član? Prijavite se ovde</a>
+    </div>
 </div>
 
 <script type="module" src="script.js"></script>
-
 </body>
 </html>
