@@ -4,56 +4,66 @@
     <meta charset="UTF-8">
     <title>AKB FOUNDER | Control Center</title>
     <style>
-        :root { --blue: #092e54; --gold: #c5a059; --red: #a52a2a; }
+        :root { --blue: #092e54; --gold: #c5a059; --red: #a52a2a; --green: #27ae60; }
         body { font-family: sans-serif; background: #f0f2f5; margin: 0; display: flex; }
         .sidebar { width: 260px; background: var(--blue); color: white; height: 100vh; position: fixed; padding: 20px; }
-        .main { margin-left: 300px; padding: 30px; width: 100%; }
+        .main { margin-left: 300px; padding: 30px; width: calc(100% - 300px); }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-green { background: #27ae60; color: white; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
+        .btn { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-green { background: var(--green); color: white; }
         .btn-red { background: var(--red); color: white; }
         .nav-link { display: block; padding: 12px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .nav-link:hover { background: rgba(255,255,255,0.05); }
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--blue); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div id="login-overlay">
-    <div style="background: white; padding: 30px; border-radius: 8px; width: 300px; text-align: center;">
-        <h2>AKB Admin Login</h2>
-        <input type="email" id="adm-email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px;">
-        <input type="password" id="adm-pass" placeholder="Passwort" style="width:100%; padding:10px; margin-bottom:10px;">
-        <button class="btn btn-green" style="width:100%" id="do-login">Einloggen</button>
+    <div style="background: white; padding: 30px; border-radius: 8px; width: 300px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <h2 style="color: var(--blue);">AKB Admin Login</h2>
+        <input type="email" id="adm-email" placeholder="Email" style="width:100%; padding:12px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        <input type="password" id="adm-pass" placeholder="Passwort" style="width:100%; padding:12px; margin-bottom:15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        <button class="btn btn-green" style="width:100%" id="do-login">Prijavi se</button>
     </div>
 </div>
 
 <div class="sidebar">
-    <h2>AK BALKAN</h2>
-    <p>Founder Dashboard</p>
+    <h2 style="color: var(--gold);">AK BALKAN</h2>
+    <p style="font-size: 12px; opacity: 0.8;">Founder Dashboard</p>
+    <hr style="opacity: 0.1; margin: 20px 0;">
     <div class="nav-link" onclick="showTab('tab-users')">👥 Članovi (Kunden)</div>
     <div class="nav-link" onclick="showTab('tab-partners')">🤝 Partneri (Partner)</div>
-    <div class="nav-link" onclick="logout()" style="margin-top:20px; color: var(--gold);">🚪 Odjavi se</div>
+    <div class="nav-link" onclick="logout()" style="margin-top:40px; color: var(--gold); font-weight: bold;">🚪 Odjavi se</div>
 </div>
 
 <div class="main">
     <div id="tab-users" class="card">
-        <h2>Upravljanje članovima (6-cifreni ID)</h2>
+        <h2 style="color: var(--blue);">Upravljanje članovima</h2>
         <table id="user-table">
             <thead>
-                <tr><th>ID</th><th>Ime i Prezime</th><th>Tablice</th><th>Status</th><th>Akcija</th></tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Ime i Prezime</th>
+                    <th>Email</th>
+                    <th>Paket</th>
+                    <th>Status</th>
+                    <th>Akcija</th>
+                </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
     <div id="tab-partners" class="card" style="display:none;">
-        <h2>Novi Partner (SOS / Pomoć na putu)</h2>
+        <h2 style="color: var(--blue);">Novi Partner (SOS / Pomoć na putu)</h2>
         <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <input type="text" id="p-name" placeholder="Naziv firme">
-            <input type="email" id="p-mail" placeholder="Email">
-            <select id="p-type">
+            <input type="text" id="p-name" placeholder="Naziv firme" style="padding:10px; border:1px solid #ddd; border-radius:4px;">
+            <input type="email" id="p-mail" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:4px;">
+            <select id="p-type" style="padding:10px; border:1px solid #ddd; border-radius:4px;">
                 <option value="sos">SOS (Schleppdienst)</option>
                 <option value="service">Pomoć na putu (Servis)</option>
             </select>
@@ -70,7 +80,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -86,16 +96,20 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Login Logik
+    // Login Funktion
     document.getElementById('do-login').onclick = () => {
         signInWithEmailAndPassword(auth, document.getElementById('adm-email').value, document.getElementById('adm-pass').value)
         .catch(e => alert("Greška: " + e.message));
     };
+    
     window.logout = () => signOut(auth);
 
     onAuthStateChanged(auth, user => {
         document.getElementById('login-overlay').style.display = user ? 'none' : 'flex';
-        if(user) { loadUsers(); loadPartners(); }
+        if(user) { 
+            loadUsers(); 
+            loadPartners(); 
+        }
     });
 
     window.showTab = (id) => {
@@ -103,34 +117,61 @@
         document.getElementById('tab-partners').style.display = id === 'tab-partners' ? 'block' : 'none';
     };
 
-    // Kunden laden & aktivieren
+    // Mitglieder laden (Sortiert nach Erstelldatum)
     function loadUsers() {
-        onSnapshot(collection(db, "users"), snap => {
+        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+        onSnapshot(q, snap => {
             const tbody = document.querySelector("#user-table tbody");
             tbody.innerHTML = "";
             snap.forEach(dSnap => {
                 const u = dSnap.data();
+                const isActive = u.status === 'zugang_aktiv';
+                
                 tbody.innerHTML += `<tr>
-                    <td>${u.memberID}</td>
+                    <td><b>${u.memberID}</b></td>
                     <td>${u.firstName} ${u.lastName}</td>
-                    <td>${u.licensePlate}</td>
-                    <td style="color:${u.status === 'AKTIV' ? 'green':'red'}">${u.status}</td>
-                    <td>${u.status !== 'AKTIV' ? `<button class="btn btn-green" onclick="activate('${dSnap.id}')">Aktiviraj</button>` : '✅'}</td>
+                    <td>${u.email}</td>
+                    <td>${u.package || 'Auto'}</td>
+                    <td>
+                        <span class="status-badge" style="background:${isActive ? '#d4edda':'#fff3cd'}; color:${isActive ? '#155724':'#856404'}">
+                            ${isActive ? 'AKTIVAN' : 'ČEKA UPLATU'}
+                        </span>
+                    </td>
+                    <td>
+                        ${!isActive ? `<button class="btn btn-green" onclick="activateUser('${dSnap.id}')">Aktiviraj</button>` : '✔️'}
+                        <button class="btn btn-red" onclick="deleteUser('${dSnap.id}')" style="padding: 4px 8px; font-size: 10px; margin-left: 5px;">X</button>
+                    </td>
                 </tr>`;
             });
         });
     }
 
-    window.activate = async (id) => { if(confirm("Uplata primljena?")) await updateDoc(doc(db, "users", id), {status: "AKTIV"}); };
+    // Nutzer aktivieren (Setzt Status auf zugang_aktiv)
+    window.activateUser = async (id) => {
+        if(confirm("Potvrdi uplatu i aktiviraj člana?")) {
+            await updateDoc(doc(db, "users", id), { status: "zugang_aktiv" });
+        }
+    };
 
-    // Partner Logik
+    // Nutzer löschen
+    window.deleteUser = async (id) => {
+        if(confirm("Da li ste sigurni da želite da obrišete ovog člana?")) {
+            await deleteDoc(doc(db, "users", id));
+        }
+    };
+
+    // Partner Logik (Bleibt gleich)
     window.addPartner = async () => {
+        const name = document.getElementById('p-name').value;
+        const mail = document.getElementById('p-mail').value;
+        if(!name || !mail) return alert("Popunite polja!");
         await addDoc(collection(db, "partners"), {
-            name: document.getElementById('p-name').value,
-            email: document.getElementById('p-mail').value,
+            name: name,
+            email: mail,
             type: document.getElementById('p-type').value
         });
-        alert("Partner dodat!");
+        document.getElementById('p-name').value = "";
+        document.getElementById('p-mail').value = "";
     };
 
     function loadPartners() {
@@ -139,12 +180,17 @@
             tbody.innerHTML = "";
             snap.forEach(dSnap => {
                 const p = dSnap.data();
-                tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.type}</td><td>${p.email}</td>
-                <td><button class="btn btn-red" onclick="delPartner('${dSnap.id}')">X</button></td></tr>`;
+                tbody.innerHTML += `<tr>
+                    <td>${p.name}</td>
+                    <td>${p.type.toUpperCase()}</td>
+                    <td>${p.email}</td>
+                    <td><button class="btn btn-red" onclick="delPartner('${dSnap.id}')">Obrisi</button></td>
+                </tr>`;
             });
         });
     }
     window.delPartner = async (id) => { if(confirm("Obrisati partnera?")) await deleteDoc(doc(db, "partners", id)); };
+
 </script>
 </body>
 </html>
