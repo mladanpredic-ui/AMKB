@@ -22,50 +22,37 @@
     </header>
 
     <section class="package-section" id="welcome-section">
-        <h2 class="section-title">Izaberite paket zaštite:</h2>
+        <h2 class="section-title" id="h-title">Izaberite paket zaštite:</h2>
+        
         <div class="package-grid">
             <div class="pkg-card" onclick="selectPkg('Moto')">
                 <div class="pkg-badge">MOTO</div>
-                <div class="pkg-price">39€<span>/god</span></div>
-                <ul class="pkg-features">
-                    <li>Srbija + Evropa</li>
-                    <li>Slep do 50km</li>
-                    <li>Popravka na licu mesta</li>
-                </ul>
-                <button class="btn-select">Izaberi</button>
+                <div class="pkg-price">39€<span>/god.</span></div>
+                <button class="btn-select">IZABERI</button>
             </div>
-            
-            <div class="pkg-card featured" onclick="selectPkg('Auto')">
-                <div class="pkg-tag">Najpopularnije</div>
+
+            <div class="pkg-card" onclick="selectPkg('Auto')">
                 <div class="pkg-badge">AUTO</div>
-                <div class="pkg-price">89€<span>/god</span></div>
-                <ul class="pkg-features">
-                    <li>Balkan + Evropa</li>
-                    <li>Neograničen šlep</li>
-                    <li>Hotel i Zamensko vozilo</li>
-                </ul>
-                <button class="btn-select gold">Izaberi Paket</button>
+                <div class="pkg-price">89€<span>/god.</span></div>
+                <button class="btn-select">IZABERI</button>
             </div>
-            
+
             <div class="pkg-card" onclick="selectPkg('Premium')">
                 <div class="pkg-badge">PREMIUM</div>
-                <div class="pkg-price">159€<span>/god</span></div>
-                <ul class="pkg-features">
-                    <li>Cela Evropa 100%</li>
-                    <li>Svi troškovi pokriveni</li>
-                    <li>VIP podrška 24/7</li>
-                </ul>
-                <button class="btn-select">Izaberi</button>
+                <div class="pkg-price">159€<span>/god.</span></div>
+                <button class="btn-select gold">IZABERI</button>
             </div>
         </div>
-        <div class="login-link-area">
-            <a href="login.html" id="link-login">Već ste član? Prijavite se</a>
+        
+        <div style="text-align:center; margin-top:30px;">
+            <a href="login.html" id="link-login" style="color:var(--blue); font-weight:bold; text-decoration:none;">Već ste član? Prijavite se</a>
         </div>
     </section>
 
-    <section id="reg-section" class="form-container" style="display:none;">
-        <h2 id="h-title">Registracija člana</h2>
-        <div class="selected-summary">Izabrali ste: <span id="selected-pkg-display"></span></div>
+    <section class="reg-card" id="reg-section" style="display: none;">
+        <h2 id="h-reg-title" style="text-align:center; color:var(--blue);">Registracija</h2>
+        <p style="text-align:center;">Paket: <b id="selected-pkg-display">-</b></p>
+        
         <form id="regForm">
             <input type="hidden" id="pk">
             <input type="text" id="fn" placeholder="Ime" required>
@@ -74,36 +61,23 @@
             <input type="text" id="lp" placeholder="Registarska oznaka" required>
             <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
 
-            <label class="label" id="l-lng">Jezik ugovora:</label>
+            <label class="label">Jezik ugovora:</label>
             <select id="cl">
                 <option value="sr">Srpski</option>
                 <option value="de">Srpski + Deutsch</option>
             </select>
 
-            <div class="agb-row">
-                <input type="checkbox" id="agb" required>
+            <div style="margin: 15px 0; font-size: 0.9rem;">
+                <input type="checkbox" id="agb" required style="width:auto;">
                 <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
             </div>
 
             <button type="submit" id="b-sub" class="btn-submit">POTVRDI I PREUZMI UGOVOR</button>
-            <button type="button" onclick="showWelcome()" class="btn-link">Nazad na izbor paketa</button>
+            <button type="button" onclick="showWelcome()" style="width:100%; background:none; border:none; color:var(--blue); cursor:pointer; margin-top:10px;">Nazad</button>
         </form>
     </section>
 </div>
 
 <script type="module" src="script.js"></script>
-<script>
-    function selectPkg(val) {
-        document.getElementById('pk').value = val;
-        document.getElementById('selected-pkg-display').innerText = val;
-        document.getElementById('welcome-section').style.display = 'none';
-        document.getElementById('reg-section').style.display = 'block';
-        window.scrollTo(0,0);
-    }
-    function showWelcome() {
-        document.getElementById('welcome-section').style.display = 'block';
-        document.getElementById('reg-section').style.display = 'none';
-    }
-</script>
 </body>
 </html>
