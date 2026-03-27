@@ -2,172 +2,57 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoKlub Balkan | Master</title>
-    <style>
-        :root { --akb-blue: #092e54; --akb-red: #a52a2a; --gold: #c5a059; --light: #f8f9fa; --dark: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: var(--dark); overflow-x: hidden; }
-
-        /* NAV */
-        nav { 
-            background: var(--akb-blue); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--gold);
-        }
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-        .lang-select { background: #061f3a; color: var(--gold); border: 1px solid var(--gold); padding: 6px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .user-login { 
-            color: white; text-decoration: none; font-size: 0.85rem; font-weight: bold; 
-            border: 1px solid var(--gold); padding: 8px 16px; border-radius: 5px; transition: 0.3s;
-        }
-        .user-login:hover { background: var(--gold); color: var(--akb-blue); }
-
-        /* HERO */
-        .hero { 
-            background: linear-gradient(rgba(9,46,84,0.85), rgba(9,46,84,0.85)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=1470');
-            background-size: cover; background-position: center; color: white; padding: 80px 10%; text-align: center;
-        }
-        .btn-cta { 
-            background: var(--akb-red); color: white; padding: 20px 40px; border: none; border-radius: 50px; 
-            font-weight: bold; font-size: 1.2rem; cursor: pointer; width: 100%; max-width: 320px; 
-            margin-top: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: 0.3s;
-        }
-        .btn-cta:hover { transform: scale(1.05); background: #8b0000; }
-
-        /* PACKAGES */
-        .container { padding: 50px 5%; }
-        .package-grid { display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 30px; }
-        .card { 
-            background: white; border-radius: 15px; padding: 30px; text-align: center; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 5px solid var(--akb-blue);
-            transition: 0.3s;
-        }
-        .card.premium { border-top-color: var(--gold); border-width: 8px; transform: scale(1.05); z-index: 2; }
-        .price { font-size: 2.5rem; font-weight: bold; color: var(--akb-blue); margin: 15px 0; }
-        .card ul { list-style: none; padding: 0; margin: 20px 0; font-size: 0.95rem; color: #555; }
-        .card li { margin: 10px 0; }
-
-        /* FOOTER */
-        footer { background: var(--dark); color: white; padding: 40px 5%; margin-top: 50px; text-align: center; border-top: 3px solid var(--gold); }
-        .biz-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 0.85rem; }
-        .biz-links a { color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; }
-        .biz-links a:hover { color: var(--gold); }
-
-        @media (min-width: 768px) { .package-grid { grid-template-columns: repeat(3, 1fr); } }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija | AK Balkan</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<nav>
-    <a href="index.html" style="color:white; text-decoration:none; font-weight:bold; letter-spacing:1px; font-size: 1.2rem;">👑 AK BALKAN</a>
-    <div class="nav-right">
-        <select class="lang-select" onchange="updateContent(this.value)">
-            <option value="sr_lat">SRB (Lat)</option>
-            <option value="sr_cyr">СРБ (Ћир)</option>
-            <option value="de">DE</option>
-            <option value="en">EN</option>
-            <option value="ru">RU</option>
+<div class="reg-card">
+    <div class="lang-nav">
+        <button class="l-btn active" onclick="chLang('sr', this)">SR 🇷🇸</button>
+        <button class="l-btn" onclick="chLang('de', this)">DE 🇩🇪</button>
+        <button class="l-btn" onclick="chLang('en', this)">EN 🇬🇧</button>
+        <button class="l-btn" onclick="chLang('fr', this)">FR 🇫🇷</button>
+        <button class="l-btn" onclick="chLang('ru', this)">RU 🇷🇺</button>
+    </div>
+
+    <h2 id="h-title">ČLANSKA REGISTRACIJA</h2>
+
+    <form id="regForm">
+        <input type="text" id="fn" placeholder="Ime" required>
+        <input type="text" id="ln" placeholder="Prezime" required>
+        <input type="email" id="em" placeholder="E-mail" required>
+        <input type="text" id="lp" placeholder="Registarska oznaka" required>
+        
+        <input type="password" id="pw" placeholder="Lozinka (Wunschpasswort)" required minlength="6">
+
+        <label class="label" id="l-pkg">Izaberite paket:</label>
+        <select id="pk" class="gold-border">
+            <option value="Moto">MOTO (39€)</option>
+            <option value="Auto">AUTO (89€)</option>
+            <option value="Premium">PREMIUM (159€)</option>
         </select>
-        <a href="login.html" class="user-login" id="txt-login">PRIJAVA</a>
-    </div>
-</nav>
 
-<section class="hero">
-    <h1 id="txt-title" style="font-size: 2.5rem;">Sigurnost na putu širom Balkana</h1>
-    <p id="txt-desc" style="font-size: 1.2rem; opacity: 0.9;">Pomoć na putu kojoj verujete. Pridružite se hiljadama vozača.</p>
-    <button class="btn-cta" id="txt-cta" onclick="location.href='register.html'">POSTANI ČLAN</button>
-</section>
+        <label class="label" id="l-lng">Jezik ugovora:</label>
+        <select id="cl">
+            <option value="sr">Samo Srpski</option>
+            <option value="de">Srpski + Deutsch</option>
+            <option value="en">Srpski + English</option>
+            <option value="fr">Srpski + Français</option>
+            <option value="ru">Srpski + Pусский</option>
+        </select>
 
-<div class="container">
-    <h2 style="text-align:center; font-size: 2rem; color: var(--akb-blue);" id="txt-pkg-head">Naši Paketi</h2>
-    <div class="package-grid">
-        <div class="card">
-            <h3 id="txt-p1">MOTO</h3>
-            <div class="price">39€</div>
-            <p id="txt-p1d">Godišnja članarina</p>
-            <ul>
-                <li>Srbija Asistencija</li>
-                <li>Šlepanje do 50km</li>
-                <li>Popusti kod partnera</li>
-            </ul>
+        <div class="agb-row">
+            <input type="checkbox" id="agb" required><br>
+            <label for="agb" id="l-agb">Prihvatam uslove poslovanja i polisu privatnosti.</label>
         </div>
-        <div class="card premium">
-            <h3 id="txt-p2">PREMIUM</h3>
-            <div class="price" style="color:var(--gold)">159€</div>
-            <p id="txt-p2d">Godišnja članarina</p>
-            <ul>
-                <li><strong>Evropa + Balkan</strong></li>
-                <li>Neograničeno šlepanje</li>
-                <li>Hotel & Zamensko vozilo</li>
-                <li>SOS GPS Panel</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3 id="txt-p3">AUTO</h3>
-            <div class="price">89€</div>
-            <p id="txt-p3d">Godišnja članarina</p>
-            <ul>
-                <li>Srbija + Region</li>
-                <li>Šlepanje do 100km</li>
-                <li>Pomoć na licu mesta</li>
-            </ul>
-        </div>
-    </div>
+
+        <button type="submit" class="btn-submit" id="b-sub">REGISTRUJ SE & KREIRAJ UGOVOR</button>
+    </form>
 </div>
 
-<footer>
-    <div class="biz-links">
-        <a href="admin.html">Admin Login</a> | 
-        <a href="partnerweb.html">Partner Portal</a> |
-        <a href="#">Uslovi Korišćenja</a>
-    </div>
-    <p style="opacity: 0.4; font-size: 0.75rem;">&copy; 2026 AutoKlub Balkan d.o.o. | PIB: 102345678 | Belgrade, Serbia</p>
-</footer>
+<script type="module" src="script.js"></script>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
-        authDomain: "autoklub-balkan.firebaseapp.com",
-        projectId: "autoklub-balkan",
-        storageBucket: "autoklub-balkan.firebasestorage.app",
-        messagingSenderId: "499546593125",
-        appId: "1:499546593125:web:7823602797b37e8338b38c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Prüfen ob User eingeloggt ist
-    onAuthStateChanged(auth, (user) => {
-        const loginBtn = document.getElementById('txt-login');
-        if (user) {
-            loginBtn.innerText = "MOJ PANEL";
-            loginBtn.href = "user.html";
-            loginBtn.style.borderColor = "#27ae60"; // Grün für aktiven Login
-        }
-    });
-
-    const translations = {
-        sr_lat: { login: "PRIJAVA", title: "Sigurnost na putu širom Balkana", desc: "Pomoć na putu kojoj verujete. Pridružite se hiljadama vozača.", cta: "POSTANI ČLAN", pkg: "Naši Paketi", p1: "MOTO", p1d: "Godišnja članarina", p2: "PREMIUM", p2d: "Godišnja članarina", p3: "AUTO", p3d: "Godišnja članarina" },
-        sr_cyr: { login: "ПРИЈАВА", title: "Сигурност на путу широм Балкана", desc: "Помоћ на путу којој верујете. Придружите се хиљадама возача.", cta: "ПОСТАНИ ЧЛАН", pkg: "Наши Пакети", p1: "МОТО", p1d: "Годишnja чланарина", p2: "ПРЕМИУМ", p2d: "Годишња чланарина", p3: "АУТО", p3d: "Годишња чланарина" },
-        de: { login: "LOGIN", title: "Sicherheit auf allen Wegen im Balkan", desc: "Pannenhilfe, der Sie vertrauen. Werden Sie Teil unserer Gemeinschaft.", cta: "MITGLIED WERDEN", pkg: "Unsere Pakete", p1: "MOTO", p1d: "Jahresbeitrag", p2: "PREMIUM", p2d: "Jahresbeitrag", p3: "AUTO", p3d: "Jahresbeitrag" },
-        en: { login: "LOGIN", title: "Safety Across the Balkans", desc: "Roadside assistance you can trust. Join thousands of drivers today.", cta: "JOIN NOW", pkg: "Our Packages", p1: "MOTO", p1d: "Annual Membership", p2: "PREMIUM", p2d: "Annual Membership", p3: "AUTO", p3d: "Annual Membership" },
-        ru: { login: "ВХОД", title: "Безопасность на дорогах Балкан", desc: "Помощь, которой доверяют. Присоединяйтесь к тысячам водителей.", cta: "СТАТЬ ЧЛЕНОМ", pkg: "Наши пакеты", p1: "МОТО", p1d: "Годовой взнос", p2: "ПРЕМИУМ", p2d: "Годовой взнос", p3: "АВТО", p3d: "Годовой взнос" }
-    };
-
-    window.updateContent = (lang) => {
-        const t = translations[lang];
-        if (!auth.currentUser) document.getElementById('txt-login').innerText = t.login;
-        document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-desc').innerText = t.desc;
-        document.getElementById('txt-cta').innerText = t.cta;
-        document.getElementById('txt-pkg-head').innerText = t.pkg;
-        document.getElementById('txt-p1').innerText = t.p1;
-        document.getElementById('txt-p2').innerText = t.p2;
-        document.getElementById('txt-p3').innerText = t.p3;
-    }
-</script>
 </body>
 </html>
