@@ -2,49 +2,67 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomoć na putu | AK Balkan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AK Balkan | Radni Nalog</title>
     <style>
-        body { background: #092e54; color: white; font-family: sans-serif; margin: 0; padding: 20px; text-align: center; }
-        .alarm-box { background: #a52a2a; padding: 30px; border-radius: 15px; margin-top: 20px; display: none; border: 4px solid white; }
-        .info-card { background: white; color: #333; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: left; }
-        .status-badge { display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-bottom: 10px; }
-        .btn-accept { background: #27ae60; color: white; border: none; padding: 20px; width: 100%; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        #login-area { background: white; color: #333; padding: 30px; border-radius: 10px; max-width: 400px; margin: auto; }
+        :root { --akb-blue: #092e54; --gold: #c5a059; --dark-bg: #061f3a; --green: #27ae60; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; color: #333; }
+        
+        .driver-header { background: var(--akb-blue); color: var(--gold); padding: 15px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .status-bar { background: var(--gold); color: var(--akb-blue); padding: 10px; font-weight: bold; text-align: center; text-transform: uppercase; }
+        
+        .info-card { background: white; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .info-card h3 { margin-top: 0; color: var(--akb-blue); border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #fafafa; }
+        .label { color: #888; font-size: 0.9rem; }
+        .value { font-weight: bold; color: #222; }
+
+        .action-btn { 
+            display: block; width: calc(100% - 300px); margin: 20px auto; padding: 18px; 
+            border-radius: 10px; text-align: center; text-decoration: none; font-weight: bold; font-size: 1.1rem; 
+            border: none; cursor: pointer; transition: 0.3s;
+        }
+        .btn-call { background: var(--green); color: white; margin-bottom: 10px; width: 90%; }
+        .btn-nav { background: var(--akb-blue); color: white; width: 90%; }
+        .btn-finish { background: #555; color: white; width: 90%; margin-top: 40px; }
+
+        @media (max-width: 600px) { .action-btn { width: 90%; } }
     </style>
 </head>
 <body>
 
-<div id="login-area">
-    <h2>VOZAČ PRIJAVA</h2>
-    <input type="email" id="driver-email" placeholder="Email vozača" style="width:100%; padding:10px; margin-bottom:10px;">
-    <input type="password" id="driver-pass" placeholder="Lozinka" style="width:100%; padding:10px; margin-bottom:10px;">
-    <button onclick="driverLogin()" style="width:100%; padding:10px; background:#092e54; color:white; border:none;">PRIJAVI SE</button>
+<div class="driver-header">
+    <h2 style="margin:0;">AK BALKAN</h2>
+    <small>POMOĆ NA PUTU - DISPEČER</small>
 </div>
 
-<div id="driver-dashboard" style="display:none;">
-    <h1>🚚 ŠLEP SLUŽBA - AKTIVNA</h1>
-    <p id="driver-info"></p>
-    <button onclick="driverLogout()" style="background:none; color:white; border:1px solid white; padding:5px;">Odjavi se</button>
+<div id="status-tag" class="status-bar">Učitavanje naloga...</div>
 
-    <div id="sos-alarm" class="alarm-box">
-        <h2 style="margin:0;">🚨 NOVI SOS POZIV!</h2>
-        <div class="info-card">
-            <div id="status-display" class="status-badge">PROVERA ČLANSTVA...</div>
-            <p><strong>Klijent:</strong> <span id="cust-name"></span></p>
-            <p><strong>Vozilo:</strong> <span id="cust-plate"></span></p>
-            <p><strong>Problem:</strong> <span id="cust-problem"></span></p>
-            <p><strong>Lokacija:</strong> <span id="cust-loc"></span></p>
-            <button class="btn-accept" onclick="acceptMission()">PRIHVATI I KRENI</button>
-        </div>
-    </div>
+<div class="info-card">
+    <h3>Podaci o Članu</h3>
+    <div class="detail-row"><span class="label">Ime i Prezime:</span> <span class="value" id="m-name">...</span></div>
+    <div class="detail-row"><span class="label">Telefon:</span> <span class="value" id="m-phone">...</span></div>
+    <div class="detail-row"><span class="label">Vozilo / Tablice:</span> <span class="value" id="m-plate">...</span></div>
 </div>
+
+<div class="info-card">
+    <h3>Lokacija Kvara</h3>
+    <p id="m-loc-text" style="font-size: 0.9rem; color: #666;">Preuzimanje GPS koordinata...</p>
+    <button class="action-btn btn-nav" id="btn-google-maps">📍 OTVORI NAVIGACIJU</button>
+</div>
+
+<div class="info-card" style="text-align: center;">
+    <button class="action-btn btn-call" id="btn-phone-call">📞 POZOVI ČLANA</button>
+</div>
+
+<button class="action-btn btn-finish" id="btn-complete">OZNAČI KAO ZAVRŠENO</button>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // Deine Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
         authDomain: "autoklub-balkan.firebaseapp.com",
@@ -56,69 +74,46 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
 
-    // Login Funktionen
-    window.driverLogin = () => {
-        const e = document.getElementById('driver-email').value;
-        const p = document.getElementById('driver-pass').value;
-        signInWithEmailAndPassword(auth, e, p).catch(err => alert("Greška: " + err.message));
-    };
-    window.driverLogout = () => signOut(auth);
+    // Auftrag ID aus der URL lesen (?id=XYZ)
+    const urlParams = new URLSearchParams(window.location.search);
+    const callId = urlParams.get('id');
 
-    onAuthStateChanged(auth, user => {
-        if(user) {
-            document.getElementById('login-area').style.display = 'none';
-            document.getElementById('driver-dashboard').style.display = 'block';
-            document.getElementById('driver-info').innerText = "Vozač: " + user.email;
-            listenForAlarms();
-        } else {
-            document.getElementById('login-area').style.display = 'block';
-            document.getElementById('driver-dashboard').style.display = 'none';
-        }
-    });
+    if (!callId) {
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Nalog nije pronađen.</h2>";
+    } else {
+        // Echtzeit-Überwachung des Auftrags
+        onSnapshot(doc(db, "sos_calls", callId), (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.data();
+                
+                document.getElementById('m-name').innerText = data.name;
+                document.getElementById('m-phone').innerText = data.phone || "Nije navedeno";
+                document.getElementById('m-plate').innerText = data.plate || "Nije navedeno";
+                document.getElementById('status-tag').innerText = "Status: " + (data.status || "NOVO");
 
-    let currentCallId = null;
+                // Telefon-Link setzen
+                document.getElementById('btn-phone-call').onclick = () => {
+                    window.location.href = "tel:" + data.phone;
+                };
 
-    function listenForAlarms() {
-        onSnapshot(collection(db, "sos_calls"), (snap) => {
-            snap.forEach(async (dSnap) => {
-                const call = dSnap.data();
-                if(call.status === "open") {
-                    currentCallId = dSnap.id;
-                    
-                    // Prüfen ob Mitglied aktiv ist
-                    const uQ = query(collection(db, "users"), where("memberID", "==", call.memberID));
-                    const uSnap = await getDocs(uQ);
-                    let active = false;
-                    if(!uSnap.empty) active = uSnap.docs[0].data().status === "AKTIV";
-
-                    document.getElementById('sos-alarm').style.display = 'block';
-                    document.getElementById('cust-name').innerText = call.name;
-                    document.getElementById('cust-plate').innerText = call.licensePlate;
-                    document.getElementById('cust-problem').innerText = call.problem;
-                    document.getElementById('cust-loc').innerText = call.location || "Vidi mapu";
-                    
-                    const st = document.getElementById('status-display');
-                    st.innerText = active ? "✅ ČLAN AKTIVAN" : "⚠️ NIJE PLAĆENO";
-                    st.style.background = active ? "#27ae60" : "#000";
-                    st.style.color = "white";
-
-                    let audio = new Audio('alarm.mp3');
-                    audio.play();
+                // Google Maps Link setzen
+                if (data.lat && data.lng) {
+                    const mapUrl = `https://www.google.com/maps?q=${data.lat},${lng}`;
+                    document.getElementById('btn-google-maps').onclick = () => {
+                        window.open(mapUrl, '_blank');
+                    };
+                    document.getElementById('m-loc-text').innerText = "Lokacija je precizno definisana.";
                 }
-            });
+            }
         });
     }
 
-    window.acceptMission = async () => {
-        if(currentCallId) {
-            await updateDoc(doc(db, "sos_calls", currentCallId), { 
-                status: "in_progress",
-                driver: auth.currentUser.email 
-            });
-            alert("Intervencija prihvaćena!");
-            document.getElementById('sos-alarm').style.display = 'none';
+    // Auftrag abschließen
+    document.getElementById('btn-complete').onclick = async () => {
+        if(confirm("Da li ste završili ovu intervenciju?")) {
+            await updateDoc(doc(db, "sos_calls", callId), { status: "završeno" });
+            alert("Intervencija arhivirana.");
         }
     };
 </script>
