@@ -19,37 +19,66 @@ const txt = {
         title: "Izaberite paket zaštite:", login: "Već ste član? Prijavite se",
         regTitle: "Registracija člana", fn: "Ime", ln: "Prezime", em: "E-mail adresa", lp: "Registarska oznaka",
         pw: "Lozinka", lng: "Jezik ugovora:", agb: "Prihvatam uslove poslovanja.",
-        btnSub: "POTVRDI I PREUZMI UGOVOR", select: "IZABERI", selectP: "IZABRANO"
+        btnSub: "POTVRDI I PREUZMI UGOVOR", select: "IZABERI", back: "Nazad"
     },
     de: {
         welcome: "AK BALKAN", desc: "Ihr zuverlässiger Partner auf Europas Straßen.",
         title: "Wählen Sie Ihr Schutzpaket:", login: "Bereits Mitglied? Login",
         regTitle: "Mitgliedsregistrierung", fn: "Vorname", ln: "Nachname", em: "E-Mail Adresse", lp: "Kennzeichen",
         pw: "Passwort", lng: "Vertragssprache:", agb: "Ich akzeptiere die AGB.",
-        btnSub: "BESTÄTIGEN & VERTRAG LADEN", select: "WÄHLEN", selectP: "GEWÄHLT"
+        btnSub: "BESTÄTIGEN & VERTRAG LADEN", select: "WÄHLEN", back: "Zurück"
+    },
+    en: {
+        welcome: "AK BALKAN", desc: "Your reliable partner on European roads.",
+        title: "Choose your protection package:", login: "Already a member? Login",
+        regTitle: "Member Registration", fn: "First Name", ln: "Last Name", em: "E-Mail Address", lp: "License Plate",
+        pw: "Password", lng: "Contract Language:", agb: "I accept the terms and conditions.",
+        btnSub: "CONFIRM & DOWNLOAD CONTRACT", select: "CHOOSE", back: "Back"
+    },
+    fr: {
+        welcome: "AK BALKAN", desc: "Votre partenaire fiable sur les routes d'Europe.",
+        title: "Choisissez votre formule de protection :", login: "Déjà membre ? Connexion",
+        regTitle: "Inscription des membres", fn: "Prénom", ln: "Nom", em: "Adresse e-mail", lp: "Plaque d'immatriculation",
+        pw: "Mot de passe", lng: "Langue du contrat :", agb: "J'accepte les conditions générales.",
+        btnSub: "CONFIRMER ET TÉLÉCHARGER", select: "CHOISIR", back: "Retour"
+    },
+    ru: {
+        welcome: "AK BALKAN", desc: "Ваш надежный партнер на дорогах Европы.",
+        title: "Выберите пакет защиты:", login: "Уже зарегистрированы? Войти",
+        regTitle: "Регистрация участника", fn: "Имя", ln: "Фамилия", em: "E-mail адрес", lp: "Номер авто",
+        pw: "Пароль", lng: "Язык контракта:", agb: "Я принимаю условия использования.",
+        btnSub: "ПОДТВЕРДИТЬ И СКАЧАТЬ", select: "ВЫБРАТЬ", back: "Назад"
     }
-    // Weitere Sprachen (en, fr, ru) können hier wie oben ergänzt werden
 };
 
-// --- FUNKTIONEN GLOBAL VERFÜGBAR MACHEN ---
-
+// --- GLOBAL FUNCTIONS ---
 window.chLang = function(lang, btn) {
     const t = txt[lang] || txt.sr;
     
-    // Texte auf der Seite anpassen
+    // Header & Titles
     if(document.getElementById('h-welcome')) document.getElementById('h-welcome').innerText = t.welcome;
     if(document.getElementById('p-desc')) document.getElementById('p-desc').innerText = t.desc;
-    if(document.getElementById('h-title')) document.getElementById('h-title').innerText = t.regTitle;
-    if(document.getElementById('b-sub')) document.getElementById('b-sub').innerText = t.btnSub;
+    if(document.getElementById('h-title')) document.getElementById('h-title').innerText = t.title;
+    if(document.getElementById('h-reg-title')) document.getElementById('h-reg-title').innerText = t.regTitle;
+    if(document.getElementById('link-login')) document.getElementById('link-login').innerText = t.login;
     
-    // Platzhalter anpassen
+    // Form Placeholders
     if(document.getElementById('fn')) document.getElementById('fn').placeholder = t.fn;
     if(document.getElementById('ln')) document.getElementById('ln').placeholder = t.ln;
     if(document.getElementById('em')) document.getElementById('em').placeholder = t.em;
     if(document.getElementById('lp')) document.getElementById('lp').placeholder = t.lp;
     if(document.getElementById('pw')) document.getElementById('pw').placeholder = t.pw;
+    if(document.getElementById('l-lng')) document.getElementById('l-lng').innerText = t.lng;
+    if(document.getElementById('l-agb')) document.getElementById('l-agb').innerText = t.agb;
+    if(document.getElementById('b-sub')) document.getElementById('b-sub').innerText = t.btnSub;
+    if(document.getElementById('btn-back')) document.getElementById('btn-back').innerText = t.back;
 
-    // Aktiven Button markieren
+    // Package Buttons
+    document.querySelectorAll('.btn-select').forEach(b => {
+        b.innerText = t.select;
+    });
+
+    // Active Button State
     document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
     if(btn) btn.classList.add('active');
 };
@@ -58,14 +87,9 @@ window.selectPkg = function(val) {
     if(document.getElementById('pk')) document.getElementById('pk').value = val;
     if(document.getElementById('selected-pkg-display')) document.getElementById('selected-pkg-display').innerText = val;
     
-    const welcome = document.getElementById('welcome-section');
-    const reg = document.getElementById('reg-section');
-    
-    if(welcome && reg) {
-        welcome.style.display = 'none';
-        reg.style.display = 'block';
-        window.scrollTo(0,0);
-    }
+    document.getElementById('welcome-section').style.display = 'none';
+    document.getElementById('reg-section').style.display = 'block';
+    window.scrollTo(0,0);
 };
 
 window.showWelcome = function() {
@@ -73,8 +97,7 @@ window.showWelcome = function() {
     document.getElementById('reg-section').style.display = 'none';
 };
 
-// --- REGISTRIERUNG LOGIK ---
-
+// --- FORM LOGIC ---
 const regForm = document.getElementById('regForm');
 if(regForm) {
     regForm.onsubmit = async (e) => {
@@ -92,20 +115,18 @@ if(regForm) {
             licensePlate: document.getElementById('lp').value,
             password: document.getElementById('pw').value,
             package: document.getElementById('pk').value,
-            lang: document.getElementById('cl') ? document.getElementById('cl').value : 'sr',
+            lang: document.getElementById('cl').value,
             status: "čeka_uplatu",
             createdAt: serverTimestamp()
         };
 
         try {
             await addDoc(collection(db, "users"), d);
-            // Weiterleitung zur vertrag.html mit allen Daten
             window.location.href = `vertrag.html?id=${id}&fn=${encodeURIComponent(d.firstName)}&ln=${encodeURIComponent(d.lastName)}&lp=${encodeURIComponent(d.licensePlate)}&pk=${encodeURIComponent(d.package)}&lg=${d.lang}`;
         } catch (error) {
-            console.error("Firebase Error:", error);
-            alert("Fehler beim Speichern. Bitte versuche es erneut.");
+            console.error(error);
+            alert("Error!");
             subBtn.disabled = false;
-            subBtn.innerText = "PROBAJ PONOVO";
         }
     };
 }
