@@ -4,17 +4,22 @@
     --white: #ffffff;
     --bg-light: #f4f7f6;
     --text-dark: #333333;
+    --red: #e63946;
+    --green: #27ae60;
 }
 
+/* GRUND-STYLING & HINTERGRUND-GRAFIK */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-light);
+    /* Dezentes grafisches Muster */
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23092e54' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     color: var(--text-dark);
     margin: 0;
     line-height: 1.6;
 }
 
-/* Header Bereich */
+/* HEADER & LOGO */
 .site-header {
     background: var(--blue);
     color: var(--white);
@@ -23,14 +28,22 @@ body {
     border-bottom: 5px solid var(--gold);
 }
 
+.logo-container { margin-bottom: 15px; }
+.main-logo {
+    max-width: 120px;
+    height: auto;
+    filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3));
+}
+
 .site-header h1 { 
     color: var(--gold); 
     margin: 10px 0; 
     font-size: 2.5rem; 
     letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-/* Sprachen-Navigation */
+/* SPRACH-NAVIGATION */
 .lang-nav {
     display: flex;
     justify-content: center;
@@ -48,12 +61,9 @@ body {
     transition: 0.3s;
 }
 
-.l-btn.active, .l-btn:hover {
-    background: var(--gold);
-    color: var(--blue);
-}
+.l-btn.active, .l-btn:hover { background: var(--gold); color: var(--blue); }
 
-/* PAKET SEKTION & GRID (DIE REPARATUR) */
+/* PAKET GRID (DAS HERZSTÜCK) */
 .package-section {
     padding: 40px 20px;
     max-width: 1200px;
@@ -66,12 +76,10 @@ body {
     margin-bottom: 40px;
     font-size: 2rem;
     font-weight: bold;
-    display: block !important; /* Stellt sicher, dass der Titel sichtbar bleibt */
 }
 
 .package-grid {
     display: grid;
-    /* Erzwingt 3 Spalten nebeneinander auf PC & Tablet */
     grid-template-columns: repeat(3, 1fr); 
     gap: 25px;
 }
@@ -83,54 +91,27 @@ body {
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border: 1px solid #eee;
-    transition: transform 0.3s, border-color 0.3s;
-    cursor: pointer;
+    transition: transform 0.3s;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
-.pkg-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--gold);
-}
+.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
 
-.pkg-badge {
-    font-weight: bold;
-    color: var(--blue);
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-}
+.pkg-badge { font-weight: bold; color: var(--blue); font-size: 1.2rem; }
+.pkg-price { font-size: 3rem; font-weight: bold; color: var(--blue); }
+.pkg-price span { font-size: 1rem; color: #777; }
 
-.pkg-price {
-    font-size: 3rem;
-    font-weight: bold;
-    color: var(--blue);
-}
-
-.pkg-price span {
-    font-size: 1rem;
-    color: #777;
-}
-
-/* Inhaltslisten innerhalb der Karten */
 .pkg-features {
     list-style: none;
     padding: 0;
     margin: 20px 0;
     font-size: 0.95rem;
-    color: #555;
     flex-grow: 1;
 }
 
-.pkg-features li {
-    padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.pkg-features li:last-child {
-    border-bottom: none;
-}
+.pkg-features li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+.pkg-features li:last-child { border-bottom: none; }
 
 .btn-select {
     background: var(--blue);
@@ -138,20 +119,14 @@ body {
     border: none;
     padding: 15px;
     border-radius: 8px;
-    width: 100%;
     font-weight: bold;
-    margin-top: 20px;
     cursor: pointer;
-    transition: 0.3s;
 }
 
-.btn-select.gold {
-    background: var(--gold);
-    color: var(--blue);
-}
+.btn-select.gold { background: var(--gold); color: var(--blue); }
 
-/* Registrierungs-Formular Karte */
-.reg-card {
+/* REGISTRIERUNG & FORMULARE */
+.reg-card, .auth-container {
     max-width: 500px;
     margin: 40px auto;
     background: var(--white);
@@ -167,7 +142,6 @@ input, select {
     border: 1px solid #ddd;
     border-radius: 6px;
     box-sizing: border-box;
-    font-size: 1rem;
 }
 
 .btn-submit {
@@ -179,27 +153,38 @@ input, select {
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+}
+
+/* SOS & PROFIL (AUS DEM ALTEN CSS) */
+.btn-sos {
+    background: var(--red);
+    color: white;
+    font-size: 1.5rem;
+    padding: 20px;
+    border-radius: 50px;
+    width: 100%;
     margin-top: 20px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
 }
 
-/* RESPONSIVE ANPASSUNGEN */
+.status-pill {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
 
-/* Tablet: 2 Spalten */
+.status-active { background: var(--green); }
+.status-pending { background: var(--gold); }
+
+/* RESPONSIVE */
 @media (max-width: 992px) {
-    .package-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .package-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Handy: 1 Spalte untereinander */
 @media (max-width: 600px) {
-    .package-grid {
-        grid-template-columns: 1fr;
-    }
-    .section-title {
-        font-size: 1.5rem;
-    }
-    .site-header h1 {
-        font-size: 1.8rem;
-    }
+    .package-grid { grid-template-columns: 1fr; }
+    .site-header h1 { font-size: 1.8rem; }
 }
