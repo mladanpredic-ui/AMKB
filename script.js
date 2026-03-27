@@ -1,4 +1,4 @@
-// Wir nutzen die Browser-kompatiblen Skripte
+// AK BALKAN - MASTER SCRIPT
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -14,20 +14,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Die Sprach-Texte (SR, DE, EN, FR, RU)
+// Mehrsprachigkeit
 const txt = {
     sr: { title: "ČLANSKA REGISTRACIJA", fn: "Ime", ln: "Prezime", em: "E-mail", lp: "Tablice", pw: "Lozinka", pkg: "Izaberite paket:", lng: "Jezik ugovora:", agb: "Prihvatam uslove poslovanja.", btn: "REGISTRUJ SE" },
-    de: { title: "MITGLIEDSCHAFT", fn: "Vorname", ln: "Nachname", em: "E-mail", lp: "Kennzeichen", pw: "Passwort", pkg: "Paket wählen:", lng: "Vertragssprache:", agb: "Ich akzeptiere die AGB.", btn: "REGISTRIEREN" },
-    en: { title: "MEMBERSHIP", fn: "First Name", ln: "Last Name", em: "E-mail", lp: "License Plate", pw: "Password", pkg: "Select Package:", lng: "Contract Language:", agb: "I accept the Terms.", btn: "REGISTER NOW" },
-    fr: { title: "INSCRIPTION", fn: "Prénom", ln: "Nom", em: "E-mail", lp: "Plaque", pw: "Mot de passe", pkg: "Choisir le forfait:", lng: "Langue du contrat:", agb: "J'accepte les conditions.", btn: "S'INSCRIRE" },
-    ru: { title: "РЕГИСТРАЦИЯ", fn: "Имя", ln: "Фамилия", em: "E-mail", lp: "Номер авто", pw: "Пароль", pkg: "Выберите пакет:", lng: "Язык контракта:", agb: "Я принимаю условия.", btn: "ЗАРЕГИСТРИРОВАТЬСЯ" }
+    de: { title: "MITGLIEDER-REGISTRIERUNG", fn: "Vorname", ln: "Nachname", em: "E-Mail", lp: "Kennzeichen", pw: "Passwort", pkg: "Paket wählen:", lng: "Vertragssprache:", agb: "AGB akzeptieren.", btn: "REGISTRIEREN" }
 };
 
-// GLOBAL MACHEN: Damit onclick im HTML funktioniert
-window.chLang = (l, b) => {
-    document.querySelectorAll('.l-btn').forEach(btn => btn.classList.remove('active'));
-    if(b) b.classList.add('active');
-    const t = txt[l];
+window.chLang = (lang, btn) => {
+    const t = txt[lang];
+    if(!t) return;
     document.getElementById('h-title').innerText = t.title;
     document.getElementById('fn').placeholder = t.fn;
     document.getElementById('ln').placeholder = t.ln;
@@ -38,29 +33,49 @@ window.chLang = (l, b) => {
     document.getElementById('l-lng').innerText = t.lng;
     document.getElementById('l-agb').innerText = t.agb;
     document.getElementById('b-sub').innerText = t.btn;
+    
+    document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 };
 
-// Formular-Logik
-document.getElementById('regForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const id = Math.floor(100000 + Math.random() * 900000).toString();
-    const d = {
-        memberID: id,
-        firstName: document.getElementById('fn').value,
-        lastName: document.getElementById('ln').value,
-        email: document.getElementById('em').value,
-        licensePlate: document.getElementById('lp').value,
-        password: document.getElementById('pw').value,
-        package: document.getElementById('pk').value,
-        lang: document.getElementById('cl').value,
-        status: "čeka_uplatu",
-        createdAt: serverTimestamp()
+// Registrierungs-Logik
+const regForm = document.getElementById('regForm');
+if(regForm) {
+    regForm.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        // Button deaktivieren um Mehrfachklicks zu verhindern
+        const submitBtn = document.getElementById('b-sub');
+        submitBtn.disabled = true;
+        submitBtn.innerText = "...";
+
+        const id = Math.floor(100000 + Math.random() * 900000).toString();
+        const d = {
+            memberID: id,
+            firstName: document.getElementById('fn').value,
+            lastName: document.getElementById('ln').value,
+            email: document.getElementById('em').value,
+            licensePlate: document.getElementById('lp').value,
+            password: document.getElementById('pw').value,
+            package: document.getElementById('pk').value,
+            lang: document.getElementById('cl').value,
+            status: "čeka_uplatu",
+            createdAt: serverTimestamp()
+        };
+
+        try {
+            // 1. In Firestore speichern
+            await addDoc(collection(db, "users"), d);
+            
+            // 2. Weiterleitung zur vertrag.html (KORRIGIERT MIT ANFÜHRUNGSZEICHEN)
+            const targetUrl = `vertrag.html?id=${id}&fn=${encodeURIComponent(d.firstName)}&ln=${encodeURIComponent(d.lastName)}&lp=${encodeURIComponent(d.licensePlate)}&pk=${encodeURIComponent(d.package)}&lg=${d.lang}`;
+            window.location.href = targetUrl;
+
+        } catch (error) {
+            console.error("Fehler bei der Registrierung:", error);
+            alert("Greška / Fehler: " + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerText = "REGISTRUJ SE";
+        }
     };
-    try {
-        await addDoc(collection(db, "users"), d);
-        window.location.href = `vertrag.html?id=${id}&fn=${d.firstName}&ln=${d.lastName}&lp=${d.licensePlate}&lg=${d.lang}&pk=${d.package}`;
-    } catch (err) { 
-        console.error(err);
-        alert("Greška / Error!"); 
-    }
-};
+}
