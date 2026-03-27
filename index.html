@@ -8,14 +8,11 @@
 </head>
 <body>
 
-<div class="main-wrapper">
     <header class="site-header">
         <div class="lang-nav">
             <button class="l-btn active" onclick="chLang('sr', this)">SR 🇷🇸</button>
             <button class="l-btn" onclick="chLang('de', this)">DE 🇩🇪</button>
             <button class="l-btn" onclick="chLang('en', this)">EN 🇬🇧</button>
-            <button class="l-btn" onclick="chLang('fr', this)">FR 🇫🇷</button>
-            <button class="l-btn" onclick="chLang('ru', this)">RU 🇷🇺</button>
         </div>
         <h1 id="h-welcome">AK BALKAN</h1>
         <p id="p-desc">Vaš pouzdan partner na putu širom Evrope.</p>
@@ -49,7 +46,7 @@
         </div>
     </section>
 
-    <section class="reg-card" id="reg-section" style="display: none;">
+    <section class="reg-card" id="reg-section" style="display:none;">
         <h2 id="h-reg-title" style="text-align:center; color:var(--blue);">Registracija</h2>
         <p style="text-align:center;">Paket: <b id="selected-pkg-display">-</b></p>
         
@@ -57,27 +54,26 @@
             <input type="hidden" id="pk">
             <input type="text" id="fn" placeholder="Ime" required>
             <input type="text" id="ln" placeholder="Prezime" required>
-            <input type="email" id="em" placeholder="E-mail adresa" required>
+            <input type="email" id="em" placeholder="E-mail" required>
             <input type="text" id="lp" placeholder="Registarska oznaka" required>
             <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
-
-            <label class="label">Jezik ugovora:</label>
+            
+            <label style="font-size:0.8rem; color:#666;" id="l-lng">Jezik ugovora:</label>
             <select id="cl">
                 <option value="sr">Srpski</option>
                 <option value="de">Srpski + Deutsch</option>
             </select>
 
-            <div style="margin: 15px 0; font-size: 0.9rem;">
+            <div style="margin:15px 0;">
                 <input type="checkbox" id="agb" required style="width:auto;">
-                <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
+                <label for="agb" id="l-agb" style="font-size:0.8rem;">Prihvatam uslove poslovanja.</label>
             </div>
 
-            <button type="submit" id="b-sub" class="btn-submit">POTVRDI I PREUZMI UGOVOR</button>
-            <button type="button" onclick="showWelcome()" style="width:100%; background:none; border:none; color:var(--blue); cursor:pointer; margin-top:10px;">Nazad</button>
+            <button type="submit" id="b-sub" class="btn-select">POTVRDI</button>
+            <button type="button" onclick="showWelcome()" style="background:none; border:none; color:var(--blue); width:100%; margin-top:10px; cursor:pointer;">Nazad</button>
         </form>
     </section>
-</div>
 
-<script type="module" src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
