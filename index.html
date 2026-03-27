@@ -19,28 +19,38 @@
 
     <div id="welcome-section">
         <h1 id="h-welcome">Dobrodošli u AK Balkan</h1>
-        <p id="p-desc">Vaš pouzdan partner na putu širom Evrope.</p>
-        <button class="btn-green" onclick="showRegister()" id="btn-join">POSTANI ČLAN</button>
-        <div style="margin-top:15px;">
+        <p id="p-desc">Izaberite Vaš paket zaštite na putu:</p>
+        
+        <div class="package-grid">
+            <div class="pkg-box" onclick="selectPkg('Moto')">
+                <div class="pkg-price">39€</div>
+                <div class="pkg-name">MOTO</div>
+            </div>
+            <div class="pkg-box featured" onclick="selectPkg('Auto')">
+                <div class="pkg-price">89€</div>
+                <div class="pkg-name">AUTO</div>
+            </div>
+            <div class="pkg-box" onclick="selectPkg('Premium')">
+                <div class="pkg-price">159€</div>
+                <div class="pkg-name">PREMIUM</div>
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
             <a href="login.html" id="link-login" style="color:var(--gold); text-decoration:none;">Prijava za članove</a>
         </div>
     </div>
 
     <div id="reg-section" style="display:none;">
         <h2 id="h-title">ČLANSKA REGISTRACIJA</h2>
+        <p style="color:var(--gold); font-weight:bold;">Paket: <span id="selected-pkg-display"></span></p>
+        
         <form id="regForm">
-            <input type="text" id="fn" placeholder="Ime" required>
+            <input type="hidden" id="pk"> <input type="text" id="fn" placeholder="Ime" required>
             <input type="text" id="ln" placeholder="Prezime" required>
             <input type="email" id="em" placeholder="E-mail" required>
             <input type="text" id="lp" placeholder="Registarska oznaka" required>
             <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
-
-            <label class="label" id="l-pkg">Izaberite paket:</label>
-            <select id="pk" class="gold-border">
-                <option value="Moto">MOTO (39€)</option>
-                <option value="Auto">AUTO (89€)</option>
-                <option value="Premium">PREMIUM (159€)</option>
-            </select>
 
             <label class="label" id="l-lng">Jezik ugovora:</label>
             <select id="cl">
@@ -57,14 +67,16 @@
             </div>
 
             <button type="submit" id="b-sub">POTVRDI REGISTRACIJU</button>
-            <button type="button" onclick="showWelcome()" style="background:none; border:none; color:#aaa; margin-top:10px; cursor:pointer;">Nazad / Zurück</button>
+            <button type="button" onclick="showWelcome()" class="btn-back">Nazad / Zurück</button>
         </form>
     </div>
 </div>
 
 <script type="module" src="script.js"></script>
 <script>
-    function showRegister() {
+    function selectPkg(val) {
+        document.getElementById('pk').value = val;
+        document.getElementById('selected-pkg-display').innerText = val;
         document.getElementById('welcome-section').style.display = 'none';
         document.getElementById('reg-section').style.display = 'block';
     }
