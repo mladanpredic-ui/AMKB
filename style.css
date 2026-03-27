@@ -1,64 +1,99 @@
 :root {
-    --akb-blue: #092e54;
+    --blue: #092e54;
     --gold: #c5a059;
     --red: #e63946;
     --white: #ffffff;
     --bg-light: #f4f7f6;
+    --text-dark: #333333;
 }
 
-body { 
-    background-color: var(--bg-light); 
-    margin: 0; 
-    font-family: 'Segoe UI', Arial, sans-serif; 
-    color: #333;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    margin: 0;
+    line-height: 1.6;
 }
 
-/* Der blaue Header-Bereich oben */
+/* Header */
 .site-header {
-    background: var(--akb-blue);
+    background: var(--blue);
     color: var(--white);
-    padding: 60px 20px 100px 20px;
+    padding: 40px 20px 80px 20px;
     text-align: center;
     border-bottom: 5px solid var(--gold);
 }
 
-.site-header h1 { color: var(--gold); margin: 0; font-size: 2.5rem; }
+.site-header h1 { 
+    color: var(--gold); 
+    margin: 10px 0; 
+    font-size: 2.5rem; 
+    letter-spacing: 2px;
+}
 
-/* Das Grid für die Pakete */
+/* Sprachen */
+.lang-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.l-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--gold);
+    color: var(--white);
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.l-btn.active {
+    background: var(--gold);
+    color: var(--blue);
+}
+
+/* Pakete */
 .package-section {
     max-width: 1100px;
-    margin: -60px auto 40px; /* Schiebt die Karten hoch in den blauen Bereich */
+    margin: -50px auto 40px;
     padding: 0 20px;
 }
 
-.package-grid {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap; /* Wichtig für Handy-Ansicht */
+.section-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--blue);
 }
 
-/* Die weißen Karten (wie auf dem Tablet gewünscht) */
+.package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
 .pkg-card {
     background: var(--white);
     border-radius: 12px;
     padding: 30px;
-    width: 300px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: 0.3s;
     border: 1px solid #eee;
-    transition: 0.3s ease;
+    position: relative;
+    cursor: pointer;
 }
 
-.pkg-card:hover { transform: translateY(-5px); }
+.pkg-card:hover {
+    transform: translateY(-10px);
+}
 
 .pkg-card.featured {
-    border: 3px solid var(--gold);
+    border: 2px solid var(--gold);
     transform: scale(1.05);
-    position: relative;
 }
 
-/* Roter Badge für "Najpopularnije" */
 .pkg-tag {
     position: absolute;
     top: -15px;
@@ -68,25 +103,70 @@ body {
     color: white;
     padding: 5px 15px;
     border-radius: 20px;
-    font-size: 12px;
     font-weight: bold;
+    font-size: 12px;
 }
 
-.pkg-header { color: var(--akb-blue); font-weight: bold; font-size: 22px; margin-bottom: 10px; }
-.pkg-price { font-size: 40px; color: var(--akb-blue); font-weight: bold; margin-bottom: 15px; }
+.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 5px; }
+.pkg-price { font-size: 42px; font-weight: bold; color: var(--blue); margin-bottom: 10px; }
 .pkg-price span { font-size: 16px; color: #777; font-weight: normal; }
 
-/* Die Buttons in den Karten */
-.btn-select {
-    background: var(--akb-blue);
-    color: white;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
+.pkg-features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 14px;
 }
 
-.btn-select.gold { background: var(--gold); color: var(--akb-blue); }
+.btn-select {
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-select.gold {
+    background: var(--gold);
+    color: var(--blue);
+}
+
+/* Formular */
+.form-container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.form-container h2 { color: var(--blue); text-align: center; }
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.btn-submit {
+    background: var(--red);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-link-area { text-align: center; margin-top: 20px; }
+.login-link-area a { color: var(--blue); font-weight: bold; text-decoration: none; }
