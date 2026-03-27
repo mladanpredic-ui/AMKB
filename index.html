@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registracija | AK Balkan</title>
+    <title>AK Balkan | Home</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,44 +17,61 @@
         <button class="l-btn" onclick="chLang('ru', this)">RU 🇷🇺</button>
     </div>
 
-    <h2 id="h-title">ČLANSKA REGISTRACIJA</h2>
-
-    <form id="regForm">
-        <input type="text" id="fn" placeholder="Ime" required>
-        <input type="text" id="ln" placeholder="Prezime" required>
-        <input type="email" id="em" placeholder="E-mail" required>
-        <input type="text" id="lp" placeholder="Registarska oznaka" required>
-        <input type="password" id="pw" placeholder="Lozinka (Wunschpasswort)" required minlength="6">
-
-        <label class="label" id="l-pkg">Izaberite paket:</label>
-        <select id="pk" class="gold-border">
-            <option value="Moto">MOTO (39€)</option>
-            <option value="Auto">AUTO (89€)</option>
-            <option value="Premium">PREMIUM (159€)</option>
-        </select>
-
-        <label class="label" id="l-lng">Jezik ugovora:</label>
-        <select id="cl">
-            <option value="sr">Samo Srpski</option>
-            <option value="de">Srpski + Deutsch</option>
-            <option value="en">Srpski + English</option>
-            <option value="fr">Srpski + Français</option>
-            <option value="ru">Srpski + Pусский</option>
-        </select>
-
-        <div class="agb-row">
-            <input type="checkbox" id="agb" required>
-            <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
+    <div id="welcome-section">
+        <h1 id="h-welcome">Dobrodošli u AK Balkan</h1>
+        <p id="p-desc">Vaš pouzdan partner na putu širom Evrope.</p>
+        <button class="btn-green" onclick="showRegister()" id="btn-join">POSTANI ČLAN</button>
+        <div style="margin-top:15px;">
+            <a href="login.html" id="link-login" style="color:var(--gold); text-decoration:none;">Prijava za članove</a>
         </div>
+    </div>
 
-        <button type="submit" id="b-sub">REGISTRUJ SE</button>
-    </form>
-    
-    <div style="margin-top:20px;">
-        <a href="login.html" style="color:var(--gold); text-decoration:none; font-size:14px;">Već ste član? Prijavite se ovde</a>
+    <div id="reg-section" style="display:none;">
+        <h2 id="h-title">ČLANSKA REGISTRACIJA</h2>
+        <form id="regForm">
+            <input type="text" id="fn" placeholder="Ime" required>
+            <input type="text" id="ln" placeholder="Prezime" required>
+            <input type="email" id="em" placeholder="E-mail" required>
+            <input type="text" id="lp" placeholder="Registarska oznaka" required>
+            <input type="password" id="pw" placeholder="Lozinka" required minlength="6">
+
+            <label class="label" id="l-pkg">Izaberite paket:</label>
+            <select id="pk" class="gold-border">
+                <option value="Moto">MOTO (39€)</option>
+                <option value="Auto">AUTO (89€)</option>
+                <option value="Premium">PREMIUM (159€)</option>
+            </select>
+
+            <label class="label" id="l-lng">Jezik ugovora:</label>
+            <select id="cl">
+                <option value="sr">Srpski</option>
+                <option value="de">Srpski + Deutsch</option>
+                <option value="en">Srpski + English</option>
+                <option value="fr">Srpski + Français</option>
+                <option value="ru">Srpski + Pусский</option>
+            </select>
+
+            <div class="agb-row">
+                <input type="checkbox" id="agb" required>
+                <label for="agb" id="l-agb">Prihvatam uslove poslovanja.</label>
+            </div>
+
+            <button type="submit" id="b-sub">POTVRDI REGISTRACIJU</button>
+            <button type="button" onclick="showWelcome()" style="background:none; border:none; color:#aaa; margin-top:10px; cursor:pointer;">Nazad / Zurück</button>
+        </form>
     </div>
 </div>
 
 <script type="module" src="script.js"></script>
+<script>
+    function showRegister() {
+        document.getElementById('welcome-section').style.display = 'none';
+        document.getElementById('reg-section').style.display = 'block';
+    }
+    function showWelcome() {
+        document.getElementById('welcome-section').style.display = 'block';
+        document.getElementById('reg-section').style.display = 'none';
+    }
+</script>
 </body>
 </html>
