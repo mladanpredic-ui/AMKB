@@ -1,5 +1,4 @@
 /* --- AK BALKAN MASTER STYLE --- */
-
 :root {
     --blue: #092e54;
     --gold: #c5a059;
@@ -20,27 +19,72 @@ body {
     min-height: 100vh;
 }
 
-/* Container & Cards */
-.reg-card, .auth-container, .user-card {
+.reg-card {
     background: rgba(255, 255, 255, 0.05);
     padding: 30px;
     border-radius: 15px;
     border: 1px solid rgba(197, 160, 89, 0.3);
-    width: 100%;
-    max-width: 450px;
+    width: 90%;
+    max-width: 500px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     margin: 20px;
 }
 
-/* Typography */
 h1, h2 { 
     color: var(--gold); 
-    letter-spacing: 1px; 
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Paket-Grid Design */
+.package-grid {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+    justify-content: center;
+}
+
+.pkg-box {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--gold);
+    padding: 20px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pkg-box:hover {
+    background: var(--gold);
+    color: var(--blue);
+    transform: translateY(-5px);
+}
+
+.pkg-box.featured {
+    border-width: 3px;
+    transform: scale(1.05);
+    background: rgba(197, 160, 89, 0.1);
+}
+
+.pkg-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--gold);
+}
+
+.pkg-box:hover .pkg-price {
+    color: var(--blue);
+}
+
+.pkg-name {
+    font-size: 11px;
+    margin-top: 5px;
+    font-weight: bold;
     text-transform: uppercase;
 }
 
-/* Form Elements */
+/* Formular & Inputs */
 input, select {
     width: 100%;
     padding: 12px;
@@ -50,16 +94,6 @@ input, select {
     border-radius: 5px;
     color: white;
     box-sizing: border-box;
-    font-size: 14px;
-}
-
-input:focus, select:focus {
-    border-color: var(--gold);
-    outline: none;
-}
-
-.gold-border {
-    border: 2px solid var(--gold) !important;
 }
 
 .label {
@@ -71,39 +105,31 @@ input:focus, select:focus {
 }
 
 /* Buttons */
-button {
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-#b-sub, #btn-login, .btn-green {
+.btn-main, #b-sub {
     background: var(--gold);
     color: var(--blue);
     border: none;
     padding: 15px;
     width: 100%;
+    font-weight: bold;
     font-size: 16px;
-    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#b-sub:hover, #btn-login:hover {
-    background: #e0bc7a;
-    transform: translateY(-2px);
-}
-
-.btn-red {
-    background: var(--red);
-    color: white;
+.btn-back {
+    background: none;
     border: none;
-    padding: 10px;
+    color: #aaa;
+    margin-top: 15px;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
-/* Language Navigation */
+/* Sprach-Navigation */
 .lang-nav {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-bottom: 20px;
     gap: 5px;
 }
@@ -112,9 +138,10 @@ button {
     background: transparent;
     border: 1px solid var(--gold);
     color: var(--gold);
-    padding: 5px 8px;
-    font-size: 11px;
+    padding: 5px;
+    font-size: 10px;
     flex: 1;
+    cursor: pointer;
 }
 
 .l-btn.active {
@@ -122,62 +149,11 @@ button {
     color: var(--blue);
 }
 
-/* Admin & Tables (für admin.html & partnerweb.html) */
-.sidebar {
-    width: 260px;
-    background: var(--blue);
-    color: white;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    text-align: left;
-}
-
-.main {
-    margin-left: 280px;
-    padding: 30px;
-    width: calc(100% - 300px);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    color: #333;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-}
-
-th {
-    background: #f8f9fa;
-    color: var(--blue);
-}
-
-/* Status Badges */
-.status-badge, .status-pill {
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
-}
-
 .agb-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 15px 0;
+    margin-bottom: 20px;
     font-size: 12px;
     text-align: left;
 }
-
-/* Utilities */
-.no-print { display: block; }
-@media print { .no-print { display: none; } }
