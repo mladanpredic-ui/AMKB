@@ -1,95 +1,92 @@
 :root {
-    --blue: #092e54;
+    --akb-blue: #092e54;
     --gold: #c5a059;
     --red: #e63946;
-    --light-bg: #f4f7f6;
     --white: #ffffff;
-    --text-dark: #333;
+    --bg-light: #f4f7f6;
 }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--light-bg);
-    color: var(--text-dark);
-    margin: 0;
+body { 
+    background-color: var(--bg-light); 
+    margin: 0; 
+    font-family: 'Segoe UI', Arial, sans-serif; 
+    color: #333;
 }
 
-/* Header Bereich */
+/* Der blaue Header-Bereich oben */
 .site-header {
-    background: var(--blue);
+    background: var(--akb-blue);
     color: var(--white);
-    padding: 40px 20px;
+    padding: 60px 20px 100px 20px;
     text-align: center;
     border-bottom: 5px solid var(--gold);
 }
 
-.site-header h1 { color: var(--gold); margin: 10px 0; letter-spacing: 2px; }
+.site-header h1 { color: var(--gold); margin: 0; font-size: 2.5rem; }
 
-/* Sprach-Buttons */
-.lang-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-.l-btn { 
-    background: rgba(255,255,255,0.1); border: 1px solid var(--gold); 
-    color: white; padding: 5px 10px; cursor: pointer; border-radius: 4px;
+/* Das Grid für die Pakete */
+.package-section {
+    max-width: 1100px;
+    margin: -60px auto 40px; /* Schiebt die Karten hoch in den blauen Bereich */
+    padding: 0 20px;
 }
-.l-btn.active { background: var(--gold); color: var(--blue); }
 
-/* Paket-Karten */
-.package-section { max-width: 1000px; margin: -30px auto 40px; padding: 0 20px; }
-.section-title { text-align: center; margin-bottom: 30px; }
+.package-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Wichtig für Handy-Ansicht */
+}
 
-.package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-
+/* Die weißen Karten (wie auf dem Tablet gewünscht) */
 .pkg-card {
     background: var(--white);
     border-radius: 12px;
     padding: 30px;
+    width: 300px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     text-align: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: 0.3s;
     border: 1px solid #eee;
+    transition: 0.3s ease;
+}
+
+.pkg-card:hover { transform: translateY(-5px); }
+
+.pkg-card.featured {
+    border: 3px solid var(--gold);
+    transform: scale(1.05);
     position: relative;
-    cursor: pointer;
 }
 
-.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
-.pkg-card.featured { border: 2px solid var(--gold); transform: scale(1.05); z-index: 2; }
-
-.pkg-tag { 
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--red); color: white; padding: 4px 15px; font-size: 12px; border-radius: 20px;
+/* Roter Badge für "Najpopularnije" */
+.pkg-tag {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.pkg-badge { font-weight: bold; color: var(--blue); margin-bottom: 10px; }
-.pkg-price { font-size: 36px; font-weight: bold; color: var(--blue); }
-.pkg-price span { font-size: 16px; color: #777; }
+.pkg-header { color: var(--akb-blue); font-weight: bold; font-size: 22px; margin-bottom: 10px; }
+.pkg-price { font-size: 40px; color: var(--akb-blue); font-weight: bold; margin-bottom: 15px; }
+.pkg-price span { font-size: 16px; color: #777; font-weight: normal; }
 
-.pkg-features { list-style: none; padding: 0; margin: 20px 0; font-size: 14px; line-height: 2; }
-
+/* Die Buttons in den Karten */
 .btn-select {
-    background: var(--blue); color: white; border: none; padding: 12px 25px; 
-    border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%;
-}
-.btn-select.gold { background: var(--gold); color: var(--blue); }
-
-/* Formular Design */
-.form-container { 
-    max-width: 500px; margin: 40px auto; background: white; padding: 30px; 
-    border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-}
-
-.selected-summary { background: var(--light-bg); padding: 10px; margin-bottom: 20px; border-left: 4px solid var(--gold); font-weight: bold; }
-
-input, select { 
-    width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; 
-    border-radius: 5px; box-sizing: border-box; 
+    background: var(--akb-blue);
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
 }
 
-.btn-submit { 
-    background: var(--red); color: white; border: none; padding: 15px; 
-    width: 100%; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer;
-}
-
-.btn-link { background: none; border: none; color: #777; text-decoration: underline; margin-top: 15px; cursor: pointer; width: 100%; }
-
-.login-link-area { text-align: center; margin-top: 30px; }
-.login-link-area a { color: var(--blue); font-weight: bold; }
+.btn-select.gold { background: var(--gold); color: var(--akb-blue); }
