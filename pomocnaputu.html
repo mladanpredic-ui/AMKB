@@ -9,8 +9,9 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; color: #333; }
         
         .driver-header { background: var(--akb-blue); color: var(--gold); padding: 15px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .status-bar { background: var(--gold); color: var(--akb-blue); padding: 10px; font-weight: bold; text-align: center; text-transform: uppercase; }
+        .driver-badge { background: var(--dark-bg); color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; margin-top: 5px; display: inline-block; }
         
+        .status-bar { background: var(--gold); color: var(--akb-blue); padding: 10px; font-weight: bold; text-align: center; text-transform: uppercase; }
         .info-card { background: white; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .info-card h3 { margin-top: 0; color: var(--akb-blue); border-bottom: 1px solid #eee; padding-bottom: 10px; }
         
@@ -19,22 +20,20 @@
         .value { font-weight: bold; color: #222; }
 
         .action-btn { 
-            display: block; width: calc(100% - 300px); margin: 20px auto; padding: 18px; 
+            display: block; width: 90%; margin: 20px auto; padding: 18px; 
             border-radius: 10px; text-align: center; text-decoration: none; font-weight: bold; font-size: 1.1rem; 
             border: none; cursor: pointer; transition: 0.3s;
         }
-        .btn-call { background: var(--green); color: white; margin-bottom: 10px; width: 90%; }
-        .btn-nav { background: var(--akb-blue); color: white; width: 90%; }
-        .btn-finish { background: #555; color: white; width: 90%; margin-top: 40px; }
-
-        @media (max-width: 600px) { .action-btn { width: 90%; } }
+        .btn-call { background: var(--green); color: white; margin-bottom: 10px; }
+        .btn-nav { background: var(--akb-blue); color: white; }
+        .btn-finish { background: #555; color: white; margin-top: 40px; }
     </style>
 </head>
 <body>
 
 <div class="driver-header">
     <h2 style="margin:0;">AK BALKAN</h2>
-    <small>POMOĆ NA PUTU - DISPEČER</small>
+    <div id="driver-info" class="driver-badge">Vozač: Učitavanje...</div>
 </div>
 
 <div id="status-tag" class="status-bar">Učitavanje naloga...</div>
@@ -48,11 +47,11 @@
 
 <div class="info-card">
     <h3>Lokacija Kvara</h3>
-    <p id="m-loc-text" style="font-size: 0.9rem; color: #666;">Preuzimanje GPS koordinata...</p>
+    <p id="m-loc-text" style="font-size: 0.9rem; color: #666;">Čekam GPS podatke...</p>
     <button class="action-btn btn-nav" id="btn-google-maps">📍 OTVORI NAVIGACIJU</button>
 </div>
 
-<div class="info-card" style="text-align: center;">
+<div style="text-align: center;">
     <button class="action-btn btn-call" id="btn-phone-call">📞 POZOVI ČLANA</button>
 </div>
 
@@ -60,9 +59,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Deine Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
         authDomain: "autoklub-balkan.firebaseapp.com",
@@ -75,45 +73,50 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Auftrag ID aus der URL lesen (?id=XYZ)
+    // Parameter aus der URL lesen: ?id=AUFTRAG_ID&driver=FAHRER_NAME
     const urlParams = new URLSearchParams(window.location.search);
     const callId = urlParams.get('id');
+    const driverId = urlParams.get('driver') || "Nepoznat vozač";
+
+    document.getElementById('driver-info').innerText = "Vozač: " + driverId;
 
     if (!callId) {
-        document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Nalog nije pronađen.</h2>";
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Nalog nije pronađen oder fehlt ID.</h2>";
     } else {
-        // Echtzeit-Überwachung des Auftrags
         onSnapshot(doc(db, "sos_calls", callId), (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.data();
                 
+                // Falls der Auftrag bereits einem anderen Fahrer gehört (Sicherheit)
+                if (data.assignedDriver && data.assignedDriver !== driverId) {
+                    document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Ovaj nalog je preuzeo drugi vozač.</h2>";
+                    return;
+                }
+
                 document.getElementById('m-name').innerText = data.name;
-                document.getElementById('m-phone').innerText = data.phone || "Nije navedeno";
-                document.getElementById('m-plate').innerText = data.plate || "Nije navedeno";
-                document.getElementById('status-tag').innerText = "Status: " + (data.status || "NOVO");
+                document.getElementById('m-phone').innerText = data.phone || "/";
+                document.getElementById('m-plate').innerText = data.plate || "/";
+                document.getElementById('status-tag').innerText = "Status: " + (data.status || "PRIMLJENO");
 
-                // Telefon-Link setzen
-                document.getElementById('btn-phone-call').onclick = () => {
-                    window.location.href = "tel:" + data.phone;
-                };
+                document.getElementById('btn-phone-call').onclick = () => { window.location.href = "tel:" + data.phone; };
 
-                // Google Maps Link setzen
                 if (data.lat && data.lng) {
-                    const mapUrl = `https://www.google.com/maps?q=${data.lat},${lng}`;
-                    document.getElementById('btn-google-maps').onclick = () => {
-                        window.open(mapUrl, '_blank');
-                    };
-                    document.getElementById('m-loc-text').innerText = "Lokacija je precizno definisana.";
+                    const mapUrl = `https://www.google.com/maps?q=${data.lat},${data.lng}`;
+                    document.getElementById('btn-google-maps').onclick = () => { window.open(mapUrl, '_blank'); };
+                    document.getElementById('m-loc-text').innerText = "Lokacija dostupna.";
                 }
             }
         });
     }
 
-    // Auftrag abschließen
     document.getElementById('btn-complete').onclick = async () => {
-        if(confirm("Da li ste završili ovu intervenciju?")) {
-            await updateDoc(doc(db, "sos_calls", callId), { status: "završeno" });
-            alert("Intervencija arhivirana.");
+        if(confirm("Potvrdi završetak intervencije?")) {
+            await updateDoc(doc(db, "sos_calls", callId), { 
+                status: "završeno",
+                completedBy: driverId,
+                finishedAt: serverTimestamp()
+            });
+            alert("Intervencija uspešno završena.");
         }
     };
 </script>
