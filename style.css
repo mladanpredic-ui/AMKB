@@ -1,190 +1,214 @@
+/* MASTER STYLE - AUTO MOTO KLUB BALKAN
+   Design: Modern High-Tech Community 
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+
 :root {
     --blue: #092e54;
+    --blue-dark: #061a30;
+    --blue-wave: #07223d;
+    --bordeaux: #800020;
     --gold: #c5a059;
     --white: #ffffff;
     --bg-light: #f4f7f6;
     --text-dark: #333333;
-    --red: #e63946;
-    --green: #27ae60;
+    --red-sos: #e63946;
+    --green-active: #27ae60;
 }
 
-/* GRUND-STYLING & HINTERGRUND-GRAFIK */
+/* GRUND-STYLING MIT ABSTRAKTEM BLAUEN HINTERGRUND */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-light);
-    /* Dezentes grafisches Muster */
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23092e54' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--blue);
+    /* Abstraktes blaues Wellen-Muster */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cpath fill='%23061a30' d='M-10 600c150-100 300-100 450 0s300 100 450 0 300-100 450 0 300 100 450 0V0H-10z'/%3E%3Cpath fill='%2307223d' d='M-10 400c150-100 300-100 450 0s300 100 450 0 300-100 450 0 300 100 450 0V0H-10z'/%3E%3Cpath fill='%23092e54' d='M-10 200c150-100 300-100 450 0s300 100 450 0 300-100 450 0 300 100 450 0V0H-10z'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
+    color: var(--white);
     margin: 0;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* HEADER & LOGO */
+/* HEADER BEREICH */
 .site-header {
-    background: var(--blue);
-    color: var(--white);
-    padding: 40px 20px 60px;
+    background: transparent; /* Wirkt edler auf dem Wellen-Hintergrund */
+    padding: 60px 20px;
     text-align: center;
-    border-bottom: 5px solid var(--gold);
+    border-bottom: 3px solid var(--bordeaux);
 }
 
-.logo-container { margin-bottom: 15px; }
+.logo-container { margin-bottom: 20px; }
 .main-logo {
-    max-width: 120px;
+    max-width: 150px;
     height: auto;
-    filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.4));
 }
 
 .site-header h1 { 
-    color: var(--gold); 
-    margin: 10px 0; 
-    font-size: 2.5rem; 
-    letter-spacing: 2px;
+    font-family: 'Syncopate', sans-serif;
+    color: var(--white); 
+    margin: 15px 0; 
+    font-size: 2.2rem; 
+    letter-spacing: 6px;
     text-transform: uppercase;
 }
 
-/* SPRACH-NAVIGATION */
+.motto-text {
+    color: var(--gold);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 2px;
+    font-size: 1rem;
+}
+
+/* SPRACHEN-NAVIGATION */
 .lang-nav {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 30px;
 }
 
 .l-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--gold);
     color: var(--white);
-    padding: 6px 12px;
-    border-radius: 4px;
+    padding: 8px 16px;
+    border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
+    font-family: 'Montserrat', sans-serif;
 }
 
-.l-btn.active, .l-btn:hover { background: var(--gold); color: var(--blue); }
+.l-btn.active, .l-btn:hover {
+    background: var(--gold);
+    color: var(--blue);
+}
 
-/* PAKET GRID (DAS HERZSTÜCK) */
+/* PAKET GRID (3-SPALTEN-LAYOUT) */
 .package-section {
-    padding: 40px 20px;
+    padding: 60px 20px;
     max-width: 1200px;
     margin: 0 auto;
-}
-
-.section-title {
-    text-align: center;
-    color: var(--blue);
-    margin-bottom: 40px;
-    font-size: 2rem;
-    font-weight: bold;
 }
 
 .package-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
-    gap: 25px;
+    gap: 30px;
 }
 
 .pkg-card {
-    background: var(--white);
-    padding: 30px;
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 40px 30px;
+    border-radius: 20px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-    transition: transform 0.3s;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border: 1px solid rgba(204, 160, 89, 0.2);
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     display: flex;
     flex-direction: column;
+    color: var(--text-dark);
 }
 
-.pkg-card:hover { transform: translateY(-10px); border-color: var(--gold); }
+.pkg-card:hover {
+    transform: translateY(-15px);
+    border-color: var(--bordeaux);
+}
 
-.pkg-badge { font-weight: bold; color: var(--blue); font-size: 1.2rem; }
-.pkg-price { font-size: 3rem; font-weight: bold; color: var(--blue); }
-.pkg-price span { font-size: 1rem; color: #777; }
+.pkg-badge {
+    font-weight: 700;
+    color: var(--bordeaux);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+.pkg-price {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 10px 0;
+}
+
+.pkg-price span { font-size: 1rem; color: #666; }
 
 .pkg-features {
     list-style: none;
     padding: 0;
-    margin: 20px 0;
+    margin: 25px 0;
     font-size: 0.95rem;
     flex-grow: 1;
 }
 
-.pkg-features li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-.pkg-features li:last-child { border-bottom: none; }
+.pkg-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
 
+/* BUTTONS */
 .btn-select {
     background: var(--blue);
-    color: var(--white);
-    border: none;
-    padding: 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-select.gold { background: var(--gold); color: var(--blue); }
-
-/* REGISTRIERUNG & FORMULARE */
-.reg-card, .auth-container {
-    max-width: 500px;
-    margin: 40px auto;
-    background: var(--white);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-}
-
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.btn-submit {
-    background: var(--blue);
     color: white;
-    width: 100%;
-    padding: 15px;
     border: none;
-    border-radius: 6px;
-    font-weight: bold;
+    padding: 18px;
+    border-radius: 12px;
+    width: 100%;
+    font-weight: 700;
+    margin-top: 20px;
     cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* SOS & PROFIL (AUS DEM ALTEN CSS) */
+.btn-select:hover { background: var(--bordeaux); }
+
+.btn-select.gold {
+    background: var(--gold);
+    color: var(--blue);
+}
+
+/* PARTNER & COMMUNITY SEKTION */
+.partner-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 40px 0;
+}
+
+.partner-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--gold);
+    padding: 20px;
+    border-radius: 15px;
+    width: 250px;
+    text-align: center;
+}
+
+/* SOS & PROFIL */
 .btn-sos {
-    background: var(--red);
+    background: var(--red-sos);
     color: white;
     font-size: 1.5rem;
     padding: 20px;
     border-radius: 50px;
     width: 100%;
-    margin-top: 20px;
     border: none;
-    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.4);
+    cursor: pointer;
 }
-
-.status-pill {
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: white;
-}
-
-.status-active { background: var(--green); }
-.status-pending { background: var(--gold); }
 
 /* RESPONSIVE */
 @media (max-width: 992px) {
     .package-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
     .package-grid { grid-template-columns: 1fr; }
-    .site-header h1 { font-size: 1.8rem; }
+    .site-header h1 { font-size: 1.6rem; letter-spacing: 3px; }
 }
