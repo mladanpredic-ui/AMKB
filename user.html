@@ -4,53 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AK Balkan | Profil</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root { --akb-blue: #092e54; --gold: #c5a059; --dark-bg: #061f3a; --red: #a52a2a; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: var(--white); margin: 0; text-align: center; }
-        
+        :root { --akb-blue: #092e54; --gold: #c5a059; --dark-bg: #061f3a; --red: #a52a2a; --green: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; text-align: center; }
         .header { background: var(--akb-blue); padding: 20px; border-bottom: 2px solid var(--gold); }
-        .header h1 { color: var(--gold); margin: 0; font-size: 1.5rem; }
-        
         .content { padding: 30px; max-width: 500px; margin: auto; }
-        .user-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(197,160,89,0.3); margin-bottom: 30px; }
-        .user-card h2 { margin: 0; color: var(--gold); }
-        .user-card p { margin: 5px 0; color: #ccc; }
+        
+        .user-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border: 1px solid rgba(197,160,89,0.3); margin-bottom: 30px; }
+        .user-card h2 { margin: 0; color: var(--gold); text-transform: uppercase; }
+        
+        .status-pill { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .status-active { background: var(--green); color: white; box-shadow: 0 0 10px rgba(39, 174, 96, 0.4); }
+        .status-wait { background: #f39c12; color: white; }
 
         .sos-btn { 
-            width: 180px; height: 180px; border-radius: 50%; background: var(--red); color: white; 
-            border: 8px solid rgba(255,255,255,0.1); font-size: 1.8rem; font-weight: bold; 
-            cursor: pointer; box-shadow: 0 0 30px rgba(165,42,42,0.6); transition: 0.3s;
+            width: 200px; height: 200px; border-radius: 50%; background: var(--red); color: white; 
+            border: 10px solid rgba(255,255,255,0.1); font-size: 2rem; font-weight: bold; 
+            cursor: pointer; box-shadow: 0 0 40px rgba(165,42,42,0.8); transition: 0.3s;
+            margin: 20px 0;
         }
-        .sos-btn:active { transform: scale(0.9); box-shadow: 0 0 10px rgba(165,42,42,0.8); }
+        .sos-btn:disabled { background: #555; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
+        .sos-btn:active { transform: scale(0.95); }
 
-        .status-msg { margin-top: 15px; font-weight: bold; color: var(--gold); display: none; }
-        
-        .logout-btn { background: none; border: 1px solid #555; color: #888; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 50px; }
+        .footer-info { color: #888; font-size: 0.9rem; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>AK BALKAN</h1>
+    <h1 style="color: var(--gold); margin:0;">AK BALKAN</h1>
 </div>
 
 <div class="content">
     <div class="user-card">
-        <h2 id="display-name">Učitavanje...</h2>
-        <p id="display-id">ID: ...</p>
-        <p id="display-status">Status: Aktivan član</p>
+        <h2 id="display-name">...</h2>
+        <p id="display-id" style="color:#aaa; margin: 5px 0;">ID: ...</p>
+        <div id="status-container">
+            <span id="display-status" class="status-pill status-wait">Učitavanje...</span>
+        </div>
     </div>
 
-    <button class="sos-btn" id="sos-trigger">SOS</button>
-    <div id="sos-status" class="status-msg">Signal poslat! Pomoć stiže.</div>
+    <button class="sos-btn" id="sos-trigger" disabled>SOS</button>
+    
+    <p id="sos-msg" style="color: var(--gold); font-weight: bold; display:none;">Signal poslat! Lokacija poslata centrali.</p>
 
-    <button class="logout-btn" onclick="handleLogout()">Odjavi se</button>
+    <div class="footer-info">
+        <p id="display-plate">Tablice: ...</p>
+        <p id="display-package">Paket: ...</p>
+    </div>
+
+    <button class="btn-submit" onclick="handleLogout()" style="background:none; border:1px solid #444; color:#888; margin-top:40px;">ODJAVI SE</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCmSL8TmGrcda-Btnpn0u8mUpWLo6q_aMY",
@@ -62,82 +71,79 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let currentUserData = null;
+    // Hole die Dokument-ID aus dem LocalStorage (vom Login gesetzt)
+    const userDocId = localStorage.getItem('currentUser');
 
-    // Prüfen, ob User eingeloggt ist und Daten laden
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                currentUserData = userDoc.data();
-                document.getElementById('display-name').innerText = currentUserData.firstName + " " + currentUserData.lastName;
-                document.getElementById('display-id').innerText = "ID: " + currentUserData.customerNumber;
+    if (!userDocId) {
+        window.location.href = "login.html";
+    }
+
+    let userData = null;
+
+    // Echtzeit-Überwachung der User-Daten (Status-Check)
+    onSnapshot(doc(db, "users", userDocId), (snapshot) => {
+        if (snapshot.exists()) {
+            userData = snapshot.data();
+            
+            // UI Update
+            document.getElementById('display-name').innerText = userData.firstName + " " + userData.lastName;
+            document.getElementById('display-id').innerText = "ID: " + userData.memberID;
+            document.getElementById('display-plate').innerText = "Tablice: " + userData.licensePlate;
+            document.getElementById('display-package').innerText = "Paket: " + (userData.package || "Auto");
+
+            const statusEl = document.getElementById('display-status');
+            const sosBtn = document.getElementById('sos-trigger');
+
+            if (userData.status === "zugang_aktiv") {
+                statusEl.innerText = "PRISTUP AKTIVAN ✔️";
+                statusEl.className = "status-pill status-active";
+                sosBtn.disabled = false; // SOS erst freischalten, wenn bezahlt
+            } else {
+                statusEl.innerText = "ČEKA UPLATU...";
+                statusEl.className = "status-pill status-wait";
+                sosBtn.disabled = true;
             }
-        } else {
-            window.location.href = "login.html";
         }
     });
 
-    // SOS FUNKTION
-    document.getElementById('sos-trigger').onclick = async () => {
-        if (!currentUserData) return;
+    // SOS FUNKTION mit GPS
+    document.getElementById('sos-trigger').onclick = () => {
+        if (!userData || userData.status !== "zugang_aktiv") return;
 
-        try {
-            await addDoc(collection(db, "sos_calls"), {
-                name: currentUserData.firstName + " " + currentUserData.lastName,
-                phone: currentUserData.phone,
-                customerNumber: currentUserData.customerNumber,
-                status: "offen",
-                timestamp: serverTimestamp(),
-                type: "member_sos"
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+
+                try {
+                    await addDoc(collection(db, "sos_calls"), {
+                        name: userData.firstName + " " + userData.lastName,
+                        memberID: userData.memberID,
+                        plate: userData.licensePlate,
+                        lat: lat,
+                        lng: lng,
+                        mapUrl: `https://www.google.com/maps?q=${lat},${lng}`,
+                        status: "novo",
+                        timestamp: serverTimestamp()
+                    });
+                    
+                    document.getElementById('sos-msg').style.display = 'block';
+                    alert("SOS POSLAT! Naša služba je primila vašu lokaciju.");
+                } catch (e) {
+                    alert("Greška: " + e.message);
+                }
+            }, () => {
+                alert("Greška: Molimo uključite GPS lokaciju!");
             });
-
-            document.getElementById('sos-status').style.display = 'block';
-            setTimeout(() => { document.getElementById('sos-status').style.display = 'none'; }, 5000);
-            
-            // Optional: Ein kurzer Ton am Handy des Users zur Bestätigung
-            alert("Vaš SOS signal je poslat centrali!");
-        } catch (e) {
-            alert("Greška pri slanju SOS-a: " + e.message);
         }
     };
 
     window.handleLogout = () => {
-        signOut(auth).then(() => { window.location.href = "login.html"; });
+        localStorage.removeItem('currentUser');
+        window.location.href = "login.html";
     };
-    document.getElementById('sos-trigger').onclick = async () => {
-    if (!currentUserData) return;
-
-    // Standort abfragen
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-
-            try {
-                await addDoc(collection(db, "sos_calls"), {
-                    name: currentUserData.firstName + " " + currentUserData.lastName,
-                    phone: currentUserData.phone,
-                    customerNumber: currentUserData.customerNumber,
-                    lat: lat,
-                    lng: lng,
-                    googleMapsUrl: `https://www.google.com/maps?q=${lat},${lng}`,
-                    status: "offen",
-                    timestamp: serverTimestamp()
-                });
-                alert("SOS poslat sa vašom lokacijom!");
-            } catch (e) {
-                alert("Greška: " + e.message);
-            }
-        }, () => {
-            alert("Molimo uključite lokaciju (GPS) da bismo vas pronašli!");
-        });
-    }
-};
-
 </script>
 </body>
 </html>
