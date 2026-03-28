@@ -37,18 +37,49 @@
 
     <hr style="border: 0; border-top: 1px solid rgba(197, 160, 89, 0.2); margin: 20px 0;">
 
+    <!-- SOS SECTION -->
     <div id="sos-section">
-        <h2 style="color: var(--red);">POMOĆ NA PUTU</h2>
-        <p style="font-size: 12px; margin-bottom: 15px;">Klikom na dugme šaljete Vašu tačnu lokaciju našem centru.</p>
-        <button id="sos-trigger" class="btn-main" style="background: var(--red); color: white; font-size: 20px; padding: 20px;">
+        <h2 style="color: var(--red-sos); margin-bottom: 20px;">🚨 POMOĆ NA PUTU</h2>
+        <p style="font-size: 12px; margin-bottom: 15px; color: rgba(255,255,255,0.8);">Klikom na dugme šaljete Vašu tačnu lokaciju našem centru.</p>
+        
+        <!-- SOS MODAL -->
+        <div id="sos-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: linear-gradient(135deg, #092e54, #061a30); padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; border: 2px solid #c5a059;">
+                <h3 style="color: var(--red-sos); margin-bottom: 20px; text-align: center;">⚠️ VRSTA DEFEKTA</h3>
+                
+                <div style="display: grid; gap: 10px; max-height: 400px; overflow-y: auto;">
+                    <button onclick="window.sendSOS('Pokvaren motor')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">🔧 Pokvaren motor</button>
+                    
+                    <button onclick="window.sendSOS('Pučena guma')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">🛞 Pučena guma</button>
+                    
+                    <button onclick="window.sendSOS('Mrtav akumulator')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">🔋 Mrtav akumulator</button>
+                    
+                    <button onclick="window.sendSOS('Problemi sa streljanjem')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">⚡ Problemi sa streljanjem</button>
+                    
+                    <button onclick="window.sendSOS('Ulje / Tečnosti')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">💧 Curenje ulja/tečnosti</button>
+                    
+                    <button onclick="window.sendSOS('Saobraćajni incident')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">🚗 Saobraćajni incident</button>
+                    
+                    <button onclick="window.sendSOS('Drugi problem')" style="padding: 15px; background: rgba(230, 57, 70, 0.2); border: 2px solid var(--red-sos); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; transition: 0.3s;">❓ Drugi problem</button>
+                    
+                    <button onclick="window.closeSosModal()" style="padding: 15px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;">✕ Otkaži</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOS BUTTON -->
+        <button id="sos-trigger" style="background: linear-gradient(135deg, var(--red-sos), #c41e3a); color: white; font-size: 20px; padding: 20px; width: 100%; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px rgba(230, 57, 70, 0.5);">
             ⚠️ POŠALJI SOS
         </button>
-        <p id="sos-msg" style="display:none; color: var(--green); margin-top: 10px; font-weight: bold;">
+        
+        <p id="sos-msg" style="display:none; color: var(--green-active); margin-top: 15px; font-weight: bold; text-align: center; animation: pulse-msg 1s infinite;">
             ✅ SOS poslat! Pomoć stiže.
         </p>
     </div>
 
-    <button onclick="handleLogout()" class="btn-back">Odjavi se / Logout</button>
+    <hr style="border: 0; border-top: 1px solid rgba(197, 160, 89, 0.2); margin: 20px 0;">
+
+    <button onclick="handleLogout()" style="background: rgba(255, 255, 255, 0.1); color: white; border: 2px solid var(--gold); padding: 12px 20px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;">🚪 Odjavi se / Logout</button>
 </div>
 
 <script type="module">
@@ -72,6 +103,7 @@
 
     let userData = null;
 
+    // ==================== LOAD USER ====================
     async function loadUser() {
         const userDoc = await getDoc(doc(db, "users", userId));
         if (userDoc.exists()) {
@@ -83,54 +115,171 @@
             
             const pill = document.getElementById('status-pill');
             if (userData.status === "zugang_aktiv") {
-                pill.innerText = "AKTIVAN ČLAN";
-                pill.style.background = "var(--green)";
+                pill.innerText = "✓ AKTIVAN ČLAN";
+                pill.style.background = "var(--green-active)";
             } else {
-                pill.innerText = "ČEKA UPLATU / NEAKTIVAN";
-                pill.style.background = "var(--red)";
+                pill.innerText = "⏳ ČEKA UPLATU";
+                pill.style.background = "var(--red-sos)";
                 document.getElementById('sos-trigger').disabled = true;
                 document.getElementById('sos-trigger').style.opacity = "0.5";
+                document.getElementById('sos-trigger').style.cursor = "not-allowed";
             }
         }
     }
 
+    // ==================== SOS TRIGGER ====================
     document.getElementById('sos-trigger').onclick = () => {
         if (!userData || userData.status !== "zugang_aktiv") {
-            alert("Vaš nalog nije aktiviran.");
+            alert("Vaš nalog nije aktiviran. Molimo čekajte na potvrdu.");
             return;
         }
+        // Prikaži modal za izbor pannenart
+        document.getElementById('sos-modal').style.display = 'flex';
+    };
 
-        if (confirm("Potvrdi slanje SOS poziva?")) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    await addDoc(collection(db, "sos_calls"), {
-                        name: userData.firstName + " " + userData.lastName,
-                        memberID: userData.memberID,
-                        plate: userData.licensePlate,
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude,
-                        status: "novo",
-                        timestamp: serverTimestamp()
-                    });
-                    document.getElementById('sos-msg').style.display = 'block';
-                    alert("Lokacija poslata!");
-                }, () => alert("Molimo uključite GPS!"));
-            }
+    // ==================== CLOSE MODAL ====================
+    window.closeSosModal = () => {
+        document.getElementById('sos-modal').style.display = 'none';
+    };
+
+    // Zatvori modal klikom van njega
+    document.getElementById('sos-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'sos-modal') {
+            window.closeSosModal();
+        }
+    });
+
+    // ==================== SEND SOS ====================
+    window.sendSOS = async (issueType) => {
+        document.getElementById('sos-modal').style.display = 'none';
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    try {
+                        // Kreiraj SOS-Eintrag in Firebase
+                        const sosRef = await addDoc(collection(db, "sos_calls"), {
+                            name: userData.firstName + " " + userData.lastName,
+                            memberID: userData.memberID,
+                            plate: userData.licensePlate,
+                            package: userData.package,
+                            issue_type: issueType,
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude,
+                            status: "novo",
+                            created_at: serverTimestamp(),
+                            user_id: userId
+                        });
+
+                        // Spielsound
+                        playAlarmSound();
+
+                        // Zeige Bestätigung
+                        document.getElementById('sos-msg').style.display = 'block';
+                        document.getElementById('sos-trigger').innerText = "📍 SOS GESENDET - WARTE ANTWORT";
+                        document.getElementById('sos-trigger').disabled = true;
+
+                        // Nach 5 Sekunden zurücksetzen
+                        setTimeout(() => {
+                            document.getElementById('sos-msg').style.display = 'none';
+                            document.getElementById('sos-trigger').innerText = "⚠️ POŠALJI SOS";
+                            document.getElementById('sos-trigger').disabled = false;
+                        }, 5000);
+
+                        console.log("SOS erstellt:", sosRef.id);
+                    } catch (err) {
+                        alert("Fehler beim Senden: " + err.message);
+                    }
+                },
+                (error) => {
+                    alert("GPS nicht verfügbar: " + error.message);
+                }
+            );
         }
     };
 
+    // ==================== ALARM SOUND ====================
+    function playAlarmSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            // Alarm-Ton: 800Hz für 500ms
+            oscillator.frequency.value = 800;
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (e) {
+            console.log("Audio nicht möglich");
+        }
+    }
+
+    // ==================== LOGOUT ====================
     window.handleLogout = () => {
         localStorage.removeItem('currentUser');
         window.location.href = "login.html";
     };
 
+    // ==================== INIT ====================
     loadUser();
 </script>
 
 <style>
-    .info-row { text-align: left; margin-bottom: 15px; }
-    .info-val { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px; border-left: 3px solid var(--gold); }
-    .status-pill { padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; display: inline-block; margin-bottom: 20px; }
+    .info-row { 
+        text-align: left; 
+        margin-bottom: 15px; 
+    }
+    
+    .info-val { 
+        background: rgba(255,255,255,0.1); 
+        padding: 10px; 
+        border-radius: 5px; 
+        border-left: 3px solid var(--gold); 
+        word-break: break-all;
+    }
+    
+    .status-pill { 
+        padding: 8px 15px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: bold; 
+        color: white; 
+        display: inline-block; 
+        margin-bottom: 20px; 
+        text-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    .header-area {
+        margin-bottom: 30px;
+    }
+
+    .header-area h1 {
+        color: var(--gold);
+        margin-bottom: 15px;
+    }
+
+    @keyframes pulse-msg {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Mobile Optimierung */
+    @media (max-width: 600px) {
+        .reg-card {
+            padding: 25px 15px;
+        }
+        
+        #sos-trigger {
+            padding: 15px !important;
+            font-size: 16px !important;
+        }
+    }
 </style>
+
 </body>
 </html>
