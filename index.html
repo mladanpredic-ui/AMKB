@@ -26,6 +26,7 @@
         <p id="p-desc">Vaš pouzdan partner na putu širom Evrope.</p>
     </header>
 
+    <!-- PAKET SEKCIJA -->
     <section class="package-section" id="welcome-section">
         <h2 class="section-title" id="h-title">Izaberite paket zaštite:</h2>
         
@@ -74,6 +75,122 @@
         </div>
     </section>
 
+    <!-- PARTNER RABAT SEKCIJA (NEU!) -->
+    <section class="partner-section">
+        <h2 class="section-title" id="h-partner-title" style="color: var(--gold); margin-bottom: 40px;">🤝 AKTUALNE AKCIJE NAŠIH PARTNERA</h2>
+        
+        <div class="partner-grid">
+            <!-- GRAWE -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">🏢</div>
+                    <div class="partner-info">
+                        <h3 id="p1-name">GRAWE</h3>
+                        <p id="p1-cat">Osiguranje</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p1-disc">15%</span>
+                    <span class="discount-text" id="p1-text">Popust za članove</span>
+                </div>
+                <div class="partner-hover-info" id="p1-info">
+                    Specijalni uslovi osiguranja vozila za članove AK Balkan. Kontakt: info@grawe.rs
+                </div>
+            </div>
+
+            <!-- AE Mitrovic -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">🔧</div>
+                    <div class="partner-info">
+                        <h3 id="p2-name">AE Mitrović</h3>
+                        <p id="p2-cat">Čipčovanje</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p2-disc">10%</span>
+                    <span class="discount-text" id="p2-text">Rabatt na Chiptuning</span>
+                </div>
+                <div class="partner-hover-info" id="p2-info">
+                    Profesionalno čipčovanje sa garantijom. Lokacija: Beograd. Tel: +381 11 XXX XXXX
+                </div>
+            </div>
+
+            <!-- Ducati Serbia -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">🏍️</div>
+                    <div class="partner-info">
+                        <h3 id="p3-name">Ducati Serbia</h3>
+                        <p id="p3-cat">Motocikli</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p3-disc">12%</span>
+                    <span class="discount-text" id="p3-text">Popust na rezervne delove</span>
+                </div>
+                <div class="partner-hover-info" id="p3-info">
+                    Originalni delovi za Ducati motocikle. Servis i prodaja. www.ducati-serbia.rs
+                </div>
+            </div>
+
+            <!-- BlackGlass -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">🚗</div>
+                    <div class="partner-info">
+                        <h3 id="p4-name">BlackGlass</h3>
+                        <p id="p4-cat">Zaštita stakla</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p4-disc">20%</span>
+                    <span class="discount-text" id="p4-text">Specijalna zaštita</span>
+                </div>
+                <div class="partner-hover-info" id="p4-info">
+                    Premijumska zaštita i usluga čišćenja stakla. Dugotrajna zaštita od UV zraka.
+                </div>
+            </div>
+
+            <!-- Pirelli Shop -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">🛞</div>
+                    <div class="partner-info">
+                        <h3 id="p5-name">Pirelli Shop</h3>
+                        <p id="p5-cat">Gume i točkovi</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p5-disc">8%</span>
+                    <span class="discount-text" id="p5-text">Popust na gume</span>
+                </div>
+                <div class="partner-hover-info" id="p5-info">
+                    Kvalitetne gume Pirelli sa besplatnom montažom. Servis u nekoliko lokacija.
+                </div>
+            </div>
+
+            <!-- Auto Elektrika Centar -->
+            <div class="partner-card" onclick="togglePartnerCard(this)">
+                <div class="partner-header">
+                    <div class="partner-icon">⚡</div>
+                    <div class="partner-info">
+                        <h3 id="p6-name">Auto Elektrika</h3>
+                        <p id="p6-cat">Električni delovi</p>
+                    </div>
+                </div>
+                <div class="partner-discount">
+                    <span class="discount-badge" id="p6-disc">18%</span>
+                    <span class="discount-text" id="p6-text">Popust članovima</span>
+                </div>
+                <div class="partner-hover-info" id="p6-info">
+                    Sve električne komponente za vozila. Stručna kundavanja i instalacija dostupne.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REGISTRACIJA SEKCIJA -->
     <section class="reg-card" id="reg-section" style="display:none;">
         <h2 id="h-reg-title" style="text-align:center; color:var(--blue);">Registracija člana</h2>
         <p style="text-align:center;">Paket: <b id="selected-pkg-display">-</b></p>
