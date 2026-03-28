@@ -44,6 +44,7 @@ window.chLang = (lang, btn) => {
 
 window.selectPkg = (val) => {
     document.getElementById('pk').value = val;
+    document.getElementById('selected-pkg-display').innerText = val; // ✅ FIXED: Zeige Paket im Formular an
     document.getElementById('welcome-section').style.display = 'none';
     document.getElementById('reg-section').style.display = 'block';
     window.scrollTo(0,0);
@@ -58,8 +59,19 @@ document.getElementById('regForm').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('b-sub');
     btn.disabled = true; btn.innerText = "...";
-    const id = Math.floor(100000 + Math.random() * 900000).toString();
-    const d = { memberID: id, firstName: document.getElementById('fn').value, lastName: document.getElementById('ln').value, email: document.getElementById('em').value, licensePlate: document.getElementById('lp').value, password: document.getElementById('pw').value, package: document.getElementById('pk').value, lang: document.getElementById('cl').value, status: "čeka_uplatu", createdAt: serverTimestamp() };
+const d = { memberID: id, firstName: document.getElementById('fn').value, lastName: document.getElementById('ln').value, email: document.getElementById('em').value, licensePlate: document.getElementById('lp').value, password: document.getElementById('pw').value, package: document.getElementById('pk').value, lang: document.getElementById('cl').value, status: "čeka_uplatu", createdAt: serverTimestamp() };
+    // ✅ FIXED: Passwort NICHT in Firebase speichern (Sicherheitsrisiko!)
+    const d = { 
+        memberID: id, 
+        firstName: document.getElementById('fn').value, 
+        lastName: document.getElementById('ln').value, 
+        email: document.getElementById('em').value, 
+        licensePlate: document.getElementById('lp').value, 
+        package: document.getElementById('pk').value, 
+        lang: document.getElementById('cl').value, 
+        status: "čeka_uplatu", 
+        createdAt: serverTimestamp() 
+    };
     try {
         await addDoc(collection(db, "users"), d);
         window.location.href = `vertrag.html?id=${id}&fn=${encodeURIComponent(d.firstName)}&ln=${encodeURIComponent(d.lastName)}&lp=${encodeURIComponent(d.licensePlate)}&pk=${encodeURIComponent(d.package)}&lg=${d.lang}`;
