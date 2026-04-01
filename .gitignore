@@ -1,0 +1,17 @@
+node_modules
+.dist
+.env
+.env.local
+.env.*.local
+dist-ssr
+*.local
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+pnpm-lock.yaml
+npm-lock.json
+yarn.lock
