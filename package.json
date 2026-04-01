@@ -1,1 +1,28 @@
-{"name": "amk-balkan","version": "1.0.0","description": "Auto Moto Klub Balkan - Pannenhilfe- und Mitgliedschaftsportal für Serbien/Balkan","private": true,"engines": {"node": ">=18.0.0","pnpm": ">=8.0.0"},"scripts": {"install": "pnpm install","frontend": "pnpm --filter ak-balkan","backend": "pnpm --filter api-server","dev": "pnpm --parallel dev","build": "pnpm --parallel build","lint": "pnpm --parallel lint"},"keywords": ["AMK Balkan","Auto Moto Klub Balkan","Pannenhilfe","SOS-Notruf","Mitgliedschaftsportal","Serbien","Balkan"],"author": "mladanpredic-ui","license": "ISC"}
+{
+  "name": "amk-balkan",
+  "version": "1.0.0",
+  "description": "Auto Moto Klub Balkan - Pannenhilfe- und Mitgliedschaftsportal für Serbien/Balkan",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "frontend": "pnpm --filter ak-balkan",
+    "backend": "pnpm --filter api-server",
+    "dev": "pnpm --parallel dev",
+    "build": "pnpm --parallel build",
+    "lint": "pnpm --parallel lint"
+  },
+  "keywords": [
+    "AMK Balkan",
+    "Auto Moto Klub Balkan",
+    "Pannenhilfe",
+    "SOS-Notruf",
+    "Mitgliedschaftsportal",
+    "Serbien",
+    "Balkan"
+  ],
+  "author": "mladanpredic-ui",
+  "license": "ISC"
+}
