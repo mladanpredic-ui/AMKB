@@ -1,1 +1,16 @@
-{\n  "name": "amk-balkan-app",\n  "version": "1.0.0",\n  "private": true,\n  "scripts": {\n    "dev": "vite",\n    "build": "vite build",\n    "serve": "vite preview"\n  },\n  "dependencies": {\n    "react": "^18.0.0",\n    "react-dom": "^18.0.0",\n    "vite": "^3.0.0",\n    "tailwindcss": "^3.0.0",\n    "firebase": "^9.0.0"\n  },\n  "devDependencies": {\n    "typescript": "^4.0.0"\n  }\n}
+{
+  "name": "amk-balkan-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    // Add your dependencies here
+  },
+  "devDependencies": {
+    // Add your dev dependencies here
+  }
+}
